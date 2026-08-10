@@ -1,0 +1,74 @@
+{
+  "numero": "A44",
+  "date": "2026-08-10T19:23:55.787Z",
+  "type": "Sur place",
+  "total": 53.8,
+  "articles": [
+    {
+      "nom": "Menu Best Of",
+      "quantite": 1,
+      "prix_unitaire": 9,
+      "options": [
+        "Big Mac",
+        "Petite frite",
+        "Ketchup",
+        "Ice Tea"
+      ]
+    },
+    {
+      "nom": "Menu Best Of",
+      "quantite": 1,
+      "prix_unitaire": 9.6,
+      "options": [
+        "Big Mac",
+        "Moyenne frite",
+        "Ketchup",
+        "Coca-Cola"
+      ]
+    },
+    {
+      "nom": "Menu Best Of",
+      "quantite": 1,
+      "prix_unitaire": 7.9,
+      "options": [
+        "Cheeseburger",
+        "Moyenne frite",
+        "Mayonnaise",
+        "Eau"
+      ]
+    },
+    {
+      "nom": "Menu Best Of",
+      "quantite": 1,
+      "prix_unitaire": 7.4,
+      "options": [
+        "Hamburger",
+        "Moyenne frite",
+        "Mayonnaise",
+        "Eau"
+      ]
+    },
+    {
+      "nom": "Menu Maxi Best Of",
+      "quantite": 1,
+      "prix_unitaire": 11,
+      "options": [
+        "Big Mac",
+        "Moyenne frite",
+        "Mayonnaise",
+        "Ice Tea"
+      ]
+    },
+    {
+      "nom": "Menu Best Of",
+      "quantite": 1,
+      "prix_unitaire": 8.9,
+      "options": [
+        "Double Cheeseburger",
+        "Moyenne frite",
+        "Ketchup",
+        "Ice Tea"
+      ]
+    }
+  ]
+}
