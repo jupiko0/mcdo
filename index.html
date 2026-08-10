@@ -1,221 +1,453 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>Borne de commande</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --mcdo-green: #2A7A3A;
-      --mcdo-green-dark: #1D5E2A;
-      --mcdo-yellow: #FFC72C;
-      --paper: #F4F9F5;
-      --paper-2: #E5F0E8;
-      --line: #C8DBCE;
-      --gray: #5A6F5E;
-      --ink: #1A2B1C;
-    }
-    *{box-sizing:border-box;margin:0;padding:0;}
-    html,body{height:100%;}
-    body{font-family:'Inter',Arial,sans-serif;background:#1e2a20;color:var(--ink);}
-    .kiosk{width:100vw;height:100vh;background:var(--paper);display:flex;flex-direction:column;overflow:hidden;}
-    .kiosk-screen{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Borne de commande</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mcdo-red:#0E6B3A;
+    --mcdo-red-dark:#0A4F2A;
+    --mcdo-yellow:#FFC72C;
+    --mcdo-yellow-dark:#FFB400;
+    --ink:#241610;
+    --paper:#FFFBF4;
+    --paper-2:#FFF3DD;
+    --gray:#847C72;
+    --line:#EFE4D2;
+    --ok:#1E8E3E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:var(--ink);}
+  h1,h2,h3,.display{font-family:'Poppins',sans-serif;}
+  button{font-family:inherit;}
 
-    .app-header{background:var(--mcdo-green);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;z-index:10;}
-    .app-header .title{font-weight:800;font-size:18px;}
-    .app-header .order-type{background:rgba(255,255,255,.16);border:none;color:#fff;font-size:11px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer;}
-    .header-spacer{flex:1;}
-    .cart-btn{background:var(--mcdo-yellow);border:none;width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;position:relative;display:flex;align-items:center;justify-content:center;}
-    .cart-btn .badge{position:absolute;top:-4px;right:-4px;background:var(--ink);color:#fff;font-size:10px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--mcdo-green);}
+  /* ============ SCENE / KIOSK SHELL ============ */
+  .stage{
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:26px 14px;
+    background:radial-gradient(ellipse 900px 500px at 50% 0%, #3d3d3f, #17171818 60%), linear-gradient(180deg,#232325,#111112 65%);
+  }
+  .kiosk{
+    width:min(440px,94vw);
+    background:linear-gradient(150deg,#f1f1f2,#cfd0d3 45%,#a8a9ac 100%);
+    border-radius:42px;padding:16px 14px 8px;
+    box-shadow:0 50px 90px -25px rgba(0,0,0,.65), inset 0 2px 2px rgba(255,255,255,.6), inset 0 -2px 6px rgba(0,0,0,.15);
+    position:relative;
+  }
+  .kiosk-topbar{display:flex;align-items:center;justify-content:center;gap:10px;padding:2px 0 10px;}
+  .kiosk-topbar .dot{width:7px;height:7px;border-radius:50%;background:#3a3a3c;box-shadow:inset 0 0 2px #000;}
+  .kiosk-topbar .cam{width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#4b6b8a,#0b0e12 70%);}
+  .kiosk-screen{
+    background:var(--paper);border-radius:28px;overflow:hidden;
+    height:min(790px,76vh);min-height:520px;
+    display:flex;flex-direction:column;position:relative;
+    box-shadow:inset 0 0 0 3px #000, 0 0 0 7px #1c1c1d, 0 0 0 8px #3a3a3c;
+  }
+  .kiosk-bottombar{display:flex;align-items:center;justify-content:center;gap:22px;padding:12px 10px 6px;color:#5a5c60;}
+  .kiosk-bottombar .pay-icon{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;letter-spacing:.3px;}
+  .kiosk-bottombar .pay-icon svg{width:16px;height:16px;}
+  .kiosk-bottombar .slot{width:64px;height:5px;border-radius:3px;background:linear-gradient(180deg,#6d6f73,#8d8f93);}
+  .kiosk-stand{width:64px;height:46px;margin:0 auto;background:linear-gradient(180deg,#c3c4c7,#8b8d90);clip-path:polygon(32% 0,68% 0,96% 100%,4% 100%);}
+  .kiosk-base-shadow{width:230px;height:20px;margin:8px auto 0;background:radial-gradient(ellipse,rgba(0,0,0,.5),transparent 72%);}
+  @media (max-height:720px){ .kiosk-stand,.kiosk-base-shadow{display:none;} .kiosk-screen{height:min(790px,80vh);} }
 
-    .categories{display:flex;gap:8px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--line);overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
-    .categories::-webkit-scrollbar{display:none;}
-    .cat-btn{border:none;background:var(--paper-2);color:var(--ink);font-weight:700;font-size:12px;padding:8px 16px;border-radius:999px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;}
-    .cat-btn.active{background:var(--mcdo-green);color:#fff;}
+  /* ============ PLEIN ÉCRAN ============ */
+  html,body{width:100%;background:var(--paper);}
+  .stage{width:100vw;height:100vh;height:100dvh;}
+  .kiosk{width:100%;height:100%;background:none;padding:0;box-shadow:none;border-radius:0;}
+  .kiosk-topbar,.kiosk-bottombar,.kiosk-stand,.kiosk-base-shadow{display:none;}
+  .kiosk-screen{
+    background:var(--paper);overflow:hidden;
+    width:100%;height:100%;max-width:900px;margin:0 auto;
+    display:flex;flex-direction:column;position:relative;
+    box-shadow:none;border-radius:0;
+  }
+  @media (min-width:901px){
+    .kiosk-screen{box-shadow:0 0 0 1px var(--line);}
+    .grid{grid-template-columns:repeat(3,1fr) !important;}
+  }
+  .fullscreen-btn{background:rgba(255,255,255,.16);border:none;color:#fff;width:34px;height:34px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
-    #catalog{flex:1;overflow-y:auto;padding:14px 16px 100px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;align-content:start;}
-    .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;cursor:pointer;display:flex;flex-direction:column;position:relative;}
-    .card:active{transform:scale(.96);}
-    .card .emoji{font-size:42px;text-align:center;padding:8px 0;background:var(--paper-2);border-radius:12px;margin-bottom:8px;}
-    .card .name{font-weight:700;font-size:13px;}
-    .card .price{font-weight:800;color:var(--mcdo-green-dark);font-size:14px;margin-top:4px;}
-    .card .tag{position:absolute;top:6px;left:6px;background:var(--mcdo-green);color:#fff;font-size:8px;font-weight:800;padding:2px 8px;border-radius:999px;}
-    .card .add-btn{background:var(--mcdo-yellow);border:none;width:28px;height:28px;border-radius:50%;font-size:16px;font-weight:800;cursor:pointer;float:right;margin-top:-6px;}
+  /* ============ APP ============ */
+  #app{position:relative;flex:1 1 auto;display:flex;flex-direction:column;min-height:0;}
 
-    #cartbar{position:fixed;bottom:16px;left:16px;right:16px;background:var(--mcdo-green);color:#fff;border-radius:16px;padding:14px 20px;display:none;align-items:center;justify-content:space-between;cursor:pointer;z-index:20;box-shadow:0 8px 24px rgba(42,122,58,.4);}
-    #cartbar.show{display:flex;}
-    #cartbar .left{display:flex;align-items:center;gap:10px;font-weight:700;font-size:13px;}
-    #cartbar .left .circle{background:var(--mcdo-yellow);color:var(--ink);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;}
-    #cartbar .right{font-weight:800;font-size:15px;}
+  .app-header{flex:0 0 auto;background:var(--mcdo-red);color:#fff;display:flex;align-items:center;gap:10px;padding:12px 14px;box-shadow:0 3px 8px rgba(0,0,0,.15);z-index:6;}
+  .app-header .arches{width:26px;height:26px;flex:0 0 auto;}
+  .app-header .arches svg{width:100%;height:100%;}
+  .app-header .title{font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;letter-spacing:.3px;}
+  .pill-ordertype{margin-left:2px;background:rgba(255,255,255,.16);border:none;color:#fff;font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;display:flex;align-items:center;gap:5px;cursor:pointer;}
+  .header-spacer{flex:1 1 auto;}
+  .cart-btn{position:relative;background:var(--mcdo-yellow);border:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;}
+  .cart-btn .badge{position:absolute;top:-4px;right:-4px;background:var(--ink);color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--mcdo-red);}
+  .gear-btn{background:rgba(255,255,255,.16);border:none;color:#fff;width:34px;height:34px;border-radius:50%;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
-    #overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;z-index:30;}
-    #overlay.show{display:flex;}
-    #modal{background:#fff;border-radius:24px 24px 0 0;width:100%;max-height:85%;overflow-y:auto;padding:20px 24px 24px;}
-    #modal-close{float:right;background:var(--paper-2);border:none;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;}
-    .modal-emoji{font-size:56px;text-align:center;margin:4px 0 8px;}
-    #modal h3{text-align:center;font-size:18px;}
-    .m-desc{text-align:center;color:var(--gray);font-size:12px;margin-bottom:12px;}
-    .option-group{margin:12px 0;}
-    .option-group .group-label{font-weight:800;color:var(--mcdo-green-dark);font-size:11px;text-transform:uppercase;display:block;margin-bottom:6px;}
-    .opt{display:flex;justify-content:space-between;padding:10px 14px;border:1.5px solid var(--line);border-radius:12px;margin-bottom:6px;cursor:pointer;}
-    .opt.selected{border-color:var(--mcdo-green);background:#EAF5EE;}
-    .opt .opt-emoji{font-size:20px;margin-right:8px;}
-    #modal-add-btn{width:100%;background:var(--mcdo-yellow);border:none;padding:14px;border-radius:14px;font-weight:800;font-size:15px;cursor:pointer;margin-top:8px;}
+  /* ---- Réglages GitHub ---- */
+  #settings-overlay{position:absolute;inset:0;background:rgba(20,12,6,.5);display:none;align-items:flex-end;justify-content:center;z-index:60;}
+  #settings-overlay.show{display:flex;}
+  #settings-modal{background:#fff;border-radius:22px 22px 0 0;width:100%;max-height:88%;overflow-y:auto;padding:20px;position:relative;animation:modalUp .22s ease;}
+  #settings-modal h3{font-size:16px;margin-bottom:4px;}
+  #settings-modal .s-desc{font-size:11.5px;color:var(--gray);line-height:1.5;margin-bottom:14px;}
+  #settings-modal label{font-size:11px;font-weight:800;color:var(--mcdo-red-dark);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px;}
+  #settings-modal input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;font-size:13px;margin-bottom:6px;font-family:inherit;}
+  #settings-modal .s-note{font-size:10.5px;color:var(--gray);line-height:1.5;margin-bottom:14px;}
+  #settings-modal .s-note a{color:var(--mcdo-red-dark);}
+  #settings-save{width:100%;background:var(--mcdo-red);color:#fff;border:none;padding:14px;border-radius:14px;font-weight:800;font-size:14px;cursor:pointer;margin-bottom:8px;}
+  #settings-clear{width:100%;background:none;border:none;color:var(--gray);font-size:11.5px;text-decoration:underline;cursor:pointer;}
+  #settings-status{font-size:11px;font-weight:700;margin-bottom:12px;padding:8px 10px;border-radius:10px;display:none;}
+  #settings-status.ok{display:block;background:#E9F7EC;color:var(--ok);}
+  #settings-status.err{display:block;background:#FCEBE9;color:var(--mcdo-red-dark);}
+  .sync-line{text-align:center;font-size:10.5px;color:rgba(255,255,255,.85);margin-top:10px;min-height:14px;}
 
-    #drawer-scrim{position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .25s;z-index:25;}
-    #drawer-scrim.show{opacity:1;pointer-events:auto;}
-    #drawer{position:fixed;bottom:0;left:0;right:0;height:88%;background:#fff;border-radius:24px 24px 0 0;transform:translateY(100%);transition:transform .3s;z-index:26;display:flex;flex-direction:column;box-shadow:0 -10px 30px rgba(0,0,0,.15);}
-    #drawer.open{transform:translateY(0);}
-    .drawer-handle{width:40px;height:4px;background:var(--line);border-radius:3px;margin:12px auto 4px;flex-shrink:0;}
-    .drawer-head{padding:8px 20px 14px;display:flex;justify-content:space-between;border-bottom:1px solid var(--line);flex-shrink:0;}
-    .drawer-head h2{font-size:17px;}
-    #drawer-close{background:var(--paper-2);border:none;width:30px;height:30px;border-radius:50%;font-size:14px;cursor:pointer;}
-    #drawer-items{flex:1;overflow-y:auto;padding:8px 20px;}
-    .empty-cart{text-align:center;color:var(--gray);padding:60px 20px;}
-    .empty-cart .big{font-size:48px;display:block;margin-bottom:10px;}
-    .cart-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line);}
-    .cart-item .ci-emoji{width:40px;height:40px;border-radius:12px;background:var(--paper-2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-    .cart-item .info{flex:1;}
-    .cart-item .info .name{font-weight:700;font-size:13px;}
-    .cart-item .line-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
-    .qty-ctrl{display:flex;align-items:center;gap:8px;background:var(--paper-2);border-radius:999px;padding:2px 4px;}
-    .qty-ctrl button{width:22px;height:22px;border:none;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.1);font-weight:800;cursor:pointer;font-size:13px;}
-    .qty-ctrl span{font-size:13px;font-weight:700;min-width:16px;text-align:center;}
-    .item-price{font-weight:800;font-size:13px;color:var(--mcdo-green-dark);}
-    .remove-btn{background:none;border:none;color:var(--gray);font-size:10px;text-decoration:underline;cursor:pointer;margin-top:2px;}
-    #drawer-footer{flex-shrink:0;padding:12px 20px 20px;border-top:1px solid var(--line);}
-    .totals-row{display:flex;justify-content:space-between;font-size:12px;color:var(--gray);margin-bottom:4px;}
-    .totals-row.total{font-size:18px;font-weight:800;color:var(--ink);margin:8px 0 12px;}
-    #drawer-checkout{width:100%;background:var(--mcdo-green);color:#fff;border:none;padding:14px;border-radius:14px;font-weight:800;font-size:15px;cursor:pointer;}
-    #drawer-checkout:disabled{background:#d0e0d2;color:#8a9a8a;cursor:not-allowed;}
-    #drawer-continue{width:100%;background:none;border:none;color:var(--gray);font-size:11px;margin-top:8px;cursor:pointer;text-decoration:underline;}
+  nav#cats{flex:0 0 auto;background:#fff;border-bottom:1px solid var(--line);display:flex;gap:8px;padding:10px 12px;overflow-x:auto;z-index:5;}
+  nav#cats::-webkit-scrollbar{display:none;}
+  .cat-btn{border:none;background:var(--paper-2);color:var(--ink);font-weight:700;font-size:12.5px;padding:9px 14px;border-radius:999px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:.15s ease;}
+  .cat-btn.active{background:var(--mcdo-red);color:#fff;}
 
-    #screen-confirm{position:fixed;inset:0;background:var(--mcdo-green);display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;z-index:40;}
-    #screen-confirm.show{display:flex;}
-    #screen-confirm .check{width:70px;height:70px;border-radius:50%;background:var(--mcdo-yellow);display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--mcdo-green);margin-bottom:10px;}
-    #screen-confirm h1{color:#fff;font-size:20px;}
-    #screen-confirm p{color:rgba(255,255,255,.85);font-size:13px;margin-bottom:12px;text-align:center;}
-    .receipt{background:#fffdf8;width:100%;max-width:340px;border-radius:10px;padding:16px;max-height:45vh;overflow-y:auto;font-size:12px;}
-    .receipt .r-title{text-align:center;font-weight:800;font-size:14px;}
-    .receipt .r-num{text-align:center;font-size:28px;font-weight:900;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:6px 0;margin:6px 0;color:var(--mcdo-green-dark);}
-    .receipt .r-line{display:flex;justify-content:space-between;padding:2px 0;}
-    .receipt .r-total{display:flex;justify-content:space-between;font-weight:800;font-size:14px;border-top:1px dashed var(--line);margin-top:8px;padding-top:8px;}
-    .receipt .r-type{text-align:center;font-size:10px;color:var(--gray);margin-top:6px;}
-    #confirm-new-btn{margin-top:16px;background:#fff;color:var(--mcdo-green);border:none;padding:12px 32px;border-radius:999px;font-weight:800;font-size:14px;cursor:pointer;}
-    #json-status{color:#fff;font-size:12px;margin-top:8px;opacity:.8;text-align:center;}
+  #catalog{flex:1 1 auto;overflow-y:auto;padding:16px 14px 90px;}
+  .section-title{font-size:18px;font-weight:800;margin-bottom:2px;}
+  .section-sub{font-size:12px;color:var(--gray);margin-bottom:14px;line-height:1.4;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:10px;cursor:pointer;display:flex;flex-direction:column;position:relative;text-align:left;transition:.12s ease;}
+  .card:active{transform:scale(.97);}
+  .thumb-wrap{aspect-ratio:1/1;border-radius:14px;background:radial-gradient(120% 100% at 50% 15%,#FFF6E4,#FCE6B8 75%);margin-bottom:8px;overflow:hidden;position:relative;}
+  .menu-tag{position:absolute;top:8px;left:8px;background:var(--mcdo-red);color:#fff;font-size:9px;font-weight:800;letter-spacing:.4px;padding:3px 7px;border-radius:999px;z-index:5;}
+  .card .name{font-weight:700;font-size:13px;line-height:1.2;margin-bottom:2px;}
+  .card .desc{font-size:10.5px;color:var(--gray);line-height:1.3;margin-bottom:8px;min-height:26px;}
+  .card .bottom{margin-top:auto;display:flex;align-items:center;justify-content:space-between;}
+  .card .price{font-weight:800;color:var(--mcdo-red-dark);font-size:13.5px;}
+  .add-btn{background:var(--mcdo-yellow);border:none;width:28px;height:28px;border-radius:50%;font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
-    #screen-welcome{position:fixed;inset:0;background:linear-gradient(165deg,var(--mcdo-green),#155020);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;z-index:50;}
-    #screen-welcome .logo{font-size:72px;margin-bottom:8px;}
-    #screen-welcome h1{font-size:26px;}
-    #screen-welcome p{opacity:.9;max-width:300px;font-size:14px;margin:4px 0 20px;}
-    #screen-welcome .choices{width:100%;max-width:340px;display:flex;flex-direction:column;gap:12px;}
-    #screen-welcome .choice-btn{background:#fff;color:var(--ink);border:none;border-radius:16px;padding:16px 20px;font-weight:800;font-size:15px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.15);}
-    #screen-welcome .choice-btn .ico{font-size:28px;}
-    #screen-welcome .choice-btn small{display:block;font-weight:500;font-size:11px;color:var(--gray);}
+  .prod-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4;background:#fff;border-radius:inherit;}
 
-    ::-webkit-scrollbar{width:5px;}
-    ::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px;}
-  </style>
+  /* ============ FOOD ART (fallback si pas d'image) ============ */
+  .art-burger{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;width:100%;height:100%;padding:8% 0 6%;}
+  .art-burger>*{flex:0 0 auto;}
+  .art-burger .bun-top{position:relative;height:32%;width:80%;background:radial-gradient(120% 100% at 50% 18%,#FCD08A,#E29A3B 85%);border-radius:50% 50% 8px 8px/65% 65% 8px 8px;box-shadow:inset 0 -5px 7px rgba(0,0,0,.10);}
+  .art-burger .bun-top .seed{position:absolute;top:26%;width:5px;height:3px;background:#fff9ec;border-radius:50%;opacity:.95;}
+  .art-burger .cheese{height:13%;width:88%;background:#FFCB4D;clip-path:polygon(2% 20%,98% 0%,100% 90%,0% 100%);margin:-3% 0;z-index:2;box-shadow:0 1px 1px rgba(0,0,0,.08);}
+  .art-burger .patty{height:14%;width:80%;background:linear-gradient(180deg,#8a5834,#5b3419);border-radius:5px;box-shadow:inset 0 -3px 4px rgba(0,0,0,.3);}
+  .art-burger .pickles{height:9%;width:80%;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .art-burger .pickles span{width:7px;height:7px;border-radius:50%;background:#A3C750;border:2px solid #7C9A34;}
+  .art-burger .bun-bottom{height:18%;width:84%;background:linear-gradient(180deg,#F2BA61,#DB8C2E);border-radius:0 0 12px 12px;}
+
+  .art-fries{position:relative;width:100%;height:100%;}
+  .art-fries .pack{position:absolute;left:22%;right:22%;bottom:10%;height:44%;background:linear-gradient(160deg,#E3352A,#B0201A);clip-path:polygon(6% 0,94% 0,100% 100%,0 100%);border-radius:0 0 3px 3px;}
+  .art-fries .pack .arches-tiny{position:absolute;left:50%;top:32%;transform:translateX(-50%);width:46%;}
+  .art-fries .pack .arches-tiny svg{width:100%;display:block;}
+  .art-fries .fry{position:absolute;width:10%;border-radius:3px 3px 1px 1px;background:linear-gradient(180deg,#FFDA85,#F0B23B);box-shadow:inset -2px 0 3px rgba(0,0,0,.08);}
+
+  .art-nugget{position:relative;width:100%;height:100%;}
+  .art-nugget .nug{position:absolute;background:linear-gradient(155deg,#F2C36A,#D89B3A);box-shadow:inset -3px -3px 5px rgba(0,0,0,.15),inset 2px 2px 4px rgba(255,255,255,.5);}
+
+  .art-drink{position:relative;width:100%;height:100%;}
+  .art-drink .cup{position:absolute;left:28%;right:28%;bottom:10%;top:30%;background:var(--cup-color,#DA291C);clip-path:polygon(14% 0,86% 0,100% 100%,0 100%);overflow:hidden;}
+  .art-drink .cup .stripe{position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.28) 0 5px,transparent 5px 13px);}
+  .art-drink .lid{position:absolute;left:24%;right:24%;top:22%;height:10%;background:#fff;border-radius:5px;box-shadow:0 2px 3px rgba(0,0,0,.15);}
+  .art-drink .straw{position:absolute;left:47%;top:2%;width:6%;height:32%;background:linear-gradient(180deg,#fff,#eee);border-radius:3px;transform:rotate(10deg);}
+
+  .art-menu{position:relative;width:100%;height:100%;}
+  .art-menu .tray{position:absolute;left:6%;right:6%;bottom:6%;height:14%;background:#E7DCC6;border-radius:8px;}
+  .art-menu .mini-burger{position:absolute;left:6%;bottom:16%;width:52%;height:66%;}
+  .art-menu .mini-fries{position:absolute;right:6%;bottom:14%;width:44%;height:58%;}
+
+  .art-happy{position:relative;width:100%;height:100%;}
+  .art-happy .box{position:absolute;left:16%;right:16%;bottom:10%;height:52%;background:linear-gradient(160deg,#E3352A,#B0201A);clip-path:polygon(4% 0,96% 0,100% 100%,0 100%);}
+  .art-happy .box .arches-tiny{position:absolute;left:50%;top:34%;transform:translateX(-50%);width:44%;}
+  .art-happy .box .arches-tiny svg{width:100%;display:block;}
+  .art-happy .handle{position:absolute;left:36%;right:36%;top:10%;height:26%;border:5px solid var(--mcdo-yellow);border-bottom:none;border-radius:50% 50% 0 0/100% 100% 0 0;}
+  .art-happy .star{position:absolute;top:0%;right:14%;font-size:15px;}
+
+  .art-sauce{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+  .art-sauce .blob{width:56%;height:56%;border-radius:50%;box-shadow:inset -3px -3px 6px rgba(0,0,0,.15),inset 3px 3px 6px rgba(255,255,255,.4);}
+
+  /* ============ CART BAR ============ */
+  #cartbar{position:absolute;left:12px;right:12px;bottom:14px;background:var(--mcdo-red);color:#fff;border-radius:16px;padding:13px 16px;display:none;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:0 10px 24px rgba(14,107,58,.4);z-index:20;animation:barIn .25s ease;}
+  #cartbar.show{display:flex;}
+  @keyframes barIn{from{transform:translateY(16px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  #cartbar .left{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;}
+  #cartbar .left .circle{background:var(--mcdo-yellow);color:var(--ink);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;}
+  #cartbar .right{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;}
+
+  /* ============ WELCOME ============ */
+  #screen-welcome{position:absolute;inset:0;z-index:50;background:linear-gradient(165deg,var(--mcdo-red) 0%,#0F5C32 60%,#0A4525 100%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;padding:26px 22px 30px;}
+  #screen-welcome .lang-row{align-self:flex-end;display:flex;gap:6px;}
+  .lang-btn{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.35);color:#fff;font-weight:700;font-size:11px;padding:5px 10px;border-radius:8px;cursor:pointer;}
+  .lang-btn.active{background:#fff;color:var(--mcdo-red);border-color:#fff;}
+  #screen-welcome .mid{display:flex;flex-direction:column;align-items:center;gap:14px;}
+  #screen-welcome .arches-big{width:96px;height:96px;filter:drop-shadow(0 8px 14px rgba(0,0,0,.25));}
+  #screen-welcome .arches-big svg{width:100%;height:100%;}
+  #screen-welcome h1{font-size:24px;font-weight:800;}
+  #screen-welcome p.sub{font-size:13.5px;opacity:.9;max-width:270px;line-height:1.4;}
+  #screen-welcome .tap-hint{margin-top:6px;font-size:12px;font-weight:700;letter-spacing:.5px;padding:8px 16px;border:1.5px solid rgba(255,255,255,.5);border-radius:999px;animation:pulse 1.8s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:.7;}50%{opacity:1;}}
+  #screen-welcome .choices{width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px;}
+  .choice-btn{background:#fff;color:var(--ink);border:none;border-radius:16px;padding:16px 18px;font-weight:800;font-size:14.5px;display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:0 8px 18px rgba(0,0,0,.18);}
+  .choice-btn .ico{width:36px;height:36px;border-radius:50%;background:var(--paper-2);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;}
+  .choice-btn small{display:block;font-weight:500;font-size:11px;color:var(--gray);margin-top:1px;}
+
+  /* ============ WIZARD (composition menu) ============ */
+  #wizard-overlay{position:absolute;inset:0;background:#fff;display:none;z-index:45;flex-direction:column;}
+  #wizard-overlay.show{display:flex;}
+  .wizard-head{flex:0 0 auto;padding:14px 12px 6px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);}
+  .wizard-back,.wizard-close{width:30px;height:30px;border-radius:50%;border:none;background:var(--paper-2);font-size:14px;cursor:pointer;flex:0 0 auto;}
+  .wizard-title-wrap{flex:1;text-align:center;}
+  .wizard-title{font-weight:800;font-size:14px;}
+  .wizard-menu-name{font-size:10.5px;color:var(--gray);}
+  .wizard-dots{display:flex;justify-content:center;gap:6px;padding:9px 0 4px;flex:0 0 auto;}
+  .wizard-dots .d{width:7px;height:7px;border-radius:50%;background:var(--line);transition:.2s;}
+  .wizard-dots .d.active{background:var(--mcdo-red);width:18px;border-radius:4px;}
+  .wizard-dots .d.done{background:var(--mcdo-yellow);}
+  .wizard-body{flex:1 1 auto;overflow-y:auto;padding:10px 16px 16px;}
+  .wiz-opt{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:14px;padding:9px 12px;margin-bottom:9px;cursor:pointer;}
+  .wiz-opt.selected{border-color:var(--mcdo-red);background:#FFF3EF;}
+  .wiz-opt .wiz-thumb{width:46px;height:46px;border-radius:10px;background:radial-gradient(120% 100% at 50% 15%,#FFF6E4,#FCE6B8 75%);position:relative;overflow:hidden;flex:0 0 auto;}
+  .wiz-opt .wiz-info{flex:1;min-width:0;}
+  .wiz-opt .wiz-name{font-weight:700;font-size:13px;}
+  .wiz-opt .wiz-price{font-size:11px;color:var(--gray);margin-top:2px;}
+  .wiz-opt .wiz-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;}
+  .wiz-opt.selected .wiz-check{background:var(--mcdo-red);border-color:var(--mcdo-red);}
+  .wiz-opt.is-extra .wiz-check{border-radius:6px;}
+  .wizard-footer{flex:0 0 auto;padding:10px 16px 16px;border-top:1px solid var(--line);}
+  #wizard-confirm-btn{width:100%;background:var(--mcdo-yellow);border:none;padding:14px;border-radius:14px;font-weight:800;font-size:14.5px;cursor:pointer;}
+  .wiz-skip-note{text-align:center;font-size:11px;color:var(--gray);margin-top:8px;}
+
+  /* ============ DRAWER (panier) ============ */
+  #drawer-scrim{position:absolute;inset:0;background:rgba(20,12,6,.45);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:29;}
+  #drawer-scrim.show{opacity:1;pointer-events:auto;}
+  #drawer{position:absolute;left:0;right:0;bottom:0;height:90%;background:#fff;border-radius:22px 22px 0 0;transform:translateY(102%);transition:transform .32s cubic-bezier(.22,.85,.32,1);z-index:30;display:flex;flex-direction:column;box-shadow:0 -10px 30px rgba(0,0,0,.2);}
+  #drawer.open{transform:translateY(0);}
+  .drawer-handle{width:40px;height:4px;background:var(--line);border-radius:3px;margin:10px auto 4px;flex:0 0 auto;}
+  .drawer-head{flex:0 0 auto;padding:6px 18px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);}
+  .drawer-head h2{font-size:16px;}
+  #drawer-close{background:var(--paper-2);border:none;width:30px;height:30px;border-radius:50%;font-size:14px;cursor:pointer;}
+  .drawer-ordertype{flex:0 0 auto;display:flex;gap:8px;padding:12px 18px 4px;}
+  .ot-chip{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .ot-chip.active{border-color:var(--mcdo-red);background:#FFF3EF;color:var(--mcdo-red-dark);}
+  #drawer-items{flex:1 1 auto;overflow-y:auto;padding:6px 18px;}
+  .empty-cart{text-align:center;color:var(--gray);font-size:13px;padding:60px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .empty-cart .big{font-size:42px;}
+  .cart-item{display:flex;gap:10px;padding:12px 0;border-bottom:1px dashed var(--line);}
+  .cart-item .ci-thumb{width:46px;height:46px;border-radius:12px;background:var(--paper-2);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;position:relative;}
+  .cart-item .info{flex:1 1 auto;min-width:0;}
+  .cart-item .info .name{font-weight:700;font-size:13px;}
+  .cart-item .info .opts{font-size:10.5px;color:var(--gray);margin-top:2px;line-height:1.4;}
+  .cart-item .line-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+  .qty-ctrl{display:flex;align-items:center;gap:8px;background:var(--paper-2);border-radius:999px;padding:3px 4px;}
+  .qty-ctrl button{width:22px;height:22px;border:none;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.15);font-weight:800;cursor:pointer;font-size:13px;}
+  .qty-ctrl span{font-size:12px;font-weight:700;min-width:14px;text-align:center;}
+  .item-price{font-weight:800;font-size:12.5px;color:var(--mcdo-red-dark);}
+  .remove-btn{background:none;border:none;color:var(--gray);font-size:10.5px;text-decoration:underline;cursor:pointer;margin-top:3px;}
+  #drawer-footer{flex:0 0 auto;padding:12px 18px 18px;border-top:1px solid var(--line);}
+  .totals-row{display:flex;justify-content:space-between;font-size:12.5px;color:var(--gray);margin-bottom:5px;}
+  .totals-row.total{font-size:18px;font-weight:800;color:var(--ink);margin:8px 0 14px;}
+  #drawer-checkout{width:100%;background:var(--mcdo-red);color:#fff;border:none;padding:15px;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;}
+  #drawer-checkout:disabled{background:#ddd6c8;color:#9a9385;cursor:not-allowed;}
+  #drawer-continue{width:100%;background:none;border:none;color:var(--gray);font-size:11.5px;margin-top:8px;cursor:pointer;text-decoration:underline;}
+
+  /* ============ VARIANT MODAL (produits simples) ============ */
+  #overlay{position:absolute;inset:0;background:rgba(20,12,6,.5);display:none;align-items:flex-end;justify-content:center;z-index:40;}
+  #overlay.show{display:flex;}
+  #modal{background:#fff;border-radius:22px 22px 0 0;width:100%;max-height:88%;overflow-y:auto;padding:20px;position:relative;animation:modalUp .22s ease;}
+  @keyframes modalUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  #modal-close{position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:50%;border:none;background:var(--paper-2);font-size:13px;cursor:pointer;z-index:2;}
+  .modal-art{width:88px;height:88px;margin:0 auto 6px;border-radius:16px;background:radial-gradient(120% 100% at 50% 15%,#FFF6E4,#FCE6B8 75%);position:relative;overflow:hidden;}
+  #modal h3{font-size:17px;text-align:center;margin-bottom:2px;}
+  .m-desc{font-size:11.5px;color:var(--gray);text-align:center;margin-bottom:14px;}
+  .option-group{margin-bottom:14px;}
+  .option-group>label.group-label{font-size:11px;font-weight:800;color:var(--mcdo-red-dark);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:7px;}
+  .opt-list{display:flex;flex-direction:column;gap:7px;}
+  .opt{display:flex;align-items:center;justify-content:space-between;border:1.5px solid var(--line);border-radius:12px;padding:10px 13px;cursor:pointer;font-size:13px;}
+  .opt.selected{border-color:var(--mcdo-red);background:#FFF3EF;font-weight:700;}
+  .opt .extra{color:var(--gray);font-size:11.5px;}
+  #modal-add-btn{width:100%;background:var(--mcdo-yellow);border:none;padding:14px;border-radius:14px;font-weight:800;font-size:14.5px;cursor:pointer;margin-top:4px;}
+
+  /* ============ CONFIRM (ticket) ============ */
+  #screen-confirm{position:absolute;inset:0;z-index:70;background:var(--mcdo-red);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+  #screen-confirm.show{display:flex;}
+  #screen-confirm .check{width:64px;height:64px;border-radius:50%;background:var(--mcdo-yellow);display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--mcdo-red);margin-bottom:12px;animation:modalUp .3s ease;}
+  #screen-confirm h1{color:#fff;font-size:19px;margin-bottom:2px;}
+  #screen-confirm p.lead{color:rgba(255,255,255,.85);font-size:12px;margin-bottom:14px;}
+  .receipt{background:#fffdf8;color:var(--ink);width:100%;max-width:290px;border-radius:6px;padding:16px 16px 10px;font-family:'Inter',monospace;box-shadow:0 14px 30px rgba(0,0,0,.25);position:relative;max-height:52vh;overflow-y:auto;}
+  .receipt .r-title{text-align:center;font-weight:800;font-size:12px;letter-spacing:1px;margin-bottom:2px;}
+  .receipt .r-sub{text-align:center;font-size:9.5px;color:var(--gray);margin-bottom:10px;}
+  .receipt .r-num{text-align:center;font-size:30px;font-weight:900;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:8px 0;margin-bottom:10px;letter-spacing:1px;color:var(--mcdo-red-dark);}
+  .receipt .r-line{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;}
+  .receipt .r-line .qty{color:var(--gray);margin-right:6px;}
+  .receipt .r-opts{font-size:9.5px;color:var(--gray);margin:-2px 0 4px 18px;}
+  .receipt .r-total{display:flex;justify-content:space-between;font-size:13px;font-weight:800;border-top:1px dashed var(--line);margin-top:8px;padding-top:8px;}
+  .receipt .r-type{text-align:center;font-size:10px;color:var(--gray);margin-top:8px;}
+  #confirm-new-btn{margin-top:22px;background:#fff;color:var(--mcdo-red);border:none;padding:13px 30px;border-radius:999px;font-weight:800;font-size:13.5px;cursor:pointer;}
+
+  ::-webkit-scrollbar{width:7px;}
+  ::-webkit-scrollbar-thumb{background:#e2d8c6;border-radius:8px;}
+</style>
 </head>
 <body>
 
-<div class="kiosk">
-  <div class="kiosk-screen">
-    <div id="app">
+<div class="stage">
+  <div class="kiosk">
+    <div class="kiosk-topbar"><div class="dot"></div><div class="cam"></div><div class="dot"></div></div>
 
-      <header class="app-header">
-        <span class="title">🍔 McBORNE</span>
-        <button class="order-type" id="order-type-btn">🍽️ Sur place</button>
-        <div class="header-spacer"></div>
-        <button class="cart-btn" id="cart-btn">🛒<span class="badge" id="cart-badge">0</span></button>
-      </header>
+    <div class="kiosk-screen">
+      <div id="app">
 
-      <nav class="categories" id="categories"></nav>
-      <div id="catalog"></div>
+        <header class="app-header">
+          <div class="arches"><svg viewBox="0 0 100 100"><path d="M20 90 L20 45 C20 20 32 8 40 8 C48 8 50 22 50 35 C50 22 52 8 60 8 C68 8 80 20 80 45 L80 90 L66 90 L66 46 C66 30 62 24 60 24 C57 24 54 32 54 46 L54 90 L46 90 L46 46 C46 32 43 24 40 24 C38 24 34 30 34 46 L34 90 Z" fill="#FFC72C"/></svg></div>
+          <div class="title">McBORNE</div>
+          <button class="pill-ordertype" id="pill-ordertype">🍽️ Sur place</button>
+          <div class="header-spacer"></div>
+          <button class="fullscreen-btn" id="fullscreen-btn" title="Plein écran">⛶</button>
+          <button class="gear-btn" id="settings-btn" title="Réglages GitHub">⚙️</button>
+          <button class="cart-btn" id="cart-btn">🛒<span class="badge" id="cart-badge">0</span></button>
+        </header>
 
-      <div id="cartbar">
-        <div class="left"><span class="circle" id="cartbar-count">0</span> <span id="cartbar-label">articles</span></div>
-        <div class="right"><span id="cartbar-total">0,00 €</span> ›</div>
-      </div>
+        <nav id="cats"></nav>
+        <div id="catalog"></div>
 
-      <div id="screen-welcome">
-        <div class="logo">🍔</div>
-        <h1>Bienvenue</h1>
-        <p>Composez votre commande</p>
-        <div class="choices">
-          <button class="choice-btn" data-type="sur_place"><span class="ico">🍽️</span><span>Sur place<small>Je mange au restaurant</small></span></button>
-          <button class="choice-btn" data-type="emporter"><span class="ico">🥡</span><span>À emporter<small>Je pars avec ma commande</small></span></button>
+        <div id="cartbar">
+          <div class="left"><span class="circle" id="cartbar-count">0</span> <span id="cartbar-label">articles</span></div>
+          <div class="right"><span id="cartbar-total">0,00 €</span> ›</div>
         </div>
-      </div>
 
-      <div id="overlay">
-        <div id="modal">
-          <button id="modal-close">✕</button>
-          <div id="modal-body"></div>
+        <section id="screen-welcome">
+          <div class="lang-row"><button class="lang-btn active" id="lang-fr">FR</button><button class="lang-btn" id="lang-en">EN</button></div>
+          <div class="mid">
+            <div class="arches-big"><svg viewBox="0 0 100 100"><path d="M20 90 L20 45 C20 20 32 8 40 8 C48 8 50 22 50 35 C50 22 52 8 60 8 C68 8 80 20 80 45 L80 90 L66 90 L66 46 C66 30 62 24 60 24 C57 24 54 32 54 46 L54 90 L46 90 L46 46 C46 32 43 24 40 24 C38 24 34 30 34 46 L34 90 Z" fill="#FFC72C"/></svg></div>
+            <h1>Bienvenue chez McBORNE</h1>
+            <p class="sub">Composez votre commande directement sur l'écran, c'est simple et rapide.</p>
+          </div>
+          <div class="choices">
+            <div class="tap-hint">👆 Touchez pour commencer</div>
+            <button class="choice-btn" data-type="sur_place"><span class="ico">🍽️</span><span>Sur place<small>Je mange au restaurant</small></span></button>
+            <button class="choice-btn" data-type="emporter"><span class="ico">🥡</span><span>À emporter<small>Je pars avec ma commande</small></span></button>
+          </div>
+        </section>
+
+        <!-- WIZARD (composition d'un menu, étape par étape) -->
+        <div id="wizard-overlay">
+          <div class="wizard-head">
+            <button class="wizard-back" id="wizard-back">‹</button>
+            <div class="wizard-title-wrap">
+              <div class="wizard-title" id="wizard-title">Étape</div>
+              <div class="wizard-menu-name" id="wizard-menu-name"></div>
+            </div>
+            <button class="wizard-close" id="wizard-close">✕</button>
+          </div>
+          <div class="wizard-dots" id="wizard-dots"></div>
+          <div class="wizard-body" id="wizard-body"></div>
+          <div class="wizard-footer" id="wizard-footer"></div>
         </div>
-      </div>
 
-      <div id="drawer-scrim"></div>
-      <div id="drawer">
-        <div class="drawer-handle"></div>
-        <div class="drawer-head"><h2>🧾 Mon panier</h2><button id="drawer-close">✕</button></div>
-        <div id="drawer-items"></div>
-        <div id="drawer-footer">
-          <div class="totals-row"><span>Sous-total</span><span id="sub-total">0,00 €</span></div>
-          <div class="totals-row total"><span>Total</span><span id="grand-total">0,00 €</span></div>
-          <button id="drawer-checkout" disabled>✅ Valider la commande</button>
-          <button id="drawer-continue">Continuer mes achats</button>
+        <!-- MODAL SIMPLE (nuggets / frites / boissons seules) -->
+        <div id="overlay">
+          <div id="modal"><button id="modal-close">✕</button><div id="modal-body"></div></div>
         </div>
-      </div>
 
-      <div id="screen-confirm">
-        <div class="check">✓</div>
-        <h1>Commande validée !</h1>
-        <p>Votre commande a été enregistrée</p>
-        <div class="receipt" id="receipt"></div>
-        <div id="json-status">📄 Fichier commande.json mis à jour</div>
-        <button id="confirm-new-btn">Nouvelle commande</button>
-      </div>
+        <!-- DRAWER PANIER -->
+        <div id="drawer-scrim"></div>
+        <div id="drawer">
+          <div class="drawer-handle"></div>
+          <div class="drawer-head"><h2>🧾 Mon panier</h2><button id="drawer-close">✕</button></div>
+          <div class="drawer-ordertype">
+            <button class="ot-chip" data-type="sur_place">🍽️ Sur place</button>
+            <button class="ot-chip" data-type="emporter">🥡 À emporter</button>
+          </div>
+          <div id="drawer-items"></div>
+          <div id="drawer-footer">
+            <div class="totals-row"><span>Sous-total</span><span id="sub-total">0,00 €</span></div>
+            <div class="totals-row total"><span>Total</span><span id="grand-total">0,00 €</span></div>
+            <button id="drawer-checkout" disabled>Valider ma commande</button>
+            <button id="drawer-continue">Continuer mes achats</button>
+          </div>
+        </div>
 
+        <section id="screen-confirm">
+          <div class="check">✓</div>
+          <h1>Commande envoyée !</h1>
+          <p class="lead">Merci, votre commande a été transmise en cuisine.</p>
+          <div class="receipt" id="receipt"></div>
+          <div class="sync-line" id="sync-line"></div>
+          <button id="confirm-new-btn">Nouvelle commande</button>
+        </section>
+
+        <!-- RÉGLAGES : jeton GitHub pour enregistrer le .json dans le repo -->
+        <div id="settings-overlay">
+          <div id="settings-modal">
+            <button id="settings-close" style="position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:50%;border:none;background:var(--paper-2);font-size:13px;cursor:pointer;">✕</button>
+            <h3>⚙️ Enregistrement sur GitHub</h3>
+            <p class="s-desc">Chaque commande validée peut être enregistrée automatiquement dans le dossier <b>orders/</b> de <b>jupiko0/mcdo</b>, sous forme d'un fichier .json, via l'API GitHub.</p>
+            <div id="settings-status"></div>
+            <label>Jeton d'accès GitHub (Personal Access Token)</label>
+            <input type="password" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+            <p class="s-note">Crée un jeton <b>fine-grained</b> sur <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a>, limité au repo <b>mcdo</b>, avec la permission <b>Contents: Read and write</b> uniquement. Ce jeton reste dans ton navigateur (jamais envoyé ailleurs qu'à l'API GitHub) — ne le partage pas et ne le mets jamais dans le code du repo.</p>
+            <button id="settings-save">Enregistrer le jeton</button>
+            <button id="settings-clear">Supprimer le jeton enregistré</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="kiosk-bottombar">
+      <div class="pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8c4-4 16-4 20 0M5 12c3.5-2.5 10.5-2.5 14 0M8.5 16c2-1.3 5-1.3 7 0"/><circle cx="12" cy="19" r="1"/></svg> Sans contact</div>
+      <div class="slot"></div>
     </div>
   </div>
+  <div class="kiosk-stand"></div>
+  <div class="kiosk-base-shadow"></div>
 </div>
 
 <script>
-// ==================== DONNÉES ====================
-const MENU_DATA = {
-  burgers: [
-    {id:'hamburger', name:'Hamburger', price:1.90, emoji:'🍔'},
-    {id:'cheeseburger', name:'Cheeseburger', price:2.30, emoji:'🧀'},
-    {id:'double_cheese', name:'Double Cheeseburger', price:3.60, emoji:'🍔🍔'},
-    {id:'bigmac', name:'Big Mac', price:5.90, emoji:'👑'}
-  ],
-  nuggets: [
-    {id:'nuggets4', name:'4 Nuggets', price:2.90, emoji:'🍗'},
-    {id:'nuggets6', name:'6 Nuggets', price:4.10, emoji:'🍗'},
-    {id:'nuggets9', name:'9 Nuggets', price:5.50, emoji:'🍗'}
-  ],
-  frites: [
-    {id:'frites_p', name:'Petite frite', price:1.80, emoji:'🍟'},
-    {id:'frites_m', name:'Moyenne frite', price:2.40, emoji:'🍟'},
-    {id:'frites_g', name:'Grande frite', price:3.00, emoji:'🍟'}
-  ],
-  boissons: [
-    {id:'jus_pomme', name:'Jus de pomme', price:1.50, emoji:'🧃'},
-    {id:'coca', name:'Coca-Cola', price:1.50, emoji:'🥤'},
-    {id:'ice_tea', name:'Ice Tea', price:1.55, emoji:'🧊'},
-    {id:'eau_gazeuse', name:'Eau gazeuse', price:1.50, emoji:'💧'},
-    {id:'eau', name:'Eau plate', price:1.50, emoji:'💧'}
-  ],
-  menus: [
-    {id:'best_of', name:'Menu Best Of', price:7.90, emoji:'🍽️', tag:'MENU', wizard:true},
-    {id:'maxi_best_of', name:'Menu Maxi Best Of', price:9.90, emoji:'🍽️', tag:'MENU', wizard:true},
-    {id:'happy_meal', name:'Happy Meal', price:5.50, emoji:'🎁', tag:'MENU', wizard:true}
-  ]
-};
+/* =====================================================================
+   IMAGES : dépose tes fichiers PNG dans un dossier "images/" à côté de
+   ce fichier HTML, avec exactement ces noms. Si un fichier est absent,
+   une illustration CSS de secours s'affiche automatiquement à la place.
+
+   images/hamburger.png
+   images/cheeseburger.png
+   images/double-cheeseburger.png
+   images/bigmac.png
+   images/nuggets.png
+   images/frites.png
+   images/boisson-jus-pomme.png
+   images/boisson-coca.png
+   images/boisson-ice-tea.png
+   images/boisson-eau-gazeuse.png
+   images/boisson-eau.png
+   images/menu-best-of.png
+   images/menu-maxi-best-of.png
+   images/menu-happy-meal.png
+   images/sauce-mayo.png
+   images/sauce-ketchup.png
+===================================================================== */
+
+/* ===================== IMAGES (hébergées sur GitHub) ===================== */
+/* ===================== IMAGES =====================
+   Le fichier va chercher les images dans un dossier "images/" situé au
+   même niveau que ce .html (chemin relatif) — ça fonctionne aussi bien
+   en local qu'une fois hébergé dans le même repo GitHub (ex. GitHub Pages),
+   sans dépendre d'un nom de repo ou d'utilisateur en dur. */
+const IMG_BASE = 'images/';
+
+/* ===================== DONNÉES ===================== */
+const DRINK_CHOICES = [
+  {id:'jus_pomme', name:'Jus de pomme', color:'#D98A2E'},
+  {id:'coca', name:'Coca-Cola', color:'#2B1712'},
+  {id:'ice_tea', name:'Ice Tea', color:'#B07C2C'},
+  {id:'eau_gazeuse', name:'Eau gazeuse', color:'#BFE0E8'},
+  {id:'eau', name:'Eau', color:'#D9EEF7'}
+];
+function drinkImg(id){ return 'boisson-' + id.replace(/_/g,'-') + '.png'; }
+
+const SAUCE_OPTIONS = [
+  {id:'mayo', name:'Mayonnaise', delta:0, img:'sauce-mayo.png', art:'sauce', color:'#FFF7E8'},
+  {id:'ketchup', name:'Ketchup', delta:0, img:'sauce-ketchup.png', art:'sauce', color:'#C21F1F'}
+];
 
 const CATEGORIES = [
   {id:'menus', name:'Menus', emoji:'🍽️'},
@@ -225,402 +457,584 @@ const CATEGORIES = [
   {id:'boissons', name:'Boissons', emoji:'🥤'}
 ];
 
-// ==================== ÉTAT ====================
+const PRODUCTS = {
+  burgers: [
+    {id:'hamburger', name:'Hamburger', desc:'Steak haché, cornichon, oignon, ketchup, moutarde', price:1.90, art:'burger', img:'hamburger.png'},
+    {id:'cheeseburger', name:'Cheeseburger', desc:'Steak haché, cheddar fondant, cornichon', price:2.30, art:'burger', cheese:true, img:'cheeseburger.png'},
+    {id:'double_cheese', name:'Double Cheeseburger', desc:'Deux steaks hachés, double cheddar', price:3.60, art:'burger', cheese:true, double:true, img:'double-cheeseburger.png'},
+    {id:'bigmac', name:'Big Mac', desc:'Deux steaks hachés, sauce Big Mac, cheddar, salade, oignon, cornichon, pain 3 étages', price:5.90, art:'burger', cheese:true, double:true, img:'bigmac.png'},
+  ],
+  nuggets: [
+    {id:'nuggets4', name:'Nuggets', desc:'Poulet pané croustillant', price:2.90, art:'nugget', img:'nuggets.png',
+      variants:[{group:'Taille', label:'la quantité', options:[
+        {id:'x4', name:'4 pièces', delta:0},
+        {id:'x6', name:'6 pièces', delta:1.20},
+        {id:'x9', name:'9 pièces', delta:2.60},
+        {id:'x20', name:'20 pièces', delta:6.50}
+      ]}]}
+  ],
+  frites: [
+    {id:'frites', name:'Frites', desc:"Croustillantes à l'extérieur, moelleuses à l'intérieur", price:1.80, art:'fries', img:'frites.png',
+      variants:[{group:'Taille', label:'la taille', options:[
+        {id:'p', name:'Petite frite', delta:0},
+        {id:'m', name:'Moyenne frite', delta:0.60},
+        {id:'g', name:'Grande frite', delta:1.20}
+      ]}]}
+  ],
+  boissons: DRINK_CHOICES.map((d,i)=>({
+    id:'boisson_'+d.id, name:d.name, desc:'Boisson fraîche servie glacée', price:1.50+i*0.05, art:'drink', color:d.color, img:drinkImg(d.id),
+    variants:[{group:'Taille', label:'la taille', options:[
+      {id:'p', name:'Petite', delta:0},
+      {id:'m', name:'Moyenne', delta:0.50},
+      {id:'g', name:'Grande', delta:1.00}
+    ]}]
+  })),
+  menus: [
+    {id:'best_of', name:'Menu Best Of', desc:'Choisissez votre burger, vos frites, votre sauce et votre boisson', price:7.90, art:'menu', img:'menu-best-of.png', tag:'MENU', wizard:true},
+    {id:'maxi_best_of', name:'Menu Maxi Best Of', desc:'Comme le Best Of, en grande frite et grande boisson', price:9.90, art:'menu', double:true, img:'menu-maxi-best-of.png', tag:'MENU', wizard:true},
+    {id:'happy_meal', name:'Happy Meal', desc:'Hamburger ou nuggets, frite, boisson et jouet surprise', price:5.50, art:'happy', img:'menu-happy-meal.png', tag:'MENU', wizard:true}
+  ]
+};
+
+/* ===================== ART BUILDERS (secours sans image) ===================== */
+function arrowsSvg(){
+  return '<svg viewBox="0 0 100 60"><path d="M8 58 L8 26 C8 10 16 2 22 2 C28 2 30 12 30 20 C30 12 32 2 38 2 C44 2 52 10 52 26 L52 58 L42 58 L42 27 C42 16 39 12 37 12 C35 12 33 17 33 27 L33 58 L27 58 L27 27 C27 17 25 12 23 12 C21 12 18 16 18 27 L18 58 Z" fill="#FFC72C"/></svg>';
+}
+function burgerArt(cheese, double){
+  let h = '<div class="art-burger">';
+  h += '<div class="bun-top"><span class="seed" style="left:26%"></span><span class="seed" style="left:44%"></span><span class="seed" style="left:62%"></span></div>';
+  if(double) h += '<div class="cheese"></div><div class="patty"></div>';
+  if(cheese) h += '<div class="cheese"></div>';
+  h += '<div class="patty"></div>';
+  h += '<div class="pickles"><span></span><span></span><span></span></div>';
+  h += '<div class="bun-bottom"></div>';
+  h += '</div>';
+  return h;
+}
+function friesArt(){
+  const fries = [{l:30,h:34,b:44,r:-10},{l:40,h:44,b:46,r:-3},{l:50,h:40,b:45,r:4},{l:60,h:48,b:47,r:10},{l:70,h:32,b:44,r:16}];
+  let f = fries.map(x=>`<span class="fry" style="left:${x.l}%;height:${x.h}%;bottom:${x.b}%;transform:rotate(${x.r}deg)"></span>`).join('');
+  return `<div class="art-fries"><div class="pack"><div class="arches-tiny">${arrowsSvg()}</div></div>${f}</div>`;
+}
+function nuggetArt(){
+  const nugs = [
+    {w:44,h:38,l:6,t:40,r1:'60% 40% 55% 45%',r2:'50% 60% 40% 50%'},
+    {w:42,h:38,l:42,t:18,r1:'45% 55% 40% 60%',r2:'55% 45% 60% 40%'},
+    {w:40,h:36,l:36,t:48,r1:'55% 45% 60% 40%',r2:'40% 60% 45% 55%'}
+  ];
+  let n = nugs.map(x=>`<span class="nug" style="width:${x.w}%;height:${x.h}%;left:${x.l}%;top:${x.t}%;border-radius:${x.r1}/${x.r2}"></span>`).join('');
+  return `<div class="art-nugget">${n}</div>`;
+}
+function drinkArt(color){
+  return `<div class="art-drink"><div class="lid"></div><div class="straw"></div><div class="cup" style="--cup-color:${color||'#DA291C'}"><div class="stripe"></div></div></div>`;
+}
+function friesArtInner(){
+  const fries = [{l:25,h:38,b:44,r:-8},{l:45,h:46,b:46,r:0},{l:65,h:36,b:44,r:8}];
+  let f = fries.map(x=>`<span class="fry" style="left:${x.l}%;height:${x.h}%;bottom:${x.b}%;transform:rotate(${x.r}deg)"></span>`).join('');
+  return `<div class="art-fries" style="position:relative;width:100%;height:100%;"><div class="pack" style="height:52%;"></div>${f}</div>`;
+}
+function menuArt(double){
+  return `<div class="art-menu"><div class="tray"></div><div class="mini-fries">${friesArtInner()}</div><div class="mini-burger">${burgerArt(true,double)}</div></div>`;
+}
+function happyArt(){
+  return `<div class="art-happy"><div class="handle"></div><span class="star">⭐</span><div class="box"><div class="arches-tiny">${arrowsSvg()}</div></div></div>`;
+}
+function sauceArt(color){
+  return `<div class="art-sauce"><div class="blob" style="background:${color||'#fff'}"></div></div>`;
+}
+function foodArt(p){
+  switch(p.art){
+    case 'burger': return burgerArt(!!p.cheese, !!p.double);
+    case 'nugget': return nuggetArt();
+    case 'fries': return friesArt();
+    case 'drink': return drinkArt(p.color);
+    case 'menu': return menuArt(!!p.double);
+    case 'happy': return happyArt();
+    case 'sauce': return sauceArt(p.color);
+    default: return '';
+  }
+}
+function esc(s){ return (s||'').replace(/"/g,'&quot;'); }
+function thumbHTML(p){
+  const img = p.img ? `<img class="prod-photo" src="${IMG_BASE}${p.img}" alt="${esc(p.name)}" loading="lazy" onerror="this.remove()">` : '';
+  return img + foodArt(p);
+}
+
+/* ===================== ÉTAT ===================== */
 let currentCat = 'menus';
 let cart = [];
 let orderType = 'sur_place';
 
-// ==================== RENDER CATALOG ====================
-function renderCatalog() {
-  const items = MENU_DATA[currentCat] || [];
-  const el = document.getElementById('catalog');
-  el.innerHTML = items.map(p => `
-    <div class="card" data-id="${p.id}">
-      ${p.tag ? `<span class="tag">${p.tag}</span>` : ''}
-      <div class="emoji">${p.emoji || '🍔'}</div>
-      <div class="name">${p.name}</div>
-      <div class="price">${fmt(p.price)}</div>
-      <button class="add-btn" onclick="event.stopPropagation(); openProduct('${currentCat}','${p.id}')">+</button>
-    </div>
-  `).join('');
+/* ===================== WELCOME ===================== */
+const screenWelcome = document.getElementById('screen-welcome');
+document.querySelectorAll('.choice-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    orderType = btn.dataset.type;
+    updateOrderTypeUI();
+    screenWelcome.style.display='none';
+  });
+});
+document.getElementById('lang-en').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  const hint = document.querySelector('#screen-welcome .tap-hint');
+  const old = hint.textContent;
+  hint.textContent = '🇬🇧 English coming soon';
+  setTimeout(()=> hint.textContent = old, 1800);
+});
+function updateOrderTypeUI(){
+  document.getElementById('pill-ordertype').innerHTML = (orderType==='sur_place' ? '🍽️ Sur place' : '🥡 À emporter');
+  document.querySelectorAll('.ot-chip').forEach(c=> c.classList.toggle('active', c.dataset.type===orderType));
+}
+document.getElementById('pill-ordertype').addEventListener('click', ()=>{
+  orderType = orderType==='sur_place' ? 'emporter' : 'sur_place';
+  updateOrderTypeUI();
+});
+document.querySelectorAll('.ot-chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{ orderType = chip.dataset.type; updateOrderTypeUI(); });
+});
+updateOrderTypeUI();
+
+/* ===================== CATEGORIES ===================== */
+const catsNav = document.getElementById('cats');
+CATEGORIES.forEach(c=>{
+  const btn = document.createElement('button');
+  btn.className = 'cat-btn' + (c.id===currentCat ? ' active' : '');
+  btn.innerHTML = `<span>${c.emoji}</span> ${c.name}`;
+  btn.dataset.id = c.id;
+  btn.onclick = ()=>{ currentCat = c.id; renderCatalog(); renderCats(); };
+  catsNav.appendChild(btn);
+});
+function renderCats(){ [...catsNav.children].forEach(b=> b.classList.toggle('active', b.dataset.id===currentCat)); }
+
+/* ===================== CATALOG ===================== */
+const catalogEl = document.getElementById('catalog');
+function sectionSubtitle(cat){
+  switch(cat){
+    case 'menus': return 'Composez votre repas étape par étape, prix menu tout compris';
+    case 'burgers': return 'Nos burgers signature, préparés à la commande';
+    case 'nuggets': return 'Poulet pané croustillant';
+    case 'frites': return 'Choisissez votre taille';
+    case 'boissons': return 'Jus de pomme, Coca-Cola, Ice Tea, eau gazeuse ou eau plate';
+  }
+  return '';
+}
+function renderCatalog(){
+  const cat = CATEGORIES.find(c=>c.id===currentCat);
+  const items = PRODUCTS[currentCat];
+  catalogEl.innerHTML = `
+    <div class="section-title">${cat.emoji} ${cat.name}</div>
+    <div class="section-sub">${sectionSubtitle(currentCat)}</div>
+    <div class="grid">
+      ${items.map(p=>`
+        <div class="card" data-id="${p.id}">
+          ${p.tag ? `<div class="menu-tag">${p.tag}</div>` : ''}
+          <div class="thumb-wrap">${thumbHTML(p)}</div>
+          <div class="name">${p.name}</div>
+          <div class="desc">${p.desc}</div>
+          <div class="bottom"><span class="price">${fmt(p.price)}</span><button class="add-btn">+</button></div>
+        </div>
+      `).join('')}
+    </div>`;
+  [...catalogEl.querySelectorAll('.card')].forEach(card=>{
+    card.addEventListener('click', ()=> openProduct(items.find(x=>x.id===card.dataset.id)));
+  });
 }
 
-function renderCategories() {
-  const el = document.getElementById('categories');
-  el.innerHTML = CATEGORIES.map(c => `
-    <button class="cat-btn ${c.id === currentCat ? 'active' : ''}" onclick="switchCategory('${c.id}')">
-      ${c.emoji} ${c.name}
-    </button>
-  `).join('');
+/* ===================== DISPATCH OUVERTURE PRODUIT ===================== */
+function openProduct(p){
+  if(p.wizard){ openWizard(p); return; }
+  if(!p.variants){ addToCart(p, [], p.price); pulseCartBar(); return; }
+  openSimpleModal(p);
 }
 
-function switchCategory(id) {
-  currentCat = id;
-  renderCategories();
-  renderCatalog();
+/* ===================== MODAL SIMPLE (nuggets / frites / boissons) ===================== */
+const overlay = document.getElementById('overlay');
+const modalBody = document.getElementById('modal-body');
+let modalProduct = null;
+let modalSelections = {};
+document.getElementById('modal-close').onclick = closeModal;
+overlay.onclick = (e)=>{ if(e.target===overlay) closeModal(); };
+
+function openSimpleModal(p){
+  modalProduct = p; modalSelections = {};
+  p.variants.forEach(v=>{ modalSelections[v.group] = v.options[0]; });
+  renderModal();
+  overlay.classList.add('show');
+}
+function closeModal(){ overlay.classList.remove('show'); modalProduct=null; }
+function renderModal(){
+  const p = modalProduct;
+  const total = p.price + p.variants.reduce((s,v)=> s + modalSelections[v.group].delta, 0);
+  modalBody.innerHTML = `
+    <div class="modal-art">${thumbHTML(p)}</div>
+    <h3>${p.name}</h3>
+    <div class="m-desc">${p.desc}</div>
+    ${p.variants.map(v=>`
+      <div class="option-group">
+        <label class="group-label">Choisissez ${v.label}</label>
+        <div class="opt-list" data-group="${v.group}">
+          ${v.options.map(o=>`
+            <div class="opt ${modalSelections[v.group].id===o.id?'selected':''}" data-opt="${o.id}">
+              <span>${o.name}</span><span class="extra">${o.delta>0 ? '+'+fmt(o.delta) : 'Inclus'}</span>
+            </div>`).join('')}
+        </div>
+      </div>`).join('')}
+    <button id="modal-add-btn">Ajouter — ${fmt(total)}</button>`;
+  modalBody.querySelectorAll('.opt-list').forEach(list=>{
+    const group = list.dataset.group;
+    list.querySelectorAll('.opt').forEach(optEl=>{
+      optEl.onclick = ()=>{
+        const variant = p.variants.find(v=>v.group===group);
+        modalSelections[group] = variant.options.find(o=>o.id===optEl.dataset.opt);
+        renderModal();
+      };
+    });
+  });
+  document.getElementById('modal-add-btn').onclick = ()=>{
+    const opts = p.variants.map(v=>({group:v.group, name:modalSelections[v.group].name}));
+    const finalPrice = p.price + p.variants.reduce((s,v)=> s + modalSelections[v.group].delta, 0);
+    addToCart(p, opts, finalPrice);
+    closeModal();
+    pulseCartBar();
+  };
 }
 
-// ==================== OUVERTURE PRODUIT ====================
-function openProduct(cat, id) {
-  const p = MENU_DATA[cat].find(x => x.id === id);
-  if (!p) return;
-  if (p.wizard) { openWizard(p); return; }
-  addToCart(p);
+/* ===================== WIZARD (composition d'un menu étape par étape) ===================== */
+function burgerOptionsFor(menuId){
+  if(menuId==='happy_meal') return [
+    {id:'hamburger', name:'Hamburger', delta:0, img:'hamburger.png', art:'burger'},
+    {id:'nuggets4', name:'4 Nuggets', delta:0, img:'nuggets.png', art:'nugget'}
+  ];
+  return [
+    {id:'hamburger', name:'Hamburger', delta:-0.50, img:'hamburger.png', art:'burger'},
+    {id:'cheeseburger', name:'Cheeseburger', delta:0, img:'cheeseburger.png', art:'burger', cheese:true},
+    {id:'double_cheese', name:'Double Cheeseburger', delta:1.00, img:'double-cheeseburger.png', art:'burger', cheese:true, double:true},
+    {id:'bigmac', name:'Big Mac', delta:1.70, img:'bigmac.png', art:'burger', cheese:true, double:true}
+  ];
+}
+function friesOptionsFor(menuId){
+  if(menuId==='happy_meal') return [{id:'p', name:'Petite frite (incluse)', delta:0, art:'fries', img:'frites.png'}];
+  if(menuId==='maxi_best_of') return [
+    {id:'p', name:'Petite frite', delta:-1.20, art:'fries', img:'frites.png'},
+    {id:'m', name:'Moyenne frite', delta:-0.60, art:'fries', img:'frites.png'},
+    {id:'g', name:'Grande frite', delta:0, art:'fries', img:'frites.png'}
+  ];
+  return [
+    {id:'p', name:'Petite frite', delta:-0.60, art:'fries', img:'frites.png'},
+    {id:'m', name:'Moyenne frite', delta:0, art:'fries', img:'frites.png'},
+    {id:'g', name:'Grande frite', delta:0.60, art:'fries', img:'frites.png'}
+  ];
+}
+function boissonOptionsFor(){
+  return DRINK_CHOICES.map(d=>({id:d.id, name:d.name, delta:0, art:'drink', color:d.color, img:drinkImg(d.id)}));
+}
+function extrasFor(menuId){
+  if(menuId==='happy_meal') return [
+    {id:'extra_nuggets', name:'4 Nuggets en plus', price:2.90, img:'nuggets.png', art:'nugget'}
+  ];
+  return [
+    {id:'extra_nuggets', name:'4 Nuggets en plus', price:2.90, img:'nuggets.png', art:'nugget'},
+    {id:'extra_burger', name:'Un Hamburger en plus', price:1.90, img:'hamburger.png', art:'burger'}
+  ];
+}
+function buildWizardSteps(menu){
+  return [
+    {key:'burger', label: menu.id==='happy_meal' ? 'Plat' : 'Burger', title: menu.id==='happy_meal' ? 'Choisissez votre plat' : 'Choisissez votre burger', options: burgerOptionsFor(menu.id)},
+    {key:'frites', label:'Frites', title:'Choisissez vos frites', options: friesOptionsFor(menu.id)},
+    {key:'sauce', label:'Sauce', title:'Choisissez votre sauce', options: SAUCE_OPTIONS},
+    {key:'boisson', label:'Boisson', title:'Choisissez votre boisson', options: boissonOptionsFor()},
+    {key:'extra', label:'Extra', title:'Un petit plus ?', extras:true, options: extrasFor(menu.id)}
+  ];
 }
 
-// ==================== WIZARD ====================
-let wizardSteps = [];
-let wizardIndex = 0;
-let wizardChoices = {};
-let wizardMenu = null;
+let wizardMenu=null, wizardSteps=[], wizardIndex=0, wizardSel={}, wizardExtraSel=new Set();
 
-function openWizard(menu) {
+function openWizard(menu){
   wizardMenu = menu;
-  wizardSteps = [];
+  wizardSteps = buildWizardSteps(menu);
   wizardIndex = 0;
-  wizardChoices = {};
-  
-  let platOptions = [
-    {id:'hamburger', name:'Hamburger', price:0, emoji:'🍔'},
-    {id:'cheeseburger', name:'Cheeseburger', price:0.40, emoji:'🧀'},
-    {id:'double_cheese', name:'Double Cheeseburger', price:1.70, emoji:'🍔🍔'},
-    {id:'bigmac', name:'Big Mac', price:2.40, emoji:'👑'}
-  ];
-  if (menu.id === 'happy_meal') {
-    platOptions = [
-      {id:'hamburger', name:'Hamburger', price:0, emoji:'🍔'},
-      {id:'nuggets4', name:'4 Nuggets', price:0, emoji:'🍗'}
-    ];
-  }
-  wizardSteps.push({title:'Choisissez votre plat', options:platOptions, key:'plat'});
-  
-  let friesOpts = [
-    {id:'p', name:'Petite frite', price:0, emoji:'🍟'},
-    {id:'m', name:'Moyenne frite', price:0.60, emoji:'🍟'},
-    {id:'g', name:'Grande frite', price:1.20, emoji:'🍟'}
-  ];
-  if (menu.id === 'happy_meal') friesOpts = [{id:'p', name:'Petite frite', price:0, emoji:'🍟'}];
-  if (menu.id === 'maxi_best_of') {
-    friesOpts = [
-      {id:'p', name:'Petite frite', price:-1.20, emoji:'🍟'},
-      {id:'m', name:'Moyenne frite', price:-0.60, emoji:'🍟'},
-      {id:'g', name:'Grande frite', price:0, emoji:'🍟'}
-    ];
-  }
-  wizardSteps.push({title:'Choisissez vos frites', options:friesOpts, key:'frites'});
-  
-  wizardSteps.push({
-    title:'Choisissez votre sauce',
-    options:[
-      {id:'mayo', name:'Mayonnaise', price:0, emoji:'🥫'},
-      {id:'ketchup', name:'Ketchup', price:0, emoji:'🥫'}
-    ],
-    key:'sauce'
-  });
-  
-  wizardSteps.push({
-    title:'Choisissez votre boisson',
-    options:MENU_DATA.boissons.map(b => ({id:b.id, name:b.name, price:0, emoji:b.emoji})),
-    key:'boisson'
-  });
-  
-  const extras = [
-    {id:'extra_nuggets', name:'4 Nuggets en plus', price:2.90, emoji:'🍗'},
-    {id:'extra_burger', name:'Hamburger en plus', price:1.90, emoji:'🍔'}
-  ];
-  if (menu.id === 'happy_meal') extras.pop();
-  wizardSteps.push({
-    title:'Un petit plus ? (facultatif)',
-    options:extras,
-    key:'extra',
-    extras:true
-  });
-  
+  wizardSel = {};
+  wizardSteps.forEach(s=>{ if(!s.extras) wizardSel[s.key] = s.options[0]; });
+  wizardExtraSel = new Set();
+  document.getElementById('wizard-menu-name').textContent = menu.name;
   renderWizard();
-  document.getElementById('overlay').classList.add('show');
+  document.getElementById('wizard-overlay').classList.add('show');
 }
+function closeWizard(){
+  document.getElementById('wizard-overlay').classList.remove('show');
+  wizardMenu = null;
+}
+function computeWizardTotal(){
+  let t = wizardMenu.price;
+  wizardSteps.forEach(s=>{ if(!s.extras && wizardSel[s.key]) t += wizardSel[s.key].delta||0; });
+  wizardSteps.forEach(s=>{ if(s.extras) s.options.forEach(o=>{ if(wizardExtraSel.has(o.id)) t += o.price; }); });
+  return t;
+}
+function goNextStep(){ if(wizardIndex < wizardSteps.length-1){ wizardIndex++; renderWizard(); } }
+function goBackStep(){ if(wizardIndex>0){ wizardIndex--; renderWizard(); } }
+document.getElementById('wizard-back').onclick = goBackStep;
+document.getElementById('wizard-close').onclick = closeWizard;
 
-function renderWizard() {
+function renderWizard(){
   const step = wizardSteps[wizardIndex];
-  const body = document.getElementById('modal-body');
-  const isExtra = step.extras || false;
-  let total = computeWizardTotal();
-  
-  let html = `<div class="modal-emoji">${step.options[0]?.emoji || '🍽️'}</div>`;
-  html += `<h3>${step.title}</h3>`;
-  html += `<div style="text-align:center;font-size:12px;color:var(--gray);margin-bottom:12px;">Étape ${wizardIndex+1}/${wizardSteps.length}</div>`;
-  
-  if (isExtra) {
-    html += step.options.map(o => `
-      <div class="opt ${wizardChoices[o.id] ? 'selected' : ''}" onclick="toggleExtra('${o.id}')">
-        <span><span class="opt-emoji">${o.emoji}</span> ${o.name}</span>
-        <span style="color:var(--gray);font-size:12px;">+${fmt(o.price)}</span>
-      </div>
-    `).join('');
+  document.getElementById('wizard-title').textContent = step.title;
+  document.getElementById('wizard-dots').innerHTML = wizardSteps.map((s,i)=>
+    `<span class="d ${i===wizardIndex?'active':(i<wizardIndex?'done':'')}"></span>`).join('');
+  document.getElementById('wizard-back').style.visibility = wizardIndex===0 ? 'hidden' : 'visible';
+
+  const bodyEl = document.getElementById('wizard-body');
+  if(step.extras){
+    bodyEl.innerHTML = step.options.map(o=>`
+      <div class="wiz-opt is-extra ${wizardExtraSel.has(o.id)?'selected':''}" data-id="${o.id}">
+        <div class="wiz-thumb">${thumbHTML(o)}</div>
+        <div class="wiz-info"><div class="wiz-name">${o.name}</div><div class="wiz-price">+ ${fmt(o.price)}</div></div>
+        <div class="wiz-check">✓</div>
+      </div>`).join('');
+    bodyEl.querySelectorAll('.wiz-opt').forEach(row=>{
+      row.onclick = ()=>{
+        const id = row.dataset.id;
+        if(wizardExtraSel.has(id)) wizardExtraSel.delete(id); else wizardExtraSel.add(id);
+        renderWizard();
+      };
+    });
   } else {
-    html += step.options.map(o => `
-      <div class="opt ${wizardChoices[step.key] === o.id ? 'selected' : ''}" onclick="selectWizard('${step.key}','${o.id}')">
-        <span><span class="opt-emoji">${o.emoji}</span> ${o.name}</span>
-        <span style="color:var(--gray);font-size:12px;">${o.price > 0 ? '+'+fmt(o.price) : o.price < 0 ? fmt(o.price) : 'Inclus'}</span>
-      </div>
-    `).join('');
+    bodyEl.innerHTML = step.options.map(o=>`
+      <div class="wiz-opt ${wizardSel[step.key] && wizardSel[step.key].id===o.id ? 'selected':''}" data-id="${o.id}">
+        <div class="wiz-thumb">${thumbHTML(o)}</div>
+        <div class="wiz-info"><div class="wiz-name">${o.name}</div><div class="wiz-price">${o.delta ? (o.delta>0?'+ '+fmt(o.delta):'− '+fmt(Math.abs(o.delta))) : 'Inclus'}</div></div>
+        <div class="wiz-check">✓</div>
+      </div>`).join('');
+    bodyEl.querySelectorAll('.wiz-opt').forEach(row=>{
+      row.onclick = ()=>{
+        wizardSel[step.key] = step.options.find(o=>o.id===row.dataset.id);
+        renderWizard();
+        setTimeout(goNextStep, 180);
+      };
+    });
   }
-  
-  const hasSelection = isExtra ? true : wizardChoices[step.key] !== undefined;
-  const isLast = wizardIndex === wizardSteps.length - 1;
-  
-  html += `<div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">`;
-  if (wizardIndex > 0) {
-    html += `<button onclick="wizardPrev()" style="flex:1;padding:12px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:700;">Retour</button>`;
-  }
-  if (!isLast) {
-    html += `<button ${!hasSelection ? 'disabled' : ''} onclick="wizardNext()" style="flex:2;padding:12px;border-radius:12px;border:none;background:var(--mcdo-green);color:#fff;cursor:pointer;font-weight:700;">Suivant — ${fmt(total)}</button>`;
-  }
-  if (isLast) {
-    html += `<button onclick="commitWizard()" style="flex:2;padding:12px;border-radius:12px;border:none;background:var(--mcdo-yellow);cursor:pointer;font-weight:700;">Ajouter — ${fmt(total)}</button>`;
-  }
-  html += `</div>`;
-  if (isLast) {
-    html += `<div style="text-align:center;font-size:11px;color:var(--gray);margin-top:6px;">Vous pouvez ne rien ajouter</div>`;
-  }
-  
-  body.innerHTML = html;
-}
 
-function selectWizard(key, id) {
-  wizardChoices[key] = id;
-  renderWizard();
-}
-
-function toggleExtra(id) {
-  if (wizardChoices[id]) delete wizardChoices[id];
-  else wizardChoices[id] = true;
-  renderWizard();
-}
-
-function wizardNext() {
-  if (wizardIndex < wizardSteps.length - 1) {
-    wizardIndex++;
-    renderWizard();
+  const footer = document.getElementById('wizard-footer');
+  const runningTotal = computeWizardTotal();
+  if(step.extras){
+    footer.innerHTML = `<button id="wizard-confirm-btn">Ajouter au panier — ${fmt(runningTotal)}</button><div class="wiz-skip-note">Vous pouvez ne rien ajouter et continuer</div>`;
+    document.getElementById('wizard-confirm-btn').onclick = commitWizard;
+  } else {
+    footer.innerHTML = `<button id="wizard-confirm-btn">Suivant — ${fmt(runningTotal)}</button>`;
+    document.getElementById('wizard-confirm-btn').onclick = goNextStep;
   }
 }
-
-function wizardPrev() {
-  if (wizardIndex > 0) {
-    wizardIndex--;
-    renderWizard();
-  }
-}
-
-function computeWizardTotal() {
-  let total = wizardMenu.price;
-  wizardSteps.forEach(step => {
-    if (!step.extras && wizardChoices[step.key]) {
-      const opt = step.options.find(o => o.id === wizardChoices[step.key]);
-      if (opt) total += opt.price || 0;
-    }
-    if (step.extras) {
-      step.options.forEach(o => {
-        if (wizardChoices[o.id]) total += o.price;
-      });
-    }
+function commitWizard(){
+  const opts = wizardSteps.filter(s=>!s.extras).map(s=>({group:s.label, name:wizardSel[s.key].name}));
+  const unitPrice = wizardSteps.filter(s=>!s.extras).reduce((sum,s)=> sum + (wizardSel[s.key].delta||0), wizardMenu.price);
+  addToCart(wizardMenu, opts, unitPrice);
+  wizardSteps.forEach(s=>{
+    if(s.extras) s.options.forEach(o=>{
+      if(wizardExtraSel.has(o.id)) addToCart({id:o.id, name:o.name, art:o.art, color:o.color, img:o.img}, [], o.price);
+    });
   });
-  return total;
-}
-
-function commitWizard() {
-  const menu = {id:'menu_'+Date.now(), name:wizardMenu.name+' (perso)', price:computeWizardTotal(), emoji:'🍽️'};
-  addToCart(menu);
-  document.getElementById('overlay').classList.remove('show');
+  closeWizard();
   pulseCartBar();
 }
 
-// ==================== PANIER ====================
-function addToCart(p, qty = 1) {
-  const existing = cart.find(item => item.id === p.id);
-  if (existing) {
-    existing.qty += qty;
-    existing.total = existing.qty * existing.price;
-  } else {
-    cart.push({...p, qty:qty, total:p.price * qty});
-  }
+/* ===================== PANIER ===================== */
+function addToCart(p, opts, unitPrice){
+  cart.push({uid:Date.now()+Math.random(), id:p.id, name:p.name, art:p.art, color:p.color, cheese:p.cheese, double:p.double, img:p.img, opts, unitPrice, qty:1});
   renderCartUI();
 }
-
-function renderCartUI() {
-  const totalQty = cart.reduce((s,i) => s + i.qty, 0);
-  const total = cart.reduce((s,i) => s + i.total, 0);
-  
-  document.getElementById('cart-badge').textContent = totalQty;
-  document.getElementById('cartbar-count').textContent = totalQty;
-  document.getElementById('cartbar-label').textContent = totalQty > 1 ? 'articles' : 'article';
-  document.getElementById('cartbar-total').textContent = fmt(total);
-  document.getElementById('cartbar').classList.toggle('show', totalQty > 0);
-  
-  const itemsEl = document.getElementById('drawer-items');
-  if (cart.length === 0) {
-    itemsEl.innerHTML = `<div class="empty-cart"><span class="big">🛒</span>Votre panier est vide</div>`;
-  } else {
-    itemsEl.innerHTML = cart.map(item => `
-      <div class="cart-item">
-        <div class="ci-emoji">${item.emoji || '🍔'}</div>
-        <div class="info">
-          <div class="name">${item.name}</div>
-          <div class="line-bottom">
-            <div class="qty-ctrl">
-              <button onclick="changeQty('${item.id}',-1)">−</button>
-              <span>${item.qty}</span>
-              <button onclick="changeQty('${item.id}',1)">+</button>
-            </div>
-            <span class="item-price">${fmt(item.total)}</span>
-          </div>
-          <button class="remove-btn" onclick="removeItem('${item.id}')">Retirer</button>
-        </div>
-      </div>
-    `).join('');
-  }
-  
-  document.getElementById('sub-total').textContent = fmt(total);
-  document.getElementById('grand-total').textContent = fmt(total);
-  document.getElementById('drawer-checkout').disabled = cart.length === 0;
-}
-
-function changeQty(id, delta) {
-  const item = cart.find(i => i.id === id);
-  if (!item) return;
-  item.qty += delta;
-  if (item.qty <= 0) {
-    cart = cart.filter(i => i.id !== id);
-  } else {
-    item.total = item.qty * item.price;
-  }
-  renderCartUI();
-}
-
-function removeItem(id) {
-  cart = cart.filter(i => i.id !== id);
-  renderCartUI();
-}
-
-function pulseCartBar() {
+function pulseCartBar(){
   const bar = document.getElementById('cartbar');
-  bar.style.transform = 'scale(1.02)';
-  setTimeout(() => bar.style.transform = 'scale(1)', 150);
+  bar.style.transform='scale(1.03)';
+  setTimeout(()=> bar.style.transform='scale(1)', 140);
 }
 
-// ==================== DRAWER ====================
-function openDrawer() {
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('drawer-scrim').classList.add('show');
-}
-
-function closeDrawer() {
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('drawer-scrim').classList.remove('show');
-}
-
+const drawer = document.getElementById('drawer');
+const drawerScrim = document.getElementById('drawer-scrim');
+const drawerItemsEl = document.getElementById('drawer-items');
+function openDrawer(){ drawer.classList.add('open'); drawerScrim.classList.add('show'); }
+function closeDrawer(){ drawer.classList.remove('open'); drawerScrim.classList.remove('show'); }
 document.getElementById('cart-btn').onclick = openDrawer;
 document.getElementById('cartbar').onclick = openDrawer;
 document.getElementById('drawer-close').onclick = closeDrawer;
 document.getElementById('drawer-continue').onclick = closeDrawer;
-document.getElementById('drawer-scrim').onclick = closeDrawer;
+drawerScrim.onclick = closeDrawer;
 
-// ==================== EXPORT JSON ====================
-function exportJSON() {
-  const total = cart.reduce((s,i) => s + i.total, 0);
-  const num = 'CMD-' + String(100 + Math.floor(Math.random() * 900));
-  
-  const jsonData = {
-    commande: {
-      numero: num,
-      date: new Date().toISOString(),
-      type: orderType === 'sur_place' ? 'Sur place' : 'À emporter',
-      total: total,
-      articles: cart.map(i => ({
-        nom: i.name,
-        quantite: i.qty,
-        prix_unitaire: i.price,
-        total: i.total
-      }))
-    }
-  };
-  
-  // Télécharger le fichier JSON
-  const blob = new Blob([JSON.stringify(jsonData, null, 2)], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'commande.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  
-  return jsonData;
+function renderCartUI(){
+  const totalQty = cart.reduce((s,i)=>s+i.qty,0);
+  const sub = cart.reduce((s,i)=> s + i.unitPrice*i.qty, 0);
+  document.getElementById('cart-badge').textContent = totalQty;
+
+  const bar = document.getElementById('cartbar');
+  if(totalQty>0){
+    bar.classList.add('show');
+    document.getElementById('cartbar-count').textContent = totalQty;
+    document.getElementById('cartbar-label').textContent = totalQty>1 ? 'articles' : 'article';
+    document.getElementById('cartbar-total').textContent = fmt(sub);
+  } else { bar.classList.remove('show'); }
+
+  if(cart.length===0){
+    drawerItemsEl.innerHTML = `<div class="empty-cart"><div class="big">🛒</div><div>Votre panier est vide.<br>Ajoutez un article pour commencer.</div></div>`;
+  } else {
+    drawerItemsEl.innerHTML = cart.map(item=>`
+      <div class="cart-item" data-uid="${item.uid}">
+        <div class="ci-thumb">${thumbHTML(item)}</div>
+        <div class="info">
+          <div class="name">${item.name}</div>
+          ${item.opts.length ? `<div class="opts">${item.opts.map(o=>o.name).join(' • ')}</div>` : ''}
+          <div class="line-bottom">
+            <div class="qty-ctrl"><button class="dec">−</button><span>${item.qty}</span><button class="inc">+</button></div>
+            <span class="item-price">${fmt(item.unitPrice*item.qty)}</span>
+          </div>
+          <button class="remove-btn">Retirer</button>
+        </div>
+      </div>`).join('');
+  }
+  drawerItemsEl.querySelectorAll('.cart-item').forEach(row=>{
+    const uid = row.dataset.uid;
+    row.querySelector('.inc').onclick = ()=> changeQty(uid, 1);
+    row.querySelector('.dec').onclick = ()=> changeQty(uid, -1);
+    row.querySelector('.remove-btn').onclick = ()=> removeItem(uid);
+  });
+
+  document.getElementById('sub-total').textContent = fmt(sub);
+  document.getElementById('grand-total').textContent = fmt(sub);
+  document.getElementById('drawer-checkout').disabled = cart.length===0;
 }
+function changeQty(uid, delta){
+  const item = cart.find(i=>String(i.uid)===uid);
+  if(!item) return;
+  item.qty += delta;
+  if(item.qty<=0) cart = cart.filter(i=>i!==item);
+  renderCartUI();
+}
+function removeItem(uid){ cart = cart.filter(i=>String(i.uid)!==uid); renderCartUI(); }
 
-// ==================== VALIDATION COMMANDE ====================
-document.getElementById('drawer-checkout').onclick = () => {
-  if (cart.length === 0) return;
-  
-  // Exporter le JSON
-  const jsonData = exportJSON();
-  
-  // Afficher le ticket
-  const total = cart.reduce((s,i) => s + i.total, 0);
-  document.getElementById('receipt').innerHTML = `
-    <div class="r-title">🍔 McBORNE</div>
-    <div class="r-num">${jsonData.commande.numero}</div>
-    ${cart.map(i => `
-      <div class="r-line"><span>${i.qty}× ${i.name}</span><span>${fmt(i.total)}</span></div>
-    `).join('')}
-    <div class="r-total"><span>Total</span><span>${fmt(total)}</span></div>
-    <div class="r-type">${orderType === 'sur_place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
-  `;
-  
-  document.getElementById('json-status').textContent = '📄 Fichier commande.json téléchargé';
-  
-  closeDrawer();
-  document.getElementById('screen-confirm').classList.add('show');
+/* ===================== PLEIN ÉCRAN ===================== */
+document.getElementById('fullscreen-btn').onclick = ()=>{
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen?.().catch(()=>{});
+  } else {
+    document.exitFullscreen?.();
+  }
 };
 
-// ==================== NOUVELLE COMMANDE ====================
-document.getElementById('confirm-new-btn').onclick = () => {
+/* ===================== RÉGLAGES GITHUB (jeton + enregistrement du .json) ===================== */
+const GITHUB_REPO = 'jupiko0/mcdo'; // owner/repo
+let githubToken = '';
+try { githubToken = localStorage.getItem('mcdo_gh_token') || ''; } catch(e) { /* stockage indisponible (aperçu sandboxé) */ }
+
+const settingsOverlay = document.getElementById('settings-overlay');
+const settingsStatus = document.getElementById('settings-status');
+document.getElementById('settings-btn').onclick = ()=>{
+  document.getElementById('gh-token-input').value = githubToken;
+  settingsStatus.className=''; settingsStatus.textContent='';
+  settingsOverlay.classList.add('show');
+};
+document.getElementById('settings-close').onclick = ()=> settingsOverlay.classList.remove('show');
+settingsOverlay.onclick = (e)=>{ if(e.target===settingsOverlay) settingsOverlay.classList.remove('show'); };
+document.getElementById('settings-save').onclick = ()=>{
+  const val = document.getElementById('gh-token-input').value.trim();
+  if(!val){ settingsStatus.className='err'; settingsStatus.textContent='Colle un jeton avant d\'enregistrer.'; return; }
+  githubToken = val;
+  try { localStorage.setItem('mcdo_gh_token', val); } catch(e) {}
+  settingsStatus.className='ok'; settingsStatus.textContent='Jeton enregistré dans ce navigateur ✅';
+};
+document.getElementById('settings-clear').onclick = ()=>{
+  githubToken = '';
+  try { localStorage.removeItem('mcdo_gh_token'); } catch(e) {}
+  document.getElementById('gh-token-input').value = '';
+  settingsStatus.className='ok'; settingsStatus.textContent='Jeton supprimé.';
+};
+
+function utf8ToBase64(str){
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_,p1)=> String.fromCharCode('0x'+p1)));
+}
+
+/* Crée le fichier orders/commande-<num>.json dans le repo GitHub via l'API Contents */
+async function saveOrderToGithub(orderJson, num){
+  if(!githubToken){
+    return {ok:false, reason:'no_token'};
+  }
+  const path = `orders/commande-${num}-${Date.now()}.json`;
+  const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`;
+  try{
+    const res = await fetch(url, {
+      method:'PUT',
+      headers:{
+        'Authorization': `Bearer ${githubToken}`,
+        'Accept':'application/vnd.github+json',
+        'Content-Type':'application/json'
+      },
+      body: JSON.stringify({
+        message: `Commande ${num}`,
+        content: utf8ToBase64(JSON.stringify(orderJson, null, 2)),
+        branch:'main'
+      })
+    });
+    if(!res.ok){
+      const err = await res.json().catch(()=>({}));
+      return {ok:false, reason:'api_error', status:res.status, message:err.message||''};
+    }
+    return {ok:true, path};
+  } catch(e){
+    return {ok:false, reason:'network', message:String(e)};
+  }
+}
+
+/* ===================== VALIDATION / TICKET ===================== */
+document.getElementById('drawer-checkout').onclick = async ()=>{
+  if(cart.length===0) return;
+  const num = 'A' + (10+Math.floor(Math.random()*89));
+  const sub = cart.reduce((s,i)=> s + i.unitPrice*i.qty, 0);
+  document.getElementById('receipt').innerHTML = `
+    <div class="r-title">McBORNE</div>
+    <div class="r-sub">Ticket de commande</div>
+    <div class="r-num">${num}</div>
+    ${cart.map(i=>`
+      <div class="r-line"><span><span class="qty">${i.qty}×</span>${i.name}</span><span>${fmt(i.unitPrice*i.qty)}</span></div>
+      ${i.opts.length ? `<div class="r-opts">${i.opts.map(o=>o.name).join(', ')}</div>` : ''}
+    `).join('')}
+    <div class="r-total"><span>Total</span><span>${fmt(sub)}</span></div>
+    <div class="r-type">${orderType==='sur_place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
+  `;
+  closeDrawer();
+  document.getElementById('screen-confirm').classList.add('show');
+
+  const syncLine = document.getElementById('sync-line');
+  const orderJson = {
+    numero: num,
+    date: new Date().toISOString(),
+    type: orderType==='sur_place' ? 'Sur place' : 'À emporter',
+    total: sub,
+    articles: cart.map(i=>({ nom:i.name, quantite:i.qty, prix_unitaire:i.unitPrice, options:i.opts.map(o=>o.name) }))
+  };
+
+  if(!githubToken){
+    syncLine.textContent = "⚙️ Ajoute un jeton GitHub (icône réglages) pour enregistrer les commandes dans le repo.";
+    return;
+  }
+  syncLine.textContent = '⏳ Enregistrement dans le repo GitHub…';
+  const result = await saveOrderToGithub(orderJson, num);
+  if(result.ok){
+    syncLine.innerHTML = `✅ Commande enregistrée : <b>orders/${result.path.split('/').pop()}</b>`;
+  } else if(result.reason==='api_error') {
+    syncLine.textContent = `⚠️ Échec GitHub (${result.status}) — vérifie les droits du jeton.`;
+  } else {
+    syncLine.textContent = '⚠️ Impossible de contacter GitHub depuis cet aperçu.';
+  }
+};
+document.getElementById('confirm-new-btn').onclick = ()=>{
   cart = [];
   renderCartUI();
   document.getElementById('screen-confirm').classList.remove('show');
-  document.getElementById('screen-welcome').style.display = 'flex';
+  currentCat = 'menus';
+  renderCats(); renderCatalog();
+  screenWelcome.style.display='flex';
 };
 
-// ==================== WELCOME ====================
-document.querySelectorAll('.choice-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    orderType = btn.dataset.type;
-    document.getElementById('order-type-btn').textContent = orderType === 'sur_place' ? '🍽️ Sur place' : '🥡 À emporter';
-    document.getElementById('screen-welcome').style.display = 'none';
-  });
-});
+/* ===================== UTILS ===================== */
+function fmt(n){ return n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €'; }
 
-document.getElementById('order-type-btn').addEventListener('click', () => {
-  orderType = orderType === 'sur_place' ? 'emporter' : 'sur_place';
-  document.getElementById('order-type-btn').textContent = orderType === 'sur_place' ? '🍽️ Sur place' : '🥡 À emporter';
-});
-
-// ==================== MODAL ====================
-document.getElementById('modal-close').onclick = () => {
-  document.getElementById('overlay').classList.remove('show');
-};
-document.getElementById('overlay').onclick = (e) => {
-  if (e.target === e.currentTarget) document.getElementById('overlay').classList.remove('show');
-};
-
-// ==================== UTILS ====================
-function fmt(n) {
-  return n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
-}
-
-// ==================== INIT ====================
-renderCategories();
+/* ===================== INIT ===================== */
 renderCatalog();
 renderCartUI();
 </script>
