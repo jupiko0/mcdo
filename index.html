@@ -124,6 +124,7 @@
   .history-item .h-type{font-size:11px;color:var(--gray);margin-top:2px;font-weight:600;}
   .history-item .h-articles{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:11.5px;}
   .history-item .h-article-row{display:flex;justify-content:space-between;color:#444;margin-bottom:2px;}
+  .history-item .h-article-opts{font-size:10px;color:var(--gray);margin-left:12px;margin-bottom:4px;}
 
   nav#cats{flex:0 0 auto;background:#fff;border-bottom:1px solid var(--line);display:flex;gap:8px;padding:10px 12px;overflow-x:auto;z-index:5;}
   nav#cats::-webkit-scrollbar{display:none;}
@@ -837,9 +838,9 @@ function renderWizard(){
   }
 }
 function commitWizard(){
-  const opts = wizardSteps.filter(s=>!s.extras).map(s=>({group:s.label, name:wizardSel[s.key].name}));
+  const menuOpts = wizardSteps.filter(s=>!s.extras).map(s=>({group:s.label, name:wizardSel[s.key].name}));
   const unitPrice = wizardSteps.filter(s=>!s.extras).reduce((sum,s)=> sum + (wizardSel[s.key].delta||0), wizardMenu.price);
-  addToCart(wizardMenu, opts, unitPrice);
+  addToCart(wizardMenu, menuOpts, unitPrice);
   wizardSteps.forEach(s=>{
     if(s.extras) s.options.forEach(o=>{
       if(wizardExtraSel.has(o.id)) addToCart({id:o.id, name:o.name, art:o.art, color:o.color, img:o.img}, [], o.price);
@@ -850,8 +851,21 @@ function commitWizard(){
 }
 
 /* ===================== PANIER ===================== */
-function addToCart(p, opts, unitPrice){
-  cart.push({uid:Date.now()+Math.random(), id:p.id, name:p.name, art:p.art, color:p.color, cheese:p.cheese, double:p.double, img:p.img, opts, unitPrice, qty:1});
+function addToCart(p, itemOptions, unitPrice){
+  const optionsList = itemOptions || [];
+  cart.push({
+    uid: Date.now() + Math.random(),
+    id: p.id,
+    name: p.name,
+    art: p.art,
+    color: p.color,
+    cheese: p.cheese,
+    double: p.double,
+    img: p.img,
+    opts: optionsList,
+    unitPrice: unitPrice,
+    qty: 1
+  });
   renderCartUI();
 }
 function pulseCartBar(){
@@ -892,7 +906,7 @@ function renderCartUI(){
         <div class="ci-thumb">${thumbHTML(item)}</div>
         <div class="info">
           <div class="name">${item.name}</div>
-          ${item.opts.length ? `<div class="opts">${item.opts.map(o=>o.name).join(' • ')}</div>` : ''}
+          ${item.opts && item.opts.length ? `<div class="opts">${item.opts.map(o=>o.name).join(' • ')}</div>` : ''}
           <div class="line-bottom">
             <div class="qty-ctrl"><button class="dec">−</button><span>${item.qty}</span><button class="inc">+</button></div>
             <span class="item-price">${fmt(item.unitPrice*item.qty)}</span>
@@ -1042,7 +1056,6 @@ async function fetchOrdersFromFolder(){
       return;
     }
 
-    // Récupérer le contenu de chaque ticket
     const ordersPromises = jsonFiles.map(async file => {
       try {
         const fileRes = await fetch(file.download_url);
@@ -1085,6 +1098,9 @@ function renderTicketsList(orders){
               <span>${a.quantite}× ${a.nom}</span>
               <span>${fmt((a.prix_unitaire || 0) * a.quantite)}</span>
             </div>
+            ${a.options && a.options.length ? `
+              <div class="h-article-opts">↳ ${a.options.join(', ')}</div>
+            ` : ''}
           `).join('')}
         </div>
       ` : ''}
@@ -1103,7 +1119,7 @@ document.getElementById('drawer-checkout').onclick = async ()=>{
     <div class="r-num">${num}</div>
     ${cart.map(i=>`
       <div class="r-line"><span><span class="qty">${i.qty}×</span>${i.name}</span><span>${fmt(i.unitPrice*i.qty)}</span></div>
-      ${i.opts.length ? `<div class="r-opts">${i.opts.map(o=>o.name).join(', ')}</div>` : ''}
+      ${i.opts && i.opts.length ? `<div class="r-opts">${i.opts.map(o=>o.name).join(', ')}</div>` : ''}
     `).join('')}
     <div class="r-total"><span>Total</span><span>${fmt(sub)}</span></div>
     <div class="r-type">${orderType==='sur_place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
