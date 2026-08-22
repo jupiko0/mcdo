@@ -1,0 +1,42 @@
+{
+  "numero": "A89",
+  "date": "2026-08-22T21:09:15.951Z",
+  "type": "Sur place",
+  "total": 21,
+  "articles": [
+    {
+      "nom": "Menu Best Of",
+      "quantite": 1,
+      "prix_unitaire": 8.3,
+      "options": [
+        "Double Cheeseburger",
+        "Petite frite",
+        "Ketchup",
+        "Eau"
+      ]
+    },
+    {
+      "nom": "4 Nuggets en plus",
+      "quantite": 1,
+      "prix_unitaire": 2.9,
+      "options": []
+    },
+    {
+      "nom": "Menu Best Of",
+      "quantite": 1,
+      "prix_unitaire": 7.9,
+      "options": [
+        "Cheeseburger",
+        "Moyenne frite",
+        "Ketchup",
+        "Ice Tea"
+      ]
+    },
+    {
+      "nom": "Un Hamburger en plus",
+      "quantite": 1,
+      "prix_unitaire": 1.9,
+      "options": []
+    }
+  ]
+}
