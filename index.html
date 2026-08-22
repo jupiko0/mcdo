@@ -83,7 +83,7 @@
   .pill-ordertype{margin-left:2px;background:rgba(255,255,255,.16);border:none;color:#fff;font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;display:flex;align-items:center;gap:5px;cursor:pointer;}
   .header-spacer{flex:1 1 auto;}
   .cart-btn{position:relative;background:var(--mcdo-yellow);border:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;}
-  .cart-btn .badge{position:absolute;top:-4px;right:-4px;background:var(--ink);color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--mcdo-red);}
+  .cart-btn .badge{position:absolute;top:-4px;right:-4px;background:var(--ink);color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--mcdo-red);}
   .gear-btn{background:rgba(255,255,255,.16);border:none;color:#fff;width:34px;height:34px;border-radius:50%;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
   /* ---- Réglages GitHub ---- */
@@ -103,18 +103,27 @@
   #settings-status.err{display:block;background:#FCEBE9;color:var(--mcdo-red-dark);}
   .sync-line{text-align:center;font-size:10.5px;color:rgba(255,255,255,.85);margin-top:10px;min-height:14px;}
 
-  /* ---- Historique des tickets ---- */
-  .settings-section{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);}
-  .settings-section h3{font-size:15px;margin-bottom:4px;}
-  .history-list{display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:260px;overflow-y:auto;}
-  .history-empty{text-align:center;color:var(--gray);font-size:12px;padding:20px 10px;}
-  .history-item{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;}
-  .history-item .h-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;}
-  .history-item .h-num{font-weight:800;font-size:13px;color:var(--mcdo-red-dark);}
-  .history-item .h-total{font-weight:800;font-size:13px;}
-  .history-item .h-date{font-size:10.5px;color:var(--gray);}
-  .history-item .h-type{font-size:10.5px;color:var(--gray);margin-top:2px;}
-  #history-clear{margin-top:10px;width:100%;background:none;border:none;color:var(--gray);font-size:11.5px;text-decoration:underline;cursor:pointer;}
+  /* ---- Bouton discret dans les paramètres ---- */
+  .subtle-history-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:20px;padding:10px;background:var(--paper-2);border:1px solid var(--line);border-radius:12px;color:var(--ink);font-size:12px;font-weight:600;cursor:pointer;transition:.15s ease;}
+  .subtle-history-btn:hover{background:#F7E3C3;}
+
+  /* ---- Page dédiée pour l'historique des tickets ---- */
+  #history-page{position:absolute;inset:0;background:var(--paper);z-index:65;display:none;flex-direction:column;animation:modalUp .22s ease;}
+  #history-page.show{display:flex;}
+  .history-header{flex:0 0 auto;background:#fff;border-bottom:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
+  .history-header h2{font-size:16px;}
+  .history-close-btn{background:var(--paper-2);border:none;width:32px;height:32px;border-radius:50%;font-size:14px;cursor:pointer;}
+  .history-body{flex:1 1 auto;overflow-y:auto;padding:16px;}
+  .history-list{display:flex;flex-direction:column;gap:10px;}
+  .history-empty{text-align:center;color:var(--gray);font-size:13px;padding:40px 10px;}
+  .history-item{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:0 2px 6px rgba(0,0,0,.03);}
+  .history-item .h-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+  .history-item .h-num{font-weight:800;font-size:14px;color:var(--mcdo-red-dark);}
+  .history-item .h-total{font-weight:800;font-size:14px;}
+  .history-item .h-date{font-size:11px;color:var(--gray);}
+  .history-item .h-type{font-size:11px;color:var(--gray);margin-top:2px;font-weight:600;}
+  .history-item .h-articles{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:11.5px;}
+  .history-item .h-article-row{display:flex;justify-content:space-between;color:#444;margin-bottom:2px;}
 
   nav#cats{flex:0 0 auto;background:#fff;border-bottom:1px solid var(--line);display:flex;gap:8px;padding:10px 12px;overflow-x:auto;z-index:5;}
   nav#cats::-webkit-scrollbar{display:none;}
@@ -401,11 +410,19 @@
             <button id="settings-save">Enregistrer le jeton</button>
             <button id="settings-clear">Supprimer le jeton enregistré</button>
 
-            <div class="settings-section">
-              <h3>🧾 Tickets enregistrés</h3>
-              <p class="s-desc">Historique des commandes validées sur cette borne, avec la date et l'heure d'enregistrement.</p>
-              <div class="history-list" id="history-list"></div>
-              <button id="history-clear">Vider l'historique des tickets</button>
+            <button class="subtle-history-btn" id="open-history-btn">📜 Voir les tickets</button>
+          </div>
+        </div>
+
+        <!-- PAGE DÉDIÉE : Historique des tickets depuis "orders" -->
+        <div id="history-page">
+          <div class="history-header">
+            <h2>🧾 Tickets enregistrés (orders)</h2>
+            <button class="history-close-btn" id="history-close-btn">✕</button>
+          </div>
+          <div class="history-body">
+            <div class="history-list" id="history-list">
+              <div class="history-empty">Chargement des tickets depuis le dossier "orders"...</div>
             </div>
           </div>
         </div>
@@ -423,36 +440,17 @@
 </div>
 
 <script>
-/* =====================================================================
-   IMAGES : dépose tes fichiers PNG dans un dossier "images/" à côté de
-   ce fichier HTML, avec exactement ces noms. Si un fichier est absent,
-   une illustration CSS de secours s'affiche automatiquement à la place.
-
-   images/hamburger.png
-   images/cheeseburger.png
-   images/double-cheeseburger.png
-   images/bigmac.png
-   images/nuggets.png
-   images/frites.png
-   images/boisson-jus-pomme.png
-   images/boisson-coca.png
-   images/boisson-ice-tea.png
-   images/boisson-eau-gazeuse.png
-   images/boisson-eau.png
-   images/menu-best-of.png
-   images/menu-maxi-best-of.png
-   images/menu-happy-meal.png
-   images/sauce-mayo.png
-   images/sauce-ketchup.png
-===================================================================== */
-
-/* ===================== IMAGES (hébergées sur GitHub) ===================== */
-/* ===================== IMAGES =====================
-   Le fichier va chercher les images dans un dossier "images/" situé au
-   même niveau que ce .html (chemin relatif) — ça fonctionne aussi bien
-   en local qu'une fois hébergé dans le même repo GitHub (ex. GitHub Pages),
-   sans dépendre d'un nom de repo ou d'utilisateur en dur. */
+/* ===================== CONFIGURATION & ÉTAT ===================== */
+const GITHUB_REPO = 'jupiko0/mcdo'; // owner/repo
 const IMG_BASE = 'images/';
+const HISTORY_KEY = 'mcdo_orders_history';
+
+let githubToken = '';
+try { githubToken = localStorage.getItem('mcdo_gh_token') || ''; } catch(e) {}
+
+let currentCat = 'menus';
+let cart = [];
+let orderType = 'sur_place';
 
 /* ===================== DONNÉES ===================== */
 const DRINK_CHOICES = [
@@ -516,7 +514,7 @@ const PRODUCTS = {
   ]
 };
 
-/* ===================== ART BUILDERS (secours sans image) ===================== */
+/* ===================== ART BUILDERS ===================== */
 function arrowsSvg(){
   return '<svg viewBox="0 0 100 60"><path d="M8 58 L8 26 C8 10 16 2 22 2 C28 2 30 12 30 20 C30 12 32 2 38 2 C44 2 52 10 52 26 L52 58 L42 58 L42 27 C42 16 39 12 37 12 C35 12 33 17 33 27 L33 58 L27 58 L27 27 C27 17 25 12 23 12 C21 12 18 16 18 27 L18 58 Z" fill="#FFC72C"/></svg>';
 }
@@ -579,11 +577,6 @@ function thumbHTML(p){
   const img = p.img ? `<img class="prod-photo" src="${IMG_BASE}${p.img}" alt="${esc(p.name)}" loading="lazy" onerror="this.remove()">` : '';
   return img + foodArt(p);
 }
-
-/* ===================== ÉTAT ===================== */
-let currentCat = 'menus';
-let cart = [];
-let orderType = 'sur_place';
 
 /* ===================== WELCOME ===================== */
 const screenWelcome = document.getElementById('screen-welcome');
@@ -667,7 +660,7 @@ function openProduct(p){
   openSimpleModal(p);
 }
 
-/* ===================== MODAL SIMPLE (nuggets / frites / boissons) ===================== */
+/* ===================== MODAL SIMPLE ===================== */
 const overlay = document.getElementById('overlay');
 const modalBody = document.getElementById('modal-body');
 let modalProduct = null;
@@ -719,7 +712,7 @@ function renderModal(){
   };
 }
 
-/* ===================== WIZARD (composition d'un menu étape par étape) ===================== */
+/* ===================== WIZARD ===================== */
 function burgerOptionsFor(menuId){
   if(menuId==='happy_meal') return [
     {id:'hamburger', name:'Hamburger', delta:0, img:'hamburger.png', art:'burger'},
@@ -937,21 +930,18 @@ document.getElementById('fullscreen-btn').onclick = ()=>{
   }
 };
 
-/* ===================== RÉGLAGES GITHUB (jeton + enregistrement du .json) ===================== */
-const GITHUB_REPO = 'jupiko0/mcdo'; // owner/repo
-let githubToken = '';
-try { githubToken = localStorage.getItem('mcdo_gh_token') || ''; } catch(e) { /* stockage indisponible (aperçu sandboxé) */ }
-
+/* ===================== RÉGLAGES GITHUB ===================== */
 const settingsOverlay = document.getElementById('settings-overlay');
 const settingsStatus = document.getElementById('settings-status');
+
 document.getElementById('settings-btn').onclick = ()=>{
   document.getElementById('gh-token-input').value = githubToken;
   settingsStatus.className=''; settingsStatus.textContent='';
-  renderOrderHistory();
   settingsOverlay.classList.add('show');
 };
 document.getElementById('settings-close').onclick = ()=> settingsOverlay.classList.remove('show');
 settingsOverlay.onclick = (e)=>{ if(e.target===settingsOverlay) settingsOverlay.classList.remove('show'); };
+
 document.getElementById('settings-save').onclick = ()=>{
   const val = document.getElementById('gh-token-input').value.trim();
   if(!val){ settingsStatus.className='err'; settingsStatus.textContent='Colle un jeton avant d\'enregistrer.'; return; }
@@ -959,6 +949,7 @@ document.getElementById('settings-save').onclick = ()=>{
   try { localStorage.setItem('mcdo_gh_token', val); } catch(e) {}
   settingsStatus.className='ok'; settingsStatus.textContent='Jeton enregistré dans ce navigateur ✅';
 };
+
 document.getElementById('settings-clear').onclick = ()=>{
   githubToken = '';
   try { localStorage.removeItem('mcdo_gh_token'); } catch(e) {}
@@ -970,7 +961,6 @@ function utf8ToBase64(str){
   return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_,p1)=> String.fromCharCode('0x'+p1)));
 }
 
-/* Crée le fichier orders/commande-<num>.json dans le repo GitHub via l'API Contents */
 async function saveOrderToGithub(orderJson, num){
   if(!githubToken){
     return {ok:false, reason:'no_token'};
@@ -1001,46 +991,106 @@ async function saveOrderToGithub(orderJson, num){
   }
 }
 
-/* ===================== HISTORIQUE DES TICKETS (réglages) ===================== */
-const HISTORY_KEY = 'mcdo_orders_history';
-function loadOrderHistory(){
-  try {
-    const raw = localStorage.getItem(HISTORY_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch(e){ return []; }
-}
-function saveOrderHistory(list){
-  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(list)); } catch(e){}
-}
-function addOrderToHistory(entry){
-  const list = loadOrderHistory();
-  list.unshift(entry); // le plus récent en premier
-  saveOrderHistory(list.slice(0, 200)); // on garde un historique raisonnable
-}
+/* ===================== PAGE DÉDIÉE HISTORIQUE (depuis orders/) ===================== */
+const historyPage = document.getElementById('history-page');
+const historyListEl = document.getElementById('history-list');
+
+document.getElementById('open-history-btn').onclick = ()=>{
+  settingsOverlay.classList.remove('show');
+  historyPage.classList.add('show');
+  fetchOrdersFromFolder();
+};
+
+document.getElementById('history-close-btn').onclick = ()=>{
+  historyPage.classList.remove('show');
+};
+
 function formatHistoryDate(iso){
   try {
     const d = new Date(iso);
     return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric'}) + ' à ' + d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
   } catch(e){ return iso; }
 }
-function renderOrderHistory(){
-  const listEl = document.getElementById('history-list');
-  const list = loadOrderHistory();
-  if(list.length===0){
-    listEl.innerHTML = `<div class="history-empty">Aucun ticket enregistré pour le moment.</div>`;
+
+function loadLocalHistory(){
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e){ return []; }
+}
+
+function saveLocalHistory(entry){
+  const list = loadLocalHistory();
+  list.unshift(entry);
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(0, 200))); } catch(e){}
+}
+
+async function fetchOrdersFromFolder(){
+  historyListEl.innerHTML = `<div class="history-empty">Chargement des tickets depuis GitHub ("orders/")...</div>`;
+  const headers = {'Accept':'application/vnd.github+json'};
+  if(githubToken) headers['Authorization'] = `Bearer ${githubToken}`;
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/orders`, { headers });
+    if(!res.ok) throw new Error('Dossier orders/ introuvable ou inaccessible');
+
+    const files = await res.json();
+    const jsonFiles = files.filter(f => f.name.endsWith('.json'));
+
+    if(jsonFiles.length === 0){
+      historyListEl.innerHTML = `<div class="history-empty">Aucun ticket trouvé dans le dossier "orders/".</div>`;
+      return;
+    }
+
+    // Récupérer le contenu de chaque ticket
+    const ordersPromises = jsonFiles.map(async file => {
+      try {
+        const fileRes = await fetch(file.download_url);
+        return await fileRes.json();
+      } catch(e) { return null; }
+    });
+
+    let orders = (await Promise.all(ordersPromises)).filter(o => o !== null);
+    orders.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+    renderTicketsList(orders);
+  } catch(e) {
+    console.warn("Échec du chargement GitHub, passage au secours local", e);
+    const localOrders = loadLocalHistory();
+    if(localOrders.length > 0){
+      renderTicketsList(localOrders);
+    } else {
+      historyListEl.innerHTML = `<div class="history-empty">Impossible de charger les tickets depuis GitHub et aucun ticket local disponible.</div>`;
+    }
+  }
+}
+
+function renderTicketsList(orders){
+  if(orders.length === 0){
+    historyListEl.innerHTML = `<div class="history-empty">Aucun ticket à afficher.</div>`;
     return;
   }
-  listEl.innerHTML = list.map(o=>`
+  historyListEl.innerHTML = orders.map(o=>`
     <div class="history-item">
-      <div class="h-top"><span class="h-num">Ticket ${o.numero}</span><span class="h-total">${fmt(o.total)}</span></div>
+      <div class="h-top">
+        <span class="h-num">Ticket ${o.numero || '#'}</span>
+        <span class="h-total">${fmt(o.total || 0)}</span>
+      </div>
       <div class="h-date">🗓️ ${formatHistoryDate(o.date)}</div>
-      <div class="h-type">${o.type}</div>
-    </div>`).join('');
+      <div class="h-type">${o.type || 'Sur place'}</div>
+      ${o.articles && o.articles.length ? `
+        <div class="history-articles">
+          ${o.articles.map(a => `
+            <div class="h-article-row">
+              <span>${a.quantite}× ${a.nom}</span>
+              <span>${fmt((a.prix_unitaire || 0) * a.quantite)}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+    </div>
+  `).join('');
 }
-document.getElementById('history-clear').onclick = ()=>{
-  saveOrderHistory([]);
-  renderOrderHistory();
-};
 
 /* ===================== VALIDATION / TICKET ===================== */
 document.getElementById('drawer-checkout').onclick = async ()=>{
@@ -1070,7 +1120,7 @@ document.getElementById('drawer-checkout').onclick = async ()=>{
     articles: cart.map(i=>({ nom:i.name, quantite:i.qty, prix_unitaire:i.unitPrice, options:i.opts.map(o=>o.name) }))
   };
 
-  addOrderToHistory(orderJson);
+  saveLocalHistory(orderJson);
 
   if(!githubToken){
     syncLine.textContent = "⚙️ Ajoute un jeton GitHub (icône réglages) pour enregistrer les commandes dans le repo.";
@@ -1086,6 +1136,7 @@ document.getElementById('drawer-checkout').onclick = async ()=>{
     syncLine.textContent = '⚠️ Impossible de contacter GitHub depuis cet aperçu.';
   }
 };
+
 document.getElementById('confirm-new-btn').onclick = ()=>{
   cart = [];
   renderCartUI();
