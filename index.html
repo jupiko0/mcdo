@@ -1076,7 +1076,6 @@ function renderWizard(){
       row.onclick = ()=>{
         wizardSel[step.key] = step.options.find(o=>o.id===row.dataset.id);
         renderWizard();
-        setTimeout(goNextStep, 180);
       };
     });
     bodyEl.querySelectorAll('.wiz-personalize-icon').forEach(btn=>{
