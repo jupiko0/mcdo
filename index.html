@@ -264,6 +264,8 @@
   .wiz-personalize-icon{background:var(--paper-2);border:1.5px solid var(--line);width:32px;height:32px;border-radius:50%;font-size:14px;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
   .wiz-personalize-icon:active{transform:scale(.94);}
   .wiz-personalize-top{width:100%;background:var(--paper-2);border:1.5px solid var(--mcdo-red);color:var(--mcdo-red-dark);padding:12px;border-radius:14px;font-weight:800;font-size:13px;cursor:pointer;margin-bottom:8px;}
+  .wiz-burger-intro{background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:11.5px;color:var(--ink);line-height:1.4;margin-bottom:12px;}
+  .wiz-skip-note-btn{display:block;width:100%;background:none;border:none;color:var(--gray);font-size:11.5px;margin-top:8px;cursor:pointer;text-decoration:underline;text-align:center;}
 
   /* ============ PERSONNALISATION BURGER ============ */
   #customize-overlay{position:absolute;inset:0;background:rgba(20,12,6,.55);display:none;align-items:flex-end;justify-content:center;z-index:48;}
@@ -1059,7 +1061,11 @@ function renderWizard(){
       };
     });
   } else {
-    bodyEl.innerHTML = step.options.map(o=>{
+    let introHtml = '';
+    if(step.key==='burger'){
+      introHtml = `<div class="wiz-burger-intro">✏️ <b>Personnaliser</b> permet de retirer des ingrédients du burger choisi (gratuit) ou d'ajouter des ingrédients trouvés sur d'autres burgers de la carte (+ ${fmt(CUSTOM_ADD_PRICE)} par ingrédient ajouté).</div>`;
+    }
+    bodyEl.innerHTML = introHtml + step.options.map(o=>{
       const custom = (step.key==='burger') ? wizardBurgerCustom[o.id] : null;
       const nameDisplay = custom ? o.name + buildCustomSuffix(custom.removed, custom.added) : o.name;
       const customExtra = custom ? customExtraPrice(custom.added) : 0;
@@ -1095,8 +1101,12 @@ function renderWizard(){
   const footer = document.getElementById('wizard-footer');
   const runningTotal = computeWizardTotal();
   if(step.extras){
-    footer.innerHTML = `<button id="wizard-confirm-btn">Ajouter au panier — ${fmt(runningTotal)}</button><div class="wiz-skip-note">Vous pouvez ne rien ajouter et continuer</div>`;
+    footer.innerHTML = `<button id="wizard-confirm-btn">Ajouter au panier — ${fmt(runningTotal)}</button><button id="wizard-skip-extras-btn" class="wiz-skip-note-btn">Non merci, valider sans supplément</button>`;
     document.getElementById('wizard-confirm-btn').onclick = commitWizard;
+    document.getElementById('wizard-skip-extras-btn').onclick = ()=>{
+      wizardExtraSel = new Set();
+      commitWizard();
+    };
   } else {
     const selectedOpt = wizardSel[step.key];
     let personalizeBtnHtml = '';
