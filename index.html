@@ -16,7 +16,7 @@
     --mcdo-yellow:#FFC72C;
     --mcdo-yellow-dark:#FFB400;
     --ink:#241610;
-    --paper:#FEFBF4;
+    --paper:#FFFBF4;
     --paper-2:#FFF3DD;
     --gray:#847C72;
     --line:#EFE4D2;
@@ -244,7 +244,7 @@
   .wizard-title-wrap{flex:1;text-align:center;}
   .wizard-title{font-weight:800;font-size:14px;}
   .wizard-menu-name{font-size:10.5px;color:var(--gray);}
-  .wizard-dots{display:flex;justify-content:center;gap:6px;padding:9px 0 4px;flex:0 0 auto;}
+  .wizard-dots{display:flex;justify-content:center;gap:6px;padding:99px 0 4px;flex:0 0 auto;}
   .wizard-dots .d{width:7px;height:7px;border-radius:50%;background:var(--line);transition:.2s;}
   .wizard-dots .d.active{background:var(--mcdo-red);width:18px;border-radius:4px;}
   .wizard-dots .d.done{background:var(--mcdo-yellow);}
@@ -289,17 +289,23 @@
   .item-price{font-weight:800;font-size:12.5px;color:var(--mcdo-red-dark);}
   .remove-btn{background:none;border:none;color:var(--gray);font-size:10.5px;text-decoration:underline;cursor:pointer;margin-top:3px;}
   #drawer-footer{flex:0 0 auto;padding:12px 18px 18px;border-top:1px solid var(--line);}
-  
-  /* Champ N° de Chevalet */
-  .chevalet-box{margin-bottom:10px;background:var(--paper-2);padding:10px;border-radius:12px;border:1px solid var(--line);}
-  .chevalet-box label{display:block;font-size:11px;font-weight:800;color:var(--mcdo-red-dark);margin-bottom:4px;text-transform:uppercase;}
-  .chevalet-box input{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;font-weight:700;}
 
   .totals-row{display:flex;justify-content:space-between;font-size:12.5px;color:var(--gray);margin-bottom:5px;}
   .totals-row.total{font-size:18px;font-weight:800;color:var(--ink);margin:8px 0 14px;}
   #drawer-checkout{width:100%;background:var(--mcdo-red);color:#fff;border:none;padding:15px;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;}
   #drawer-checkout:disabled{background:#ddd6c8;color:#9a9385;cursor:not-allowed;}
   #drawer-continue{width:100%;background:none;border:none;color:var(--gray);font-size:11.5px;margin-top:8px;cursor:pointer;text-decoration:underline;}
+
+  /* ============ CHEVALET MODAL (OBLIGATOIRE) ============ */
+  #chevalet-overlay{position:absolute;inset:0;background:rgba(20,12,6,.6);display:none;align-items:center;justify-content:center;z-index:55;padding:20px;}
+  #chevalet-overlay.show{display:flex;}
+  #chevalet-modal{background:#fff;border-radius:22px;width:100%;max-width:340px;padding:24px 20px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.25);animation:modalUp .22s ease;}
+  #chevalet-modal h3{font-size:18px;margin-bottom:6px;color:var(--mcdo-red-dark);}
+  #chevalet-modal p{font-size:12px;color:var(--gray);margin-bottom:16px;line-height:1.4;}
+  #chevalet-modal input{width:100%;border:2px solid var(--line);border-radius:12px;padding:12px;font-size:18px;text-align:center;font-weight:800;margin-bottom:12px;font-family:inherit;}
+  #chevalet-modal input:focus{border-color:var(--mcdo-red);outline:none;}
+  #chevalet-error{color:var(--mcdo-red-dark);font-size:11px;font-weight:700;margin-bottom:10px;display:none;}
+  #chevalet-submit-btn{width:100%;background:var(--mcdo-yellow);border:none;padding:14px;border-radius:14px;font-weight:800;font-size:15px;cursor:pointer;color:var(--ink);}
 
   /* ============ VARIANT MODAL ============ */
   #overlay{position:absolute;inset:0;background:rgba(20,12,6,.5);display:none;align-items:flex-end;justify-content:center;z-index:40;}
@@ -325,14 +331,19 @@
   #screen-confirm h1{color:#fff;font-size:18px;margin-bottom:2px;}
   #screen-confirm p.lead{color:rgba(255,255,255,.85);font-size:11px;margin-bottom:10px;}
 
-  /* Box alerte imprimante HS */
+  /* Box alerte imprimante HS (TRÈS VISIBLE) */
   .printer-alert-box{
-    background:#FFF3DD;border:2px dashed var(--mcdo-yellow);border-radius:12px;
-    padding:10px 14px;color:var(--ink);max-width:290px;width:100%;text-align:center;
-    margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.15);
+    background:#FFD1D1;border:3px solid #D32F2F;border-radius:16px;
+    padding:16px;color:#5C0000;max-width:310px;width:100%;text-align:center;
+    margin-bottom:14px;box-shadow:0 8px 20px rgba(0,0,0,.3);
+    animation: pulseAlert 2s infinite ease-in-out;
   }
-  .printer-alert-box .p-title{font-weight:800;font-size:12px;color:#C21F1F;margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:5px;}
-  .printer-alert-box .p-desc{font-size:11px;line-height:1.35;font-weight:600;color:#5a4a3a;}
+  @keyframes pulseAlert {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+  .printer-alert-box .p-title{font-weight:900;font-size:15px;color:#900C3F;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .printer-alert-box .p-desc{font-size:12px;line-height:1.4;font-weight:700;color:#2C0000;}
 
   .receipt{background:#fffdf8;color:var(--ink);width:100%;max-width:290px;border-radius:6px;padding:14px 14px 8px;font-family:'Inter',monospace;box-shadow:0 14px 30px rgba(0,0,0,.25);position:relative;max-height:42vh;overflow-y:auto;}
   .receipt .r-title{text-align:center;font-weight:800;font-size:12px;letter-spacing:1px;margin-bottom:2px;}
@@ -425,14 +436,21 @@
           </div>
           <div id="drawer-items"></div>
           <div id="drawer-footer">
-            <div class="chevalet-box">
-              <label for="chevalet-input">🚩 Numéro de chevalet (Optionnel)</label>
-              <input type="text" id="chevalet-input" placeholder="Ex: 42" maxlength="10">
-            </div>
             <div class="totals-row"><span>Sous-total</span><span id="sub-total">0,00 €</span></div>
             <div class="totals-row total"><span>Total</span><span id="grand-total">0,00 €</span></div>
             <button id="drawer-checkout" disabled>Valider ma commande</button>
             <button id="drawer-continue">Continuer mes achats</button>
+          </div>
+        </div>
+
+        <!-- MODAL CHEVALET OBLIGATOIRE -->
+        <div id="chevalet-overlay">
+          <div id="chevalet-modal">
+            <h3>🚩 Numéro de chevalet</h3>
+            <p>Veuillez entrer le numéro indiqué sur votre chevalet.</p>
+            <input type="text" id="chevalet-input" placeholder="" maxlength="10">
+            <div id="chevalet-error">Veuillez renseigner un numéro de chevalet valide.</div>
+            <button id="chevalet-submit-btn">Confirmer la commande</button>
           </div>
         </div>
 
@@ -443,8 +461,8 @@
 
           <!-- Avertissement Imprimante HS -->
           <div class="printer-alert-box">
-            <div class="p-title">⚠️ Imprimante à ticket en panne</div>
-            <div class="p-desc">Veuillez patienter à votre table. Le personnel vous apportera directement votre commande !</div>
+            <div class="p-title">🚨 IMPRIMANTE À TICKET EN PANNE</div>
+            <div class="p-desc">Veuillez patienter à la borne, un membre du personnel va venir vous donner votre ticket.</div>
           </div>
 
           <div class="receipt" id="receipt"></div>
@@ -1262,18 +1280,36 @@ function exportTicketPDF(index){
   });
 }
 
-/* ===================== VALIDATION / TICKET ===================== */
-document.getElementById('drawer-checkout').onclick = async ()=>{
+/* ===================== VALIDATION / CHEVALET OBLIGATOIRE / TICKET ===================== */
+const chevaletOverlay = document.getElementById('chevalet-overlay');
+const chevaletInput = document.getElementById('chevalet-input');
+const chevaletError = document.getElementById('chevalet-error');
+
+document.getElementById('drawer-checkout').onclick = ()=>{
   if(cart.length===0) return;
+  closeDrawer();
+  chevaletInput.value = '';
+  chevaletError.style.display = 'none';
+  chevaletOverlay.classList.add('show');
+  chevaletInput.focus();
+};
+
+document.getElementById('chevalet-submit-btn').onclick = async ()=>{
+  const chevaletVal = chevaletInput.value.trim();
+  if(!chevaletVal){
+    chevaletError.style.display = 'block';
+    return;
+  }
+  
+  chevaletOverlay.classList.remove('show');
   const num = 'A' + (10+Math.floor(Math.random()*89));
   const sub = cart.reduce((s,i)=> s + i.unitPrice*i.qty, 0);
-  const chevaletVal = document.getElementById('chevalet-input').value.trim();
 
   document.getElementById('receipt').innerHTML = `
     <div class="r-title">McBORNE</div>
     <div class="r-sub">Ticket de commande</div>
     <div class="r-num">${num}</div>
-    ${chevaletVal ? `<div class="r-chevalet">🚩 Chevalet n° ${chevaletVal}</div>` : ''}
+    <div class="r-chevalet">🚩 Chevalet n° ${chevaletVal}</div>
     ${cart.map(i=>`
       <div class="r-line"><span><span class="qty">${i.qty}×</span>${i.name}</span><span>${fmt(i.unitPrice*i.qty)}</span></div>
       ${i.opts && i.opts.length ? `<div class="r-opts">${i.opts.map(o=>o.name).join(', ')}</div>` : ''}
@@ -1281,12 +1317,11 @@ document.getElementById('drawer-checkout').onclick = async ()=>{
     <div class="r-total"><span>Total</span><span>${fmt(sub)}</span></div>
     <div class="r-type">${orderType==='sur_place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
   `;
-  closeDrawer();
   document.getElementById('screen-confirm').classList.add('show');
 
   const orderJson = {
     numero: num,
-    chevalet: chevaletVal || null,
+    chevalet: chevaletVal,
     date: new Date().toISOString(),
     type: orderType==='sur_place' ? 'Sur place' : 'À emporter',
     total: sub,
@@ -1301,7 +1336,7 @@ document.getElementById('drawer-checkout').onclick = async ()=>{
 
 document.getElementById('confirm-new-btn').onclick = ()=>{
   cart = [];
-  document.getElementById('chevalet-input').value = '';
+  chevaletInput.value = '';
   renderCartUI();
   document.getElementById('screen-confirm').classList.remove('show');
   currentCat = 'menus';
