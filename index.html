@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Borne de commande</title>
+<title>Borne de commande McDo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<!-- Inclusion de html2pdf pour l'export PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   :root{
@@ -23,51 +22,16 @@
     --ok:#1E8E3E;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-  html,body{height:100%;}
-  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:var(--ink);}
+  html,body{height:100%;width:100%;background:var(--paper);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:var(--ink);}
   h1,h2,h3,.display{font-family:'Poppins',sans-serif;}
   button{font-family:inherit;}
 
-  /* ============ SCENE / KIOSK SHELL ============ */
-  .stage{
-    min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:26px 14px;
-    background:radial-gradient(ellipse 900px 500px at 50% 0%, #3d3d3f, #17171818 60%), linear-gradient(180deg,#232325,#111112 65%);
-  }
-  .kiosk{
-    width:min(440px,94vw);
-    background:linear-gradient(150deg,#f1f1f2,#cfd0d3 45%,#a8a9ac 100%);
-    border-radius:42px;padding:16px 14px 8px;
-    box-shadow:0 50px 90px -25px rgba(0,0,0,.65), inset 0 2px 2px rgba(255,255,255,.6), inset 0 -2px 6px rgba(0,0,0,.15);
-    position:relative;
-  }
-  .kiosk-topbar{display:flex;align-items:center;justify-content:center;gap:10px;padding:2px 0 10px;}
-  .kiosk-topbar .dot{width:7px;height:7px;border-radius:50%;background:#3a3a3c;box-shadow:inset 0 0 2px #000;}
-  .kiosk-topbar .cam{width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#4b6b8a,#0b0e12 70%);}
-  .kiosk-screen{
-    background:var(--paper);border-radius:28px;overflow:hidden;
-    height:min(790px,76vh);min-height:520px;
-    display:flex;flex-direction:column;position:relative;
-    box-shadow:inset 0 0 0 3px #000, 0 0 0 7px #1c1c1d, 0 0 0 8px #3a3a3c;
-  }
-  .kiosk-bottombar{display:flex;align-items:center;justify-content:center;gap:22px;padding:12px 10px 6px;color:#5a5c60;}
-  .kiosk-bottombar .pay-icon{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;letter-spacing:.3px;}
-  .kiosk-bottombar .pay-icon svg{width:16px;height:16px;}
-  .kiosk-bottombar .slot{width:64px;height:5px;border-radius:3px;background:linear-gradient(180deg,#6d6f73,#8d8f93);}
-  .kiosk-stand{width:64px;height:46px;margin:0 auto;background:linear-gradient(180deg,#c3c4c7,#8b8d90);clip-path:polygon(32% 0,68% 0,96% 100%,4% 100%);}
-  .kiosk-base-shadow{width:230px;height:20px;margin:8px auto 0;background:radial-gradient(ellipse,rgba(0,0,0,.5),transparent 72%);}
-  @media (max-height:720px){ .kiosk-stand,.kiosk-base-shadow{display:none;} .kiosk-screen{height:min(790px,80vh);} }
-
-  /* ============ PLEIN ÉCRAN ============ */
-  html,body{width:100%;background:var(--paper);}
-  .stage{width:100vw;height:100vh;height:100dvh;}
-  .kiosk{width:100%;height:100%;background:none;padding:0;box-shadow:none;border-radius:0;}
-  .kiosk-topbar,.kiosk-bottombar,.kiosk-stand,.kiosk-base-shadow{display:none;}
+  .stage{width:100vw;height:100vh;height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .kiosk{width:100%;height:100%;background:none;padding:0;box-shadow:none;border-radius:0;position:relative;}
   .kiosk-screen{
     background:var(--paper);overflow:hidden;
     width:100%;height:100%;max-width:900px;margin:0 auto;
     display:flex;flex-direction:column;position:relative;
-    box-shadow:none;border-radius:0;
   }
   @media (min-width:901px){
     .kiosk-screen{box-shadow:0 0 0 1px var(--line);}
@@ -75,7 +39,6 @@
   }
   .fullscreen-btn{background:rgba(255,255,255,.16);border:none;color:#fff;width:34px;height:34px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
-  /* ============ APP ============ */
   #app{position:relative;flex:1 1 auto;display:flex;flex-direction:column;min-height:0;}
 
   .app-header{flex:0 0 auto;background:var(--mcdo-red);color:#fff;display:flex;align-items:center;gap:10px;padding:12px 14px;box-shadow:0 3px 8px rgba(0,0,0,.15);z-index:6;}
@@ -88,61 +51,9 @@
   .cart-btn .badge{position:absolute;top:-4px;right:-4px;background:var(--ink);color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--mcdo-red);}
   .gear-btn{background:rgba(255,255,255,.16);border:none;color:#fff;width:34px;height:34px;border-radius:50%;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
-  /* ---- Réglages GitHub ---- */
-  #settings-overlay{position:absolute;inset:0;background:rgba(20,12,6,.5);display:none;align-items:flex-end;justify-content:center;z-index:60;}
-  #settings-overlay.show{display:flex;}
-  #settings-modal{background:#fff;border-radius:22px 22px 0 0;width:100%;max-height:88%;overflow-y:auto;padding:20px;position:relative;animation:modalUp .22s ease;}
-  #settings-modal h3{font-size:16px;margin-bottom:4px;}
-  #settings-modal .s-desc{font-size:11.5px;color:var(--gray);line-height:1.5;margin-bottom:14px;}
-  #settings-modal label{font-size:11px;font-weight:800;color:var(--mcdo-red-dark);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px;}
-  #settings-modal input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;font-size:13px;margin-bottom:6px;font-family:inherit;}
-  #settings-modal .s-note{font-size:10.5px;color:var(--gray);line-height:1.5;margin-bottom:14px;}
-  #settings-modal .s-note a{color:var(--mcdo-red-dark);}
-  #settings-save{width:100%;background:var(--mcdo-red);color:#fff;border:none;padding:14px;border-radius:14px;font-weight:800;font-size:14px;cursor:pointer;margin-bottom:8px;}
-  #settings-clear{width:100%;background:none;border:none;color:var(--gray);font-size:11.5px;text-decoration:underline;cursor:pointer;}
-  #settings-status{font-size:11px;font-weight:700;margin-bottom:12px;padding:8px 10px;border-radius:10px;display:none;}
-  #settings-status.ok{display:block;background:#E9F7EC;color:var(--ok);}
-  #settings-status.err{display:block;background:#FCEBE9;color:var(--mcdo-red-dark);}
-
-  .subtle-history-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:20px;padding:10px;background:var(--paper-2);border:1px solid var(--line);border-radius:12px;color:var(--ink);font-size:12px;font-weight:600;cursor:pointer;transition:.15s ease;}
-  .subtle-history-btn:hover{background:#F7E3C3;}
-
-  /* ---- Page dédiée pour l'historique des tickets ---- */
-  #history-page{position:absolute;inset:0;background:var(--paper);z-index:65;display:none;flex-direction:column;animation:modalUp .22s ease;}
-  #history-page.show{display:flex;}
-  .history-header{flex:0 0 auto;background:#fff;border-bottom:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
-  .history-header h2{font-size:16px;}
-  .history-close-btn{background:var(--paper-2);border:none;width:32px;height:32px;border-radius:50%;font-size:14px;cursor:pointer;}
-  .history-body{flex:1 1 auto;overflow-y:auto;padding:16px;display:flex;flex-direction:column;align-items:center;}
-  .history-list{display:flex;flex-direction:column;gap:16px;width:100%;max-width:320px;}
-  .history-empty{text-align:center;color:var(--gray);font-size:12px;padding:40px 10px;font-family:'Inter',sans-serif;}
-  
-  .history-item{
-    background:#fffdf8;color:var(--ink);width:100%;border-radius:6px;padding:16px 16px 12px;
-    font-family:'Inter',monospace;box-shadow:0 4px 12px rgba(0,0,0,.08);border:1px solid var(--line);
-    position:relative;
-  }
-  .history-item .h-title{text-align:center;font-weight:800;font-size:11px;letter-spacing:1px;margin-bottom:2px;}
-  .history-item .h-date{text-align:center;font-size:9.5px;color:var(--gray);margin-bottom:8px;}
-  .history-item .h-num{text-align:center;font-size:24px;font-weight:900;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:6px 0;margin-bottom:10px;letter-spacing:1px;color:var(--mcdo-red-dark);}
-  .history-item .h-chevalet{text-align:center;font-size:13px;font-weight:800;color:var(--mcdo-red);margin-top:-6px;margin-bottom:8px;}
-  .history-item .h-articles{margin-bottom:8px;}
-  .history-item .h-article-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;}
-  .history-item .h-article-row .qty{color:var(--gray);margin-right:6px;}
-  .history-item .h-article-opts{font-size:9.5px;color:var(--gray);margin:-1px 0 4px 18px;}
-  .history-item .h-total{display:flex;justify-content:space-between;font-size:13px;font-weight:800;border-top:1px dashed var(--line);margin-top:8px;padding-top:8px;}
-  .history-item .h-type{text-align:center;font-size:10px;color:var(--gray);margin-top:8px;}
-
-  .export-pdf-btn{
-    margin-top:10px;width:100%;background:var(--mcdo-yellow);border:none;padding:8px;
-    border-radius:6px;font-weight:700;font-size:11px;color:var(--ink);cursor:pointer;
-    display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 2px 4px rgba(0,0,0,.05);
-  }
-  .export-pdf-btn:active{transform:scale(.98);}
-
   nav#cats{flex:0 0 auto;background:#fff;border-bottom:1px solid var(--line);display:flex;gap:8px;padding:10px 12px;overflow-x:auto;z-index:5;}
   nav#cats::-webkit-scrollbar{display:none;}
-  .cat-btn{border:none;background:var(--paper-2);color:var(--ink);font-weight:700;font-size:12.5px;padding:9px 14px;border-radius:999px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:.15s ease;}
+  .cat-btn{border:none;background:var(--paper-2);color:var(--ink);font-weight:700;font-size:12.5px;padding:99px 14px;border-radius:999px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:.15s ease;}
   .cat-btn.active{background:var(--mcdo-red);color:#fff;}
 
   #catalog{flex:1 1 auto;overflow-y:auto;padding:16px 14px 90px;}
@@ -161,7 +72,7 @@
 
   .prod-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4;background:#fff;border-radius:inherit;}
 
-  /* ============ FOOD ART ============ */
+  /* FOOD ART */
   .art-burger{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;width:100%;height:100%;padding:8% 0 6%;}
   .art-burger>*{flex:0 0 auto;}
   .art-burger .bun-top{position:relative;height:32%;width:80%;background:radial-gradient(120% 100% at 50% 18%,#FCD08A,#E29A3B 85%);border-radius:50% 50% 8px 8px/65% 65% 8px 8px;box-shadow:inset 0 -5px 7px rgba(0,0,0,.10);}
@@ -202,7 +113,7 @@
   .art-sauce{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
   .art-sauce .blob{width:56%;height:56%;border-radius:50%;box-shadow:inset -3px -3px 6px rgba(0,0,0,.15),inset 3px 3px 6px rgba(255,255,255,.4);}
 
-  /* ============ CART BAR ============ */
+  /* CART BAR */
   #cartbar{position:absolute;left:12px;right:12px;bottom:14px;background:var(--mcdo-red);color:#fff;border-radius:16px;padding:13px 16px;display:none;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:0 10px 24px rgba(14,107,58,.4);z-index:20;animation:barIn .25s ease;}
   #cartbar.show{display:flex;}
   @keyframes barIn{from{transform:translateY(16px);opacity:0;}to{transform:translateY(0);opacity:1;}}
@@ -210,15 +121,11 @@
   #cartbar .left .circle{background:var(--mcdo-yellow);color:var(--ink);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;}
   #cartbar .right{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;}
 
-  /* ============ WELCOME ============ */
+  /* WELCOME */
   #screen-welcome{position:absolute;inset:0;z-index:50;background:linear-gradient(165deg,var(--mcdo-red) 0%,#0F5C32 60%,#0A4525 100%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;padding:26px 22px 30px;}
   #screen-welcome .top-row{width:100%;display:flex;align-items:center;justify-content:space-between;}
   
-  /* Bouton secret haut-gauche */
-  .secret-history-btn{
-    width:18px;height:18px;background:rgba(255,255,255,.15);border:none;border-radius:50%;
-    cursor:pointer;opacity:.15;transition:opacity .2s;
-  }
+  .secret-history-btn{width:18px;height:18px;background:rgba(255,255,255,.15);border:none;border-radius:50%;cursor:pointer;opacity:.15;transition:opacity .2s;}
   .secret-history-btn:active{opacity:.6;}
 
   #screen-welcome .lang-row{display:flex;gap:6px;}
@@ -236,7 +143,7 @@
   .choice-btn .ico{width:36px;height:36px;border-radius:50%;background:var(--paper-2);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;}
   .choice-btn small{display:block;font-weight:500;font-size:11px;color:var(--gray);margin-top:1px;}
 
-  /* ============ WIZARD ============ */
+  /* WIZARD & CUSTOMIZATION */
   #wizard-overlay{position:absolute;inset:0;background:#fff;display:none;z-index:45;flex-direction:column;}
   #wizard-overlay.show{display:flex;}
   .wizard-head{flex:0 0 auto;padding:14px 12px 6px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);}
@@ -244,12 +151,14 @@
   .wizard-title-wrap{flex:1;text-align:center;}
   .wizard-title{font-weight:800;font-size:14px;}
   .wizard-menu-name{font-size:10.5px;color:var(--gray);}
-  .wizard-dots{display:flex;justify-content:center;gap:6px;padding:99px 0 4px;flex:0 0 auto;}
+  .wizard-dots{display:flex;justify-content:center;gap:6px;padding:8px 0 4px;flex:0 0 auto;}
   .wizard-dots .d{width:7px;height:7px;border-radius:50%;background:var(--line);transition:.2s;}
   .wizard-dots .d.active{background:var(--mcdo-red);width:18px;border-radius:4px;}
   .wizard-dots .d.done{background:var(--mcdo-yellow);}
   .wizard-body{flex:1 1 auto;overflow-y:auto;padding:10px 16px 16px;}
-  .wiz-opt{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:14px;padding:9px 12px;margin-bottom:9px;cursor:pointer;}
+  
+  .wiz-opt-wrap{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+  .wiz-opt{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:14px;padding:9px 12px;cursor:pointer;flex:1;}
   .wiz-opt.selected{border-color:var(--mcdo-red);background:#FFF3EF;}
   .wiz-opt .wiz-thumb{width:46px;height:46px;border-radius:10px;background:radial-gradient(120% 100% at 50% 15%,#FFF6E4,#FCE6B8 75%);position:relative;overflow:hidden;flex:0 0 auto;}
   .wiz-opt .wiz-info{flex:1;min-width:0;}
@@ -258,11 +167,29 @@
   .wiz-opt .wiz-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;}
   .wiz-opt.selected .wiz-check{background:var(--mcdo-red);border-color:var(--mcdo-red);}
   .wiz-opt.is-extra .wiz-check{border-radius:6px;}
-  .wizard-footer{flex:0 0 auto;padding:10px 16px 16px;border-top:1px solid var(--line);}
-  #wizard-confirm-btn{width:100%;background:var(--mcdo-yellow);border:none;padding:14px;border-radius:14px;font-weight:800;font-size:14.5px;cursor:pointer;}
-  .wiz-skip-note{text-align:center;font-size:11px;color:var(--gray);margin-top:8px;}
 
-  /* ============ DRAWER ============ */
+  .wiz-custom-side-btn{
+    background:var(--paper-2);border:1.5px solid var(--line);border-radius:12px;padding:0 10px;height:66px;
+    font-size:11px;font-weight:800;color:var(--mcdo-red-dark);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  }
+  .wiz-custom-side-btn:hover{background:#FCE6B8;}
+
+  .wizard-footer{flex:0 0 auto;padding:10px 16px 16px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px;}
+  .btn-custom-main{width:100%;background:var(--paper-2);border:1.5px solid var(--mcdo-red);color:var(--mcdo-red-dark);padding:10px;border-radius:12px;font-weight:800;font-size:13px;cursor:pointer;}
+  #wizard-confirm-btn{width:100%;background:var(--mcdo-yellow);border:none;padding:14px;border-radius:14px;font-weight:800;font-size:14.5px;cursor:pointer;}
+  .wiz-skip-note{text-align:center;font-size:11px;color:var(--gray);margin-top:2px;}
+
+  /* CUSTOMIZATION BUILDER UI */
+  .custom-section-title{font-size:12px;font-weight:800;color:var(--mcdo-red-dark);text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px;}
+  .custom-item-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;background:#fff;}
+  .custom-item-row .c-name{font-size:13px;font-weight:600;}
+  .custom-item-row .c-price{font-size:11px;color:var(--gray);margin-top:1px;}
+  .custom-item-row .c-ctrl{display:flex;align-items:center;gap:10px;}
+  .custom-item-row .c-ctrl button{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--paper-2);font-weight:800;cursor:pointer;font-size:14px;}
+  .custom-item-row .c-ctrl button:active{background:var(--mcdo-yellow);}
+  .custom-item-row .c-ctrl span{font-size:13px;font-weight:800;min-width:14px;text-align:center;}
+
+  /* DRAWER */
   #drawer-scrim{position:absolute;inset:0;background:rgba(20,12,6,.45);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:29;}
   #drawer-scrim.show{opacity:1;pointer-events:auto;}
   #drawer{position:absolute;left:0;right:0;bottom:0;height:90%;background:#fff;border-radius:22px 22px 0 0;transform:translateY(102%);transition:transform .32s cubic-bezier(.22,.85,.32,1);z-index:30;display:flex;flex-direction:column;box-shadow:0 -10px 30px rgba(0,0,0,.2);}
@@ -296,7 +223,7 @@
   #drawer-checkout:disabled{background:#ddd6c8;color:#9a9385;cursor:not-allowed;}
   #drawer-continue{width:100%;background:none;border:none;color:var(--gray);font-size:11.5px;margin-top:8px;cursor:pointer;text-decoration:underline;}
 
-  /* ============ CHEVALET MODAL (OBLIGATOIRE) ============ */
+  /* CHEVALET MODAL */
   #chevalet-overlay{position:absolute;inset:0;background:rgba(20,12,6,.6);display:none;align-items:center;justify-content:center;z-index:55;padding:20px;}
   #chevalet-overlay.show{display:flex;}
   #chevalet-modal{background:#fff;border-radius:22px;width:100%;max-width:340px;padding:24px 20px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.25);animation:modalUp .22s ease;}
@@ -307,7 +234,7 @@
   #chevalet-error{color:var(--mcdo-red-dark);font-size:11px;font-weight:700;margin-bottom:10px;display:none;}
   #chevalet-submit-btn{width:100%;background:var(--mcdo-yellow);border:none;padding:14px;border-radius:14px;font-weight:800;font-size:15px;cursor:pointer;color:var(--ink);}
 
-  /* ============ VARIANT MODAL ============ */
+  /* VARIANT MODAL */
   #overlay{position:absolute;inset:0;background:rgba(20,12,6,.5);display:none;align-items:flex-end;justify-content:center;z-index:40;}
   #overlay.show{display:flex;}
   #modal{background:#fff;border-radius:22px 22px 0 0;width:100%;max-height:88%;overflow-y:auto;padding:20px;position:relative;animation:modalUp .22s ease;}
@@ -324,14 +251,13 @@
   .opt .extra{color:var(--gray);font-size:11.5px;}
   #modal-add-btn{width:100%;background:var(--mcdo-yellow);border:none;padding:14px;border-radius:14px;font-weight:800;font-size:14.5px;cursor:pointer;margin-top:4px;}
 
-  /* ============ CONFIRM ============ */
+  /* CONFIRM */
   #screen-confirm{position:absolute;inset:0;z-index:70;background:var(--mcdo-red);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto;}
   #screen-confirm.show{display:flex;}
   #screen-confirm .check{width:56px;height:56px;border-radius:50%;background:var(--mcdo-yellow);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--mcdo-red);margin-bottom:10px;animation:modalUp .3s ease;}
   #screen-confirm h1{color:#fff;font-size:18px;margin-bottom:2px;}
   #screen-confirm p.lead{color:rgba(255,255,255,.85);font-size:11px;margin-bottom:10px;}
 
-  /* Box alerte imprimante HS (TRÈS VISIBLE) */
   .printer-alert-box{
     background:#FFD1D1;border:3px solid #D32F2F;border-radius:16px;
     padding:16px;color:#5C0000;max-width:310px;width:100%;text-align:center;
@@ -357,6 +283,57 @@
   .receipt .r-type{text-align:center;font-size:10px;color:var(--gray);margin-top:8px;}
   #confirm-new-btn{margin-top:14px;background:#fff;color:var(--mcdo-red);border:none;padding:12px 26px;border-radius:999px;font-weight:800;font-size:13px;cursor:pointer;}
 
+  /* SETTINGS & HISTORY */
+  #settings-overlay{position:absolute;inset:0;background:rgba(20,12,6,.5);display:none;align-items:flex-end;justify-content:center;z-index:60;}
+  #settings-overlay.show{display:flex;}
+  #settings-modal{background:#fff;border-radius:22px 22px 0 0;width:100%;max-height:88%;overflow-y:auto;padding:20px;position:relative;animation:modalUp .22s ease;}
+  #settings-modal h3{font-size:16px;margin-bottom:4px;}
+  #settings-modal .s-desc{font-size:11.5px;color:var(--gray);line-height:1.5;margin-bottom:14px;}
+  #settings-modal label{font-size:11px;font-weight:800;color:var(--mcdo-red-dark);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px;}
+  #settings-modal input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;font-size:13px;margin-bottom:6px;font-family:inherit;}
+  #settings-modal .s-note{font-size:10.5px;color:var(--gray);line-height:1.5;margin-bottom:14px;}
+  #settings-modal .s-note a{color:var(--mcdo-red-dark);}
+  #settings-save{width:100%;background:var(--mcdo-red);color:#fff;border:none;padding:14px;border-radius:14px;font-weight:800;font-size:14px;cursor:pointer;margin-bottom:8px;}
+  #settings-clear{width:100%;background:none;border:none;color:var(--gray);font-size:11.5px;text-decoration:underline;cursor:pointer;}
+  #settings-status{font-size:11px;font-weight:700;margin-bottom:12px;padding:8px 10px;border-radius:10px;display:none;}
+  #settings-status.ok{display:block;background:#E9F7EC;color:var(--ok);}
+  #settings-status.err{display:block;background:#FCEBE9;color:var(--mcdo-red-dark);}
+
+  .subtle-history-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:20px;padding:10px;background:var(--paper-2);border:1px solid var(--line);border-radius:12px;color:var(--ink);font-size:12px;font-weight:600;cursor:pointer;transition:.15s ease;}
+  .subtle-history-btn:hover{background:#F7E3C3;}
+
+  #history-page{position:absolute;inset:0;background:var(--paper);z-index:65;display:none;flex-direction:column;animation:modalUp .22s ease;}
+  #history-page.show{display:flex;}
+  .history-header{flex:0 0 auto;background:#fff;border-bottom:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
+  .history-header h2{font-size:16px;}
+  .history-close-btn{background:var(--paper-2);border:none;width:32px;height:32px;border-radius:50%;font-size:14px;cursor:pointer;}
+  .history-body{flex:1 1 auto;overflow-y:auto;padding:16px;display:flex;flex-direction:column;align-items:center;}
+  .history-list{display:flex;flex-direction:column;gap:16px;width:100%;max-width:320px;}
+  .history-empty{text-align:center;color:var(--gray);font-size:12px;padding:40px 10px;font-family:'Inter',sans-serif;}
+  
+  .history-item{
+    background:#fffdf8;color:var(--ink);width:100%;border-radius:6px;padding:16px 16px 12px;
+    font-family:'Inter',monospace;box-shadow:0 4px 12px rgba(0,0,0,.08);border:1px solid var(--line);
+    position:relative;
+  }
+  .history-item .h-title{text-align:center;font-weight:800;font-size:11px;letter-spacing:1px;margin-bottom:2px;}
+  .history-item .h-date{text-align:center;font-size:9.5px;color:var(--gray);margin-bottom:8px;}
+  .history-item .h-num{text-align:center;font-size:24px;font-weight:900;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:6px 0;margin-bottom:10px;letter-spacing:1px;color:var(--mcdo-red-dark);}
+  .history-item .h-chevalet{text-align:center;font-size:13px;font-weight:800;color:var(--mcdo-red);margin-top:-6px;margin-bottom:8px;}
+  .history-item .h-articles{margin-bottom:8px;}
+  .history-item .h-article-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;}
+  .history-item .h-article-row .qty{color:var(--gray);margin-right:6px;}
+  .history-item .h-article-opts{font-size:9.5px;color:var(--gray);margin:-1px 0 4px 18px;}
+  .history-item .h-total{display:flex;justify-content:space-between;font-size:13px;font-weight:800;border-top:1px dashed var(--line);margin-top:8px;padding-top:8px;}
+  .history-item .h-type{text-align:center;font-size:10px;color:var(--gray);margin-top:8px;}
+
+  .export-pdf-btn{
+    margin-top:10px;width:100%;background:var(--mcdo-yellow);border:none;padding:8px;
+    border-radius:6px;font-weight:700;font-size:11px;color:var(--ink);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 2px 4px rgba(0,0,0,.05);
+  }
+  .export-pdf-btn:active{transform:scale(.98);}
+
   ::-webkit-scrollbar{width:7px;}
   ::-webkit-scrollbar-thumb{background:#e2d8c6;border-radius:8px;}
 </style>
@@ -365,8 +342,6 @@
 
 <div class="stage">
   <div class="kiosk">
-    <div class="kiosk-topbar"><div class="dot"></div><div class="cam"></div><div class="dot"></div></div>
-
     <div class="kiosk-screen">
       <div id="app">
 
@@ -405,7 +380,7 @@
           </div>
         </section>
 
-        <!-- WIZARD -->
+        <!-- WIZARD / PERSONNALISATION -->
         <div id="wizard-overlay">
           <div class="wizard-head">
             <button class="wizard-back" id="wizard-back">‹</button>
@@ -459,7 +434,6 @@
           <h1>Commande envoyée !</h1>
           <p class="lead">Merci, votre commande a été transmise en cuisine.</p>
 
-          <!-- Avertissement Imprimante HS -->
           <div class="printer-alert-box">
             <div class="p-title">🚨 IMPRIMANTE À TICKET EN PANNE</div>
             <div class="p-desc">Veuillez patienter à la borne, un membre du personnel va venir vous donner votre ticket.</div>
@@ -478,7 +452,7 @@
             <div id="settings-status"></div>
             <label>Jeton d'accès GitHub (Personal Access Token)</label>
             <input type="password" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
-            <p class="s-note">Crée un jeton <b>fine-grained</b> sur <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a>, limité au repo <b>mcdo</b>, avec la permission <b>Contents: Read and write</b> uniquement. Ce jeton reste dans ton navigateur (jamais envoyé ailleurs qu'à l'API GitHub) — ne le partage pas et ne le mets jamais dans le code du repo.</p>
+            <p class="s-note">Crée un jeton <b>fine-grained</b> sur <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a>, limité au repo <b>mcdo</b>, avec la permission <b>Contents: Read and write</b> uniquement.</p>
             <button id="settings-save">Enregistrer le jeton</button>
             <button id="settings-clear">Supprimer le jeton enregistré</button>
 
@@ -501,14 +475,7 @@
 
       </div>
     </div>
-
-    <div class="kiosk-bottombar">
-      <div class="pay-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8c4-4 16-4 20 0M5 12c3.5-2.5 10.5-2.5 14 0M8.5 16c2-1.3 5-1.3 7 0"/><circle cx="12" cy="19" r="1"/></svg> Sans contact</div>
-      <div class="slot"></div>
-    </div>
   </div>
-  <div class="kiosk-stand"></div>
-  <div class="kiosk-base-shadow"></div>
 </div>
 
 <script>
@@ -526,35 +493,49 @@ let orderType = 'sur_place';
 let historyPollInterval = null;
 let currentOrdersData = [];
 
-/* ===================== DONNÉES ===================== */
-const DRINK_CHOICES = [
-  {id:'jus_pomme', name:'Jus de pomme', color:'#D98A2E'},
-  {id:'coca', name:'Coca-Cola', color:'#2B1712'},
-  {id:'ice_tea', name:'Ice Tea', color:'#B07C2C'},
-  {id:'eau_gazeuse', name:'Eau gazeuse', color:'#BFE0E8'},
-  {id:'eau', name:'Eau', color:'#D9EEF7'}
-];
-function drinkImg(id){ return 'boisson-' + id.replace(/_/g,'-') + '.png'; }
+/* ===================== INGRÉDIENTS & BURGERS (CONSTITUTION RÉELLE) ===================== */
+const INGREDIENTS_CATALOG = {
+  // Condiments / Éléments de base pouvant être retirés ou réajoutés (0,00€)
+  'cornichon': { name: 'Cornichon pickles', isBase: true },
+  'oignon': { name: 'Oignons émincés', isBase: true },
+  'salade': { name: 'Salade iceberg', isBase: true },
+  'cheddar': { name: 'Tranche de Cheddar', isBase: true },
+  'steak': { name: 'Steak haché pur bœuf', isBase: true },
+  'sauce_ketchup': { name: 'Ketchup', isBase: true },
+  'sauce_moutarde': { name: 'Moutarde', isBase: true },
+  'sauce_bigmac': { name: 'Sauce Big Mac', isBase: true },
 
-const SAUCE_OPTIONS = [
-  {id:'mayo', name:'Mayonnaise', delta:0, img:'sauce-mayo.png', art:'sauce', color:'#FFF7E8'},
-  {id:'ketchup', name:'Ketchup', delta:0, img:'sauce-ketchup.png', art:'sauce', color:'#C21F1F'}
-];
-
-const CATEGORIES = [
-  {id:'menus', name:'Menus', emoji:'🍽️'},
-  {id:'burgers', name:'Burgers', emoji:'🍔'},
-  {id:'nuggets', name:'Nuggets', emoji:'🍗'},
-  {id:'frites', name:'Frites', emoji:'🍟'},
-  {id:'boissons', name:'Boissons', emoji:'🥤'}
-];
+  // Éléments pouvant être rajoutés depuis d'autres burgers (+0.25€ par extra)
+  'extra_salade': { name: 'Salade iceberg supplémentaire', isBase: false, price: 0.25 },
+  'extra_cheddar': { name: 'Cheddar supplémentaire', isBase: false, price: 0.25 },
+  'extra_sauce_bigmac': { name: 'Sauce Big Mac supplémentaire', isBase: false, price: 0.25 },
+  'extra_cornichon': { name: 'Cornichons extra', isBase: false, price: 0.25 },
+  'extra_oignon': { name: 'Oignons extra', isBase: false, price: 0.25 },
+  'extra_steak': { name: 'Steak haché supplémentaire', isBase: false, price: 0.25 }
+};
 
 const PRODUCTS = {
   burgers: [
-    {id:'hamburger', name:'Hamburger', desc:'Steak haché, cornichon, oignon, ketchup, moutarde', price:1.90, art:'burger', img:'hamburger.png'},
-    {id:'cheeseburger', name:'Cheeseburger', desc:'Steak haché, cheddar fondant, cornichon', price:2.30, art:'burger', cheese:true, img:'cheeseburger.png'},
-    {id:'double_cheese', name:'Double Cheeseburger', desc:'Deux steaks hachés, double cheddar', price:3.60, art:'burger', cheese:true, double:true, img:'double-cheeseburger.png'},
-    {id:'bigmac', name:'Big Mac', desc:'Deux steaks hachés, sauce Big Mac, cheddar, salade, oignon, cornichon, pain 3 étages', price:5.90, art:'burger', cheese:true, double:true, img:'bigmac.png'},
+    {
+      id:'hamburger', name:'Hamburger', desc:'Steak haché, cornichon, oignon, ketchup, moutarde', price:1.90, art:'burger', img:'hamburger.png',
+      isBurger: true,
+      composition: { 'steak':1, 'cornichon':1, 'oignon':1, 'sauce_ketchup':1, 'sauce_moutarde':1 }
+    },
+    {
+      id:'cheeseburger', name:'Cheeseburger', desc:'Steak haché, cheddar fondant, cornichon, oignon, ketchup, moutarde', price:2.30, art:'burger', cheese:true, img:'cheeseburger.png',
+      isBurger: true,
+      composition: { 'steak':1, 'cheddar':1, 'cornichon':1, 'oignon':1, 'sauce_ketchup':1, 'sauce_moutarde':1 }
+    },
+    {
+      id:'double_cheese', name:'Double Cheeseburger', desc:'Deux steaks hachés, double cheddar, cornichon, oignon, ketchup, moutarde', price:3.60, art:'burger', cheese:true, double:true, img:'double-cheeseburger.png',
+      isBurger: true,
+      composition: { 'steak':2, 'cheddar':2, 'cornichon':1, 'oignon':1, 'sauce_ketchup':1, 'sauce_moutarde':1 }
+    },
+    {
+      id:'bigmac', name:'Big Mac', desc:'Deux steaks hachés, sauce Big Mac, cheddar, salade, oignon, cornichon, pain 3 étages', price:5.90, art:'burger', cheese:true, double:true, img:'bigmac.png',
+      isBurger: true,
+      composition: { 'steak':2, 'cheddar':1, 'salade':1, 'cornichon':1, 'oignon':1, 'sauce_bigmac':1 }
+    },
   ],
   nuggets: [
     {id:'nuggets4', name:'Nuggets', desc:'Poulet pané croustillant', price:2.90, art:'nugget', img:'nuggets.png',
@@ -573,8 +554,14 @@ const PRODUCTS = {
         {id:'g', name:'Grande frite', delta:1.20}
       ]}]}
   ],
-  boissons: DRINK_CHOICES.map((d,i)=>({
-    id:'boisson_'+d.id, name:d.name, desc:'Boisson fraîche servie glacée', price:1.50+i*0.05, art:'drink', color:d.color, img:drinkImg(d.id),
+  boissons: [
+    {id:'jus_pomme', name:'Jus de pomme', color:'#D98A2E'},
+    {id:'coca', name:'Coca-Cola', color:'#2B1712'},
+    {id:'ice_tea', name:'Ice Tea', color:'#B07C2C'},
+    {id:'eau_gazeuse', name:'Eau gazeuse', color:'#BFE0E8'},
+    {id:'eau', name:'Eau', color:'#D9EEF7'}
+  ].map((d,i)=>({
+    id:'boisson_'+d.id, name:d.name, desc:'Boisson fraîche servie glacée', price:1.50+i*0.05, art:'drink', color:d.color, img:'boisson-' + d.id.replace(/_/g,'-') + '.png',
     variants:[{group:'Taille', label:'la taille', options:[
       {id:'p', name:'Petite', delta:0},
       {id:'m', name:'Moyenne', delta:0.50},
@@ -588,19 +575,29 @@ const PRODUCTS = {
   ]
 };
 
+const DRINK_CHOICES = PRODUCTS.boissons;
+const SAUCE_OPTIONS = [
+  {id:'mayo', name:'Mayonnaise', delta:0, img:'sauce-mayo.png', art:'sauce', color:'#FFF7E8'},
+  {id:'ketchup', name:'Ketchup', delta:0, img:'sauce-ketchup.png', art:'sauce', color:'#C21F1F'}
+];
+
+const CATEGORIES = [
+  {id:'menus', name:'Menus', emoji:'🍽️'},
+  {id:'burgers', name:'Burgers', emoji:'🍔'},
+  {id:'nuggets', name:'Nuggets', emoji:'🍗'},
+  {id:'frites', name:'Frites', emoji:'🍟'},
+  {id:'boissons', name:'Boissons', emoji:'🥤'}
+];
+
 /* ===================== ART BUILDERS ===================== */
 function arrowsSvg(){
   return '<svg viewBox="0 0 100 60"><path d="M8 58 L8 26 C8 10 16 2 22 2 C28 2 30 12 30 20 C30 12 32 2 38 2 C44 2 52 10 52 26 L52 58 L42 58 L42 27 C42 16 39 12 37 12 C35 12 33 17 33 27 L33 58 L27 58 L27 27 C27 17 25 12 23 12 C21 12 18 16 18 27 L18 58 Z" fill="#FFC72C"/></svg>';
 }
 function burgerArt(cheese, double){
-  let h = '<div class="art-burger">';
-  h += '<div class="bun-top"><span class="seed" style="left:26%"></span><span class="seed" style="left:44%"></span><span class="seed" style="left:62%"></span></div>';
+  let h = '<div class="art-burger"><div class="bun-top"><span class="seed" style="left:26%"></span><span class="seed" style="left:44%"></span><span class="seed" style="left:62%"></span></div>';
   if(double) h += '<div class="cheese"></div><div class="patty"></div>';
   if(cheese) h += '<div class="cheese"></div>';
-  h += '<div class="patty"></div>';
-  h += '<div class="pickles"><span></span><span></span><span></span></div>';
-  h += '<div class="bun-bottom"></div>';
-  h += '</div>';
+  h += '<div class="patty"></div><div class="pickles"><span></span><span></span><span></span></div><div class="bun-bottom"></div></div>';
   return h;
 }
 function friesArt(){
@@ -609,31 +606,15 @@ function friesArt(){
   return `<div class="art-fries"><div class="pack"><div class="arches-tiny">${arrowsSvg()}</div></div>${f}</div>`;
 }
 function nuggetArt(){
-  const nugs = [
-    {w:44,h:38,l:6,t:40,r1:'60% 40% 55% 45%',r2:'50% 60% 40% 50%'},
-    {w:42,h:38,l:42,t:18,r1:'45% 55% 40% 60%',r2:'55% 45% 60% 40%'},
-    {w:40,h:36,l:36,t:48,r1:'55% 45% 60% 40%',r2:'40% 60% 45% 55%'}
-  ];
-  let n = nugs.map(x=>`<span class="nug" style="width:${x.w}%;height:${x.h}%;left:${x.l}%;top:${x.t}%;border-radius:${x.r1}/${x.r2}"></span>`).join('');
+  const nugs = [{w:44,h:38,l:6,t:40},{w:42,h:38,l:42,t:18},{w:40,h:36,l:36,t:48}];
+  let n = nugs.map(x=>`<span class="nug" style="width:${x.w}%;height:${x.h}%;left:${x.l}%;top:${x.t}%;border-radius:50%"></span>`).join('');
   return `<div class="art-nugget">${n}</div>`;
 }
-function drinkArt(color){
-  return `<div class="art-drink"><div class="lid"></div><div class="straw"></div><div class="cup" style="--cup-color:${color||'#DA291C'}"><div class="stripe"></div></div></div>`;
-}
-function friesArtInner(){
-  const fries = [{l:25,h:38,b:44,r:-8},{l:45,h:46,b:46,r:0},{l:65,h:36,b:44,r:8}];
-  let f = fries.map(x=>`<span class="fry" style="left:${x.l}%;height:${x.h}%;bottom:${x.b}%;transform:rotate(${x.r}deg)"></span>`).join('');
-  return `<div class="art-fries" style="position:relative;width:100%;height:100%;"><div class="pack" style="height:52%;"></div>${f}</div>`;
-}
-function menuArt(double){
-  return `<div class="art-menu"><div class="tray"></div><div class="mini-fries">${friesArtInner()}</div><div class="mini-burger">${burgerArt(true,double)}</div></div>`;
-}
-function happyArt(){
-  return `<div class="art-happy"><div class="handle"></div><span class="star">⭐</span><div class="box"><div class="arches-tiny">${arrowsSvg()}</div></div></div>`;
-}
-function sauceArt(color){
-  return `<div class="art-sauce"><div class="blob" style="background:${color||'#fff'}"></div></div>`;
-}
+function drinkArt(color){ return `<div class="art-drink"><div class="lid"></div><div class="straw"></div><div class="cup" style="--cup-color:${color||'#DA291C'}"><div class="stripe"></div></div></div>`; }
+function menuArt(double){ return `<div class="art-menu"><div class="tray"></div><div class="mini-fries">${friesArt()}</div><div class="mini-burger">${burgerArt(true,double)}</div></div>`; }
+function happyArt(){ return `<div class="art-happy"><div class="handle"></div><span class="star">⭐</span><div class="box"><div class="arches-tiny">${arrowsSvg()}</div></div></div>`; }
+function sauceArt(color){ return `<div class="art-sauce"><div class="blob" style="background:${color||'#fff'}"></div></div>`; }
+
 function foodArt(p){
   switch(p.art){
     case 'burger': return burgerArt(!!p.cheese, !!p.double);
@@ -652,51 +633,22 @@ function thumbHTML(p){
   return img + foodArt(p);
 }
 
-/* ===================== WELCOME & TRIPLE-CLIC SECRET ===================== */
+/* ===================== NAVIGATION & CATEGORIES ===================== */
 const screenWelcome = document.getElementById('screen-welcome');
 document.querySelectorAll('.choice-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    orderType = btn.dataset.type;
-    updateOrderTypeUI();
-    screenWelcome.style.display='none';
-  });
-});
-document.getElementById('lang-en').addEventListener('click', (e)=>{
-  e.stopPropagation();
-  const hint = document.querySelector('#screen-welcome .tap-hint');
-  const old = hint.textContent;
-  hint.textContent = '🇬🇧 English coming soon';
-  setTimeout(()=> hint.textContent = old, 1800);
+  btn.addEventListener('click', ()=>{ orderType = btn.dataset.type; updateOrderTypeUI(); screenWelcome.style.display='none'; });
 });
 function updateOrderTypeUI(){
   document.getElementById('pill-ordertype').innerHTML = (orderType==='sur_place' ? '🍽️ Sur place' : '🥡 À emporter');
   document.querySelectorAll('.ot-chip').forEach(c=> c.classList.toggle('active', c.dataset.type===orderType));
 }
-document.getElementById('pill-ordertype').addEventListener('click', ()=>{
-  orderType = orderType==='sur_place' ? 'emporter' : 'sur_place';
-  updateOrderTypeUI();
-});
-document.querySelectorAll('.ot-chip').forEach(chip=>{
-  chip.addEventListener('click', ()=>{ orderType = chip.dataset.type; updateOrderTypeUI(); });
-});
-updateOrderTypeUI();
 
-/* Détection du triple-clic rapide (3 appuis en < 800ms) */
-let secretClicks = 0;
-let secretTimer = null;
+let secretClicks = 0, secretTimer = null;
 document.getElementById('secret-history-btn').addEventListener('click', (e)=>{
-  e.stopPropagation();
-  secretClicks++;
-  clearTimeout(secretTimer);
-  if(secretClicks >= 3){
-    secretClicks = 0;
-    openHistoryPage();
-  } else {
-    secretTimer = setTimeout(()=>{ secretClicks = 0; }, 800);
-  }
+  e.stopPropagation(); secretClicks++; clearTimeout(secretTimer);
+  if(secretClicks >= 3){ secretClicks = 0; openHistoryPage(); } else { secretTimer = setTimeout(()=>{ secretClicks = 0; }, 800); }
 });
 
-/* ===================== CATEGORIES ===================== */
 const catsNav = document.getElementById('cats');
 CATEGORIES.forEach(c=>{
   const btn = document.createElement('button');
@@ -708,24 +660,12 @@ CATEGORIES.forEach(c=>{
 });
 function renderCats(){ [...catsNav.children].forEach(b=> b.classList.toggle('active', b.dataset.id===currentCat)); }
 
-/* ===================== CATALOG ===================== */
 const catalogEl = document.getElementById('catalog');
-function sectionSubtitle(cat){
-  switch(cat){
-    case 'menus': return 'Composez votre repas étape par étape, prix menu tout compris';
-    case 'burgers': return 'Nos burgers signature, préparés à la commande';
-    case 'nuggets': return 'Poulet pané croustillant';
-    case 'frites': return 'Choisissez votre taille';
-    case 'boissons': return 'Jus de pomme, Coca-Cola, Ice Tea, eau gazeuse ou eau plate';
-  }
-  return '';
-}
 function renderCatalog(){
   const cat = CATEGORIES.find(c=>c.id===currentCat);
   const items = PRODUCTS[currentCat];
   catalogEl.innerHTML = `
     <div class="section-title">${cat.emoji} ${cat.name}</div>
-    <div class="section-sub">${sectionSubtitle(currentCat)}</div>
     <div class="grid">
       ${items.map(p=>`
         <div class="card" data-id="${p.id}">
@@ -742,20 +682,151 @@ function renderCatalog(){
   });
 }
 
-/* ===================== DISPATCH OUVERTURE PRODUIT ===================== */
 function openProduct(p){
   if(p.wizard){ openWizard(p); return; }
+  if(p.isBurger){ openBurgerCustomizerModal(p); return; }
   if(!p.variants){ addToCart(p, [], p.price); pulseCartBar(); return; }
   openSimpleModal(p);
+}
+
+/* ===================== PERSONNALISATION DES BURGERS ===================== */
+let currentCustomBurger = null;
+let customBurgerState = {}; 
+let isCustomizingMode = false;
+
+function initBurgerCustomState(burger){
+  currentCustomBurger = burger;
+  customBurgerState = {};
+  
+  // Condiments de base du burger
+  Object.keys(burger.composition || {}).forEach(k => {
+    customBurgerState[k] = burger.composition[k]; // 1 ou 2 selon la recette
+  });
+  // Extras disponibles
+  ['extra_salade', 'extra_cheddar', 'extra_sauce_bigmac', 'extra_cornichon', 'extra_oignon', 'extra_steak'].forEach(k => {
+    customBurgerState[k] = 0;
+  });
+}
+
+function openBurgerCustomizerModal(burger, onConfirmCallback = null){
+  initBurgerCustomState(burger);
+  renderBurgerCustomizer(onConfirmCallback);
+  document.getElementById('overlay').classList.add('show');
+}
+
+function renderBurgerCustomizer(onConfirmCallback = null){
+  const modalBody = document.getElementById('modal-body');
+  const b = currentCustomBurger;
+  
+  // Calcul du prix supplémentaire
+  let extraPrice = 0;
+  Object.keys(customBurgerState).forEach(k => {
+    const item = INGREDIENTS_CATALOG[k];
+    if(item && !item.isBase && customBurgerState[k] > 0){
+      extraPrice += customBurgerState[k] * item.price;
+    }
+  });
+  
+  const totalPrice = b.price + extraPrice;
+
+  let baseHtml = `<div class="custom-section-title">Composition du ${b.name} (Modifiable gratuit)</div>`;
+  Object.keys(b.composition || {}).forEach(k => {
+    const ing = INGREDIENTS_CATALOG[k];
+    const qty = customBurgerState[k];
+    baseHtml += `
+      <div class="custom-item-row">
+        <div><div class="c-name">${ing.name}</div><div class="c-price">Inclus</div></div>
+        <div class="c-ctrl">
+          <button onclick="updateBurgerIng('${k}', -1, false)">-</button>
+          <span>${qty}</span>
+          <button onclick="updateBurgerIng('${k}', 1, false)">+</button>
+        </div>
+      </div>`;
+  });
+
+  let extraHtml = `<div class="custom-section-title">Inclusions supplémentaires (+0.25 € / élément)</div>`;
+  ['extra_salade', 'extra_cheddar', 'extra_sauce_bigmac', 'extra_cornichon', 'extra_oignon', 'extra_steak'].forEach(k => {
+    const ing = INGREDIENTS_CATALOG[k];
+    const qty = customBurgerState[k];
+    extraHtml += `
+      <div class="custom-item-row">
+        <div><div class="c-name">${ing.name}</div><div class="c-price">+0,25 €</div></div>
+        <div class="c-ctrl">
+          <button onclick="updateBurgerIng('${k}', -1, true)">-</button>
+          <span>${qty}</span>
+          <button onclick="updateBurgerIng('${k}', 1, true)">+</button>
+        </div>
+      </div>`;
+  });
+
+  modalBody.innerHTML = `
+    <div class="modal-art">${thumbHTML(b)}</div>
+    <h3>Personnalisation : ${b.name}</h3>
+    ${baseHtml}
+    ${extraHtml}
+    <button id="modal-add-btn">Valider la personnalisation — ${fmt(totalPrice)}</button>
+  `;
+
+  document.getElementById('modal-add-btn').onclick = ()=>{
+    const details = getBurgerCustomDetails(b);
+    if(onConfirmCallback){
+      onConfirmCallback(details, totalPrice);
+    } else {
+      addToCart(b, details.opts, totalPrice);
+      pulseCartBar();
+    }
+    closeModal();
+  };
+}
+
+window.updateBurgerIng = function(key, delta, isExtra){
+  const max = isExtra ? 1 : 1; 
+  const min = 0;
+  let newQty = (customBurgerState[key] || 0) + delta;
+  if(newQty < min) newQty = min;
+  if(newQty > max) newQty = max;
+  customBurgerState[key] = newQty;
+  renderBurgerCustomizer();
+};
+
+function getBurgerCustomDetails(burger){
+  let sans = [];
+  let avec = [];
+
+  // Retraits
+  Object.keys(burger.composition || {}).forEach(k => {
+    if(customBurgerState[k] === 0){
+      sans.push(INGREDIENTS_CATALOG[k].name.toLowerCase());
+    }
+  });
+
+  // Ajouts
+  Object.keys(customBurgerState).forEach(k => {
+    const ing = INGREDIENTS_CATALOG[k];
+    if(!ing.isBase && customBurgerState[k] > 0){
+      avec.push(ing.name.toLowerCase().replace(' supplémentaire','').replace(' extra',''));
+    }
+  });
+
+  let customStr = '';
+  if(sans.length > 0) customStr += 'sans ' + sans.join(', ');
+  if(avec.length > 0){
+    if(customStr) customStr += ', ';
+    customStr += 'avec ' + avec.join(', ');
+  }
+
+  const opts = customStr ? [{ group: 'Personnalisation', name: customStr }] : [];
+  return { customStr, opts };
 }
 
 /* ===================== MODAL SIMPLE ===================== */
 const overlay = document.getElementById('overlay');
 const modalBody = document.getElementById('modal-body');
-let modalProduct = null;
-let modalSelections = {};
+let modalProduct = null, modalSelections = {};
 document.getElementById('modal-close').onclick = closeModal;
 overlay.onclick = (e)=>{ if(e.target===overlay) closeModal(); };
+
+function closeModal(){ overlay.classList.remove('show'); modalProduct=null; }
 
 function openSimpleModal(p){
   modalProduct = p; modalSelections = {};
@@ -763,7 +834,7 @@ function openSimpleModal(p){
   renderModal();
   overlay.classList.add('show');
 }
-function closeModal(){ overlay.classList.remove('show'); modalProduct=null; }
+
 function renderModal(){
   const p = modalProduct;
   const total = p.price + p.variants.reduce((s,v)=> s + modalSelections[v.group].delta, 0);
@@ -801,26 +872,12 @@ function renderModal(){
   };
 }
 
-/* ===================== WIZARD ===================== */
+/* ===================== WIZARD MENU ===================== */
 function burgerOptionsFor(menuId){
-  if(menuId==='happy_meal') return [
-    {id:'hamburger', name:'Hamburger', delta:0, img:'hamburger.png', art:'burger'},
-    {id:'nuggets4', name:'4 Nuggets', delta:0, img:'nuggets.png', art:'nugget'}
-  ];
-  return [
-    {id:'hamburger', name:'Hamburger', delta:-0.50, img:'hamburger.png', art:'burger'},
-    {id:'cheeseburger', name:'Cheeseburger', delta:0, img:'cheeseburger.png', art:'burger', cheese:true},
-    {id:'double_cheese', name:'Double Cheeseburger', delta:1.00, img:'double-cheeseburger.png', art:'burger', cheese:true, double:true},
-    {id:'bigmac', name:'Big Mac', delta:1.70, img:'bigmac.png', art:'burger', cheese:true, double:true}
-  ];
+  return PRODUCTS.burgers;
 }
 function friesOptionsFor(menuId){
   if(menuId==='happy_meal') return [{id:'p', name:'Petite frite (incluse)', delta:0, art:'fries', img:'frites.png'}];
-  if(menuId==='maxi_best_of') return [
-    {id:'p', name:'Petite frite', delta:-1.20, art:'fries', img:'frites.png'},
-    {id:'m', name:'Moyenne frite', delta:-0.60, art:'fries', img:'frites.png'},
-    {id:'g', name:'Grande frite', delta:0, art:'fries', img:'frites.png'}
-  ];
   return [
     {id:'p', name:'Petite frite', delta:-0.60, art:'fries', img:'frites.png'},
     {id:'m', name:'Moyenne frite', delta:0, art:'fries', img:'frites.png'},
@@ -828,36 +885,27 @@ function friesOptionsFor(menuId){
   ];
 }
 function boissonOptionsFor(){
-  return DRINK_CHOICES.map(d=>({id:d.id, name:d.name, delta:0, art:'drink', color:d.color, img:drinkImg(d.id)}));
+  return DRINK_CHOICES.map(d=>({id:d.id, name:d.name, delta:0, art:'drink', color:d.color, img:'boisson-'+d.id.replace(/_/g,'-')+'.png'}));
 }
-function extrasFor(menuId){
-  if(menuId==='happy_meal') return [
-    {id:'extra_nuggets', name:'4 Nuggets en plus', price:2.90, img:'nuggets.png', art:'nugget'}
-  ];
-  return [
-    {id:'extra_nuggets', name:'4 Nuggets en plus', price:2.90, img:'nuggets.png', art:'nugget'},
-    {id:'extra_burger', name:'Un Hamburger en plus', price:1.90, img:'hamburger.png', art:'burger'}
-  ];
-}
+
 function buildWizardSteps(menu){
   return [
-    {key:'burger', label: menu.id==='happy_meal' ? 'Plat' : 'Burger', title: menu.id==='happy_meal' ? 'Choisissez votre plat' : 'Choisissez votre burger', options: burgerOptionsFor(menu.id)},
+    {key:'burger', label: 'Burger', title: 'Choisissez votre burger', isBurgerStep: true, options: burgerOptionsFor(menu.id)},
     {key:'frites', label:'Frites', title:'Choisissez vos frites', options: friesOptionsFor(menu.id)},
     {key:'sauce', label:'Sauce', title:'Choisissez votre sauce', options: SAUCE_OPTIONS},
-    {key:'boisson', label:'Boisson', title:'Choisissez votre boisson', options: boissonOptionsFor()},
-    {key:'extra', label:'Extra', title:'Un petit plus ?', extras:true, options: extrasFor(menu.id)}
+    {key:'boisson', label:'Boisson', title:'Choisissez votre boisson', options: boissonOptionsFor()}
   ];
 }
 
-let wizardMenu=null, wizardSteps=[], wizardIndex=0, wizardSel={}, wizardExtraSel=new Set();
+let wizardMenu=null, wizardSteps=[], wizardIndex=0, wizardSel={}, burgerCustomizations={};
 
 function openWizard(menu){
   wizardMenu = menu;
   wizardSteps = buildWizardSteps(menu);
   wizardIndex = 0;
   wizardSel = {};
-  wizardSteps.forEach(s=>{ if(!s.extras) wizardSel[s.key] = s.options[0]; });
-  wizardExtraSel = new Set();
+  burgerCustomizations = {};
+  wizardSteps.forEach(s=>{ wizardSel[s.key] = s.options[0]; });
   document.getElementById('wizard-menu-name').textContent = menu.name;
   renderWizard();
   document.getElementById('wizard-overlay').classList.add('show');
@@ -868,10 +916,13 @@ function closeWizard(){
 }
 function computeWizardTotal(){
   let t = wizardMenu.price;
-  wizardSteps.forEach(s=>{ if(!s.extras && wizardSel[s.key]) t += wizardSel[s.key].delta||0; });
-  wizardSteps.forEach(s=>{ if(s.extras) s.options.forEach(o=>{ if(wizardExtraSel.has(o.id)) t += o.price; }); });
+  wizardSteps.forEach(s=>{ if(wizardSel[s.key]) t += wizardSel[s.key].delta||0; });
+  Object.keys(burgerCustomizations).forEach(k => {
+    if(burgerCustomizations[k].extraPrice) t += burgerCustomizations[k].extraPrice;
+  });
   return t;
 }
+
 function goNextStep(){ if(wizardIndex < wizardSteps.length-1){ wizardIndex++; renderWizard(); } }
 function goBackStep(){ if(wizardIndex>0){ wizardIndex--; renderWizard(); } }
 document.getElementById('wizard-back').onclick = goBackStep;
@@ -885,62 +936,74 @@ function renderWizard(){
   document.getElementById('wizard-back').style.visibility = wizardIndex===0 ? 'hidden' : 'visible';
 
   const bodyEl = document.getElementById('wizard-body');
-  if(step.extras){
-    bodyEl.innerHTML = step.options.map(o=>`
-      <div class="wiz-opt is-extra ${wizardExtraSel.has(o.id)?'selected':''}" data-id="${o.id}">
-        <div class="wiz-thumb">${thumbHTML(o)}</div>
-        <div class="wiz-info"><div class="wiz-name">${o.name}</div><div class="wiz-price">+ ${fmt(o.price)}</div></div>
-        <div class="wiz-check">✓</div>
-      </div>`).join('');
-    bodyEl.querySelectorAll('.wiz-opt').forEach(row=>{
-      row.onclick = ()=>{
-        const id = row.dataset.id;
-        if(wizardExtraSel.has(id)) wizardExtraSel.delete(id); else wizardExtraSel.add(id);
-        renderWizard();
-      };
-    });
-  } else {
-    bodyEl.innerHTML = step.options.map(o=>`
+  
+  bodyEl.innerHTML = step.options.map(o=>`
+    <div class="wiz-opt-wrap">
       <div class="wiz-opt ${wizardSel[step.key] && wizardSel[step.key].id===o.id ? 'selected':''}" data-id="${o.id}">
         <div class="wiz-thumb">${thumbHTML(o)}</div>
-        <div class="wiz-info"><div class="wiz-name">${o.name}</div><div class="wiz-price">${o.delta ? (o.delta>0?'+ '+fmt(o.delta):'− '+fmt(Math.abs(o.delta))) : 'Inclus'}</div></div>
+        <div class="wiz-info">
+          <div class="wiz-name">${o.name}</div>
+          <div class="wiz-price">${o.price ? fmt(o.price) : 'Inclus'}</div>
+        </div>
         <div class="wiz-check">✓</div>
-      </div>`).join('');
-    bodyEl.querySelectorAll('.wiz-opt').forEach(row=>{
-      row.onclick = ()=>{
-        wizardSel[step.key] = step.options.find(o=>o.id===row.dataset.id);
-        renderWizard();
-        setTimeout(goNextStep, 180);
-      };
-    });
-  }
+      </div>
+      ${step.isBurgerStep ? `<button class="wiz-custom-side-btn" onclick="customizeBurgerInWizard('${o.id}')">⚙️<br>Personnaliser</button>` : ''}
+    </div>`).join('');
+
+  bodyEl.querySelectorAll('.wiz-opt').forEach(row=>{
+    row.onclick = ()=>{
+      wizardSel[step.key] = step.options.find(o=>o.id===row.dataset.id);
+      renderWizard();
+    };
+  });
 
   const footer = document.getElementById('wizard-footer');
   const runningTotal = computeWizardTotal();
-  if(step.extras){
-    footer.innerHTML = `<button id="wizard-confirm-btn">Ajouter au panier — ${fmt(runningTotal)}</button><div class="wiz-skip-note">Vous pouvez ne rien ajouter et continuer</div>`;
+  
+  let customBtnHtml = '';
+  if(step.isBurgerStep && wizardSel[step.key]){
+    customBtnHtml = `<button class="btn-custom-main" onclick="customizeBurgerInWizard('${wizardSel[step.key].id}')">⚙️ Personnaliser le burger sélectionné</button>`;
+  }
+
+  if(wizardIndex === wizardSteps.length - 1){
+    footer.innerHTML = `${customBtnHtml}<button id="wizard-confirm-btn">Ajouter au panier — ${fmt(runningTotal)}</button>`;
     document.getElementById('wizard-confirm-btn').onclick = commitWizard;
   } else {
-    footer.innerHTML = `<button id="wizard-confirm-btn">Suivant — ${fmt(runningTotal)}</button>`;
+    footer.innerHTML = `${customBtnHtml}<button id="wizard-confirm-btn">Suivant — ${fmt(runningTotal)}</button>`;
     document.getElementById('wizard-confirm-btn').onclick = goNextStep;
   }
 }
-function commitWizard(){
-  const menuOpts = wizardSteps.filter(s=>!s.extras).map(s=>({group:s.label, name:wizardSel[s.key].name}));
-  const unitPrice = wizardSteps.filter(s=>!s.extras).reduce((sum,s)=> sum + (wizardSel[s.key].delta||0), wizardMenu.price);
-  addToCart(wizardMenu, menuOpts, unitPrice);
-  wizardSteps.forEach(s=>{
-    if(s.extras) s.options.forEach(o=>{
-      if(wizardExtraSel.has(o.id)) addToCart({id:o.id, name:o.name, art:o.art, color:o.color, img:o.img}, [], o.price);
-    });
+
+window.customizeBurgerInWizard = function(burgerId){
+  const burger = PRODUCTS.burgers.find(b => b.id === burgerId);
+  if(!burger) return;
+  openBurgerCustomizerModal(burger, (details, totalPrice) => {
+    burgerCustomizations[burgerId] = {
+      opts: details.opts,
+      customStr: details.customStr,
+      extraPrice: totalPrice - burger.price
+    };
+    renderWizard();
   });
+};
+
+function commitWizard(){
+  const menuOpts = wizardSteps.map(s => {
+    let optName = wizardSel[s.key].name;
+    if(s.isBurgerStep && burgerCustomizations[wizardSel[s.key].id]){
+      const cust = burgerCustomizations[wizardSel[s.key].id];
+      if(cust.customStr) optName += ` (${cust.customStr})`;
+    }
+    return { group: s.label, name: optName };
+  });
+
+  addToCart(wizardMenu, menuOpts, computeWizardTotal());
   closeWizard();
   pulseCartBar();
 }
 
-/* ===================== PANIER ===================== */
+/* ===================== PANIER & GESTION ===================== */
 function addToCart(p, itemOptions, unitPrice){
-  const optionsList = itemOptions || [];
   cart.push({
     uid: Date.now() + Math.random(),
     id: p.id,
@@ -950,7 +1013,7 @@ function addToCart(p, itemOptions, unitPrice){
     cheese: p.cheese,
     double: p.double,
     img: p.img,
-    opts: optionsList,
+    opts: itemOptions || [],
     unitPrice: unitPrice,
     qty: 1
   });
@@ -987,7 +1050,7 @@ function renderCartUI(){
   } else { bar.classList.remove('show'); }
 
   if(cart.length===0){
-    drawerItemsEl.innerHTML = `<div class="empty-cart"><div class="big">🛒</div><div>Votre panier est vide.<br>Ajoutez un article pour commencer.</div></div>`;
+    drawerItemsEl.innerHTML = `<div class="empty-cart"><div class="big">🛒</div><div>Votre panier est vide.</div></div>`;
   } else {
     drawerItemsEl.innerHTML = cart.map(item=>`
       <div class="cart-item" data-uid="${item.uid}">
@@ -1023,16 +1086,12 @@ function changeQty(uid, delta){
 }
 function removeItem(uid){ cart = cart.filter(i=>String(i.uid)!==uid); renderCartUI(); }
 
-/* ===================== PLEIN ÉCRAN ===================== */
+/* ===================== PLEIN ÉCRAN & SETTINGS ===================== */
 document.getElementById('fullscreen-btn').onclick = ()=>{
-  if(!document.fullscreenElement){
-    document.documentElement.requestFullscreen?.().catch(()=>{});
-  } else {
-    document.exitFullscreen?.();
-  }
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen?.().catch(()=>{});
+  else document.exitFullscreen?.();
 };
 
-/* ===================== RÉGLAGES GITHUB ===================== */
 const settingsOverlay = document.getElementById('settings-overlay');
 const settingsStatus = document.getElementById('settings-status');
 
@@ -1042,14 +1101,13 @@ document.getElementById('settings-btn').onclick = ()=>{
   settingsOverlay.classList.add('show');
 };
 document.getElementById('settings-close').onclick = ()=> settingsOverlay.classList.remove('show');
-settingsOverlay.onclick = (e)=>{ if(e.target===settingsOverlay) settingsOverlay.classList.remove('show'); };
 
 document.getElementById('settings-save').onclick = ()=>{
   const val = document.getElementById('gh-token-input').value.trim();
   if(!val){ settingsStatus.className='err'; settingsStatus.textContent='Colle un jeton avant d\'enregistrer.'; return; }
   githubToken = val;
   try { localStorage.setItem('mcdo_gh_token', val); } catch(e) {}
-  settingsStatus.className='ok'; settingsStatus.textContent='Jeton enregistré dans ce navigateur ✅';
+  settingsStatus.className='ok'; settingsStatus.textContent='Jeton enregistré ✅';
 };
 
 document.getElementById('settings-clear').onclick = ()=>{
@@ -1064,229 +1122,91 @@ function utf8ToBase64(str){
 }
 
 async function saveOrderToGithub(orderJson, num){
-  if(!githubToken) return {ok:false, reason:'no_token'};
+  if(!githubToken) return {ok:false};
   const path = `orders/commande-${num}-${Date.now()}.json`;
   const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`;
   try{
-    const res = await fetch(url, {
+    await fetch(url, {
       method:'PUT',
-      headers:{
-        'Authorization': `Bearer ${githubToken}`,
-        'Accept':'application/vnd.github+json',
-        'Content-Type':'application/json'
-      },
-      body: JSON.stringify({
-        message: `Commande ${num}`,
-        content: utf8ToBase64(JSON.stringify(orderJson, null, 2)),
-        branch:'main'
-      })
+      headers:{ 'Authorization': `Bearer ${githubToken}`, 'Accept':'application/vnd.github+json', 'Content-Type':'application/json' },
+      body: JSON.stringify({ message: `Commande ${num}`, content: utf8ToBase64(JSON.stringify(orderJson, null, 2)), branch:'main' })
     });
-    if(!res.ok){
-      const err = await res.json().catch(()=>({}));
-      return {ok:false, reason:'api_error', status:res.status, message:err.message||''};
-    }
-    return {ok:true, path};
-  } catch(e){
-    return {ok:false, reason:'network', message:String(e)};
-  }
+  } catch(e){}
 }
 
-/* ===================== PAGE HISTORIQUE (AVEC POLLING RECHARGE ET EXPORT PDF) ===================== */
+/* ===================== HISTORIQUE ===================== */
 const historyPage = document.getElementById('history-page');
 const historyListEl = document.getElementById('history-list');
 
 function openHistoryPage(){
   settingsOverlay.classList.remove('show');
   historyPage.classList.add('show');
-  
-  // Premier chargement
   fetchOrdersFromFolder(true);
-  
-  // Polling automatique toutes les 4 secondes pour voir s'il y a de nouveaux tickets dans orders
   clearInterval(historyPollInterval);
-  historyPollInterval = setInterval(()=>{
-    fetchOrdersFromFolder(false);
-  }, 4000);
+  historyPollInterval = setInterval(()=> fetchOrdersFromFolder(false), 4000);
 }
 
-function closeHistoryPage(){
-  historyPage.classList.remove('show');
-  clearInterval(historyPollInterval);
-  historyPollInterval = null;
-}
-
+function closeHistoryPage(){ historyPage.classList.remove('show'); clearInterval(historyPollInterval); }
 document.getElementById('open-history-btn').onclick = openHistoryPage;
 document.getElementById('history-close-btn').onclick = closeHistoryPage;
 
 function formatHistoryDate(iso){
   try {
     const d = new Date(iso);
-    return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric'}) + ' à ' + d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+    return d.toLocaleDateString('fr-FR') + ' à ' + d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
   } catch(e){ return iso; }
 }
 
 function loadLocalHistory(){
-  try {
-    const raw = localStorage.getItem(HISTORY_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch(e){ return []; }
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch(e){ return []; }
 }
-
 function saveLocalHistory(entry){
-  const list = loadLocalHistory();
-  list.unshift(entry);
+  const list = loadLocalHistory(); list.unshift(entry);
   try { localStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(0, 200))); } catch(e){}
 }
 
 async function fetchOrdersFromFolder(showLoading = false){
-  if(showLoading && historyListEl.children.length === 0){
-    historyListEl.innerHTML = `<div class="history-empty">Chargement des tickets...</div>`;
-  }
-  
-  const headers = {'Accept':'application/vnd.github+json'};
-  if(githubToken) headers['Authorization'] = `Bearer ${githubToken}`;
-
+  if(showLoading) historyListEl.innerHTML = `<div class="history-empty">Chargement des tickets...</div>`;
   try {
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/orders?t=${Date.now()}`, { headers });
-    if(!res.ok) throw new Error('Dossier introuvable');
-
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/orders?t=${Date.now()}`);
+    if(!res.ok) throw new Error();
     const files = await res.json();
     const jsonFiles = files.filter(f => f.name.endsWith('.json'));
-
-    if(jsonFiles.length === 0){
-      historyListEl.innerHTML = `<div class="history-empty">Aucun ticket archivé.</div>`;
-      return;
-    }
-
-    const ordersPromises = jsonFiles.map(async file => {
-      try {
-        const fileRes = await fetch(file.download_url);
-        return await fileRes.json();
-      } catch(e) { return null; }
-    });
-
-    let orders = (await Promise.all(ordersPromises)).filter(o => o !== null);
-    orders.sort((a,b) => new Date(b.date) - new Date(a.date));
-
+    const orders = (await Promise.all(jsonFiles.map(async f => (await fetch(f.download_url)).json()))).sort((a,b)=> new Date(b.date)-new Date(a.date));
     currentOrdersData = orders;
     renderTicketsList(orders);
   } catch(e) {
-    const localOrders = loadLocalHistory();
-    currentOrdersData = localOrders;
-    if(localOrders.length > 0){
-      renderTicketsList(localOrders);
-    } else {
-      historyListEl.innerHTML = `<div class="history-empty">Aucun ticket trouvé.</div>`;
-    }
+    currentOrdersData = loadLocalHistory();
+    renderTicketsList(currentOrdersData);
   }
 }
 
 function renderTicketsList(orders){
-  if(orders.length === 0){
-    historyListEl.innerHTML = `<div class="history-empty">Aucun ticket à afficher.</div>`;
-    return;
-  }
+  if(!orders.length){ historyListEl.innerHTML = `<div class="history-empty">Aucun ticket.</div>`; return; }
   historyListEl.innerHTML = orders.map((o, index)=>`
     <div class="history-item">
       <div class="h-title">McBORNE</div>
       <div class="h-date">${formatHistoryDate(o.date)}</div>
       <div class="h-num">${o.numero || '#'}</div>
       ${o.chevalet ? `<div class="h-chevalet">🚩 Chevalet n° ${o.chevalet}</div>` : ''}
-      ${o.articles && o.articles.length ? `
-        <div class="h-articles">
-          ${o.articles.map(a => `
-            <div class="h-article-row">
-              <span><span class="qty">${a.quantite}×</span>${a.nom}</span>
-              <span>${fmt((a.prix_unitaire || 0) * a.quantite)}</span>
-            </div>
-            ${a.options && a.options.length ? `
-              <div class="h-article-opts">${a.options.join(', ')}</div>
-            ` : ''}
-          `).join('')}
-        </div>
-      ` : ''}
+      <div class="h-articles">
+        ${(o.articles||[]).map(a => `
+          <div class="h-article-row"><span><span class="qty">${a.quantite}×</span>${a.nom}</span><span>${fmt(a.prix_unitaire * a.quantite)}</span></div>
+          ${a.options && a.options.length ? `<div class="h-article-opts">${a.options.join(', ')}</div>` : ''}
+        `).join('')}
+      </div>
       <div class="h-total"><span>Total</span><span>${fmt(o.total || 0)}</span></div>
-      <div class="h-type">${o.type === 'Sur place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
-      <button class="export-pdf-btn" onclick="exportTicketPDF(${index})">📄 Exporter en PDF</button>
     </div>
   `).join('');
 }
 
-function exportTicketPDF(index){
-  const o = currentOrdersData[index];
-  if(!o) return;
-
-  // Création du conteneur A4 temporaire sans marges superflues
-  const container = document.createElement('div');
-  container.style.width = '210mm';
-  container.style.padding = '20mm 0';
-  container.style.display = 'flex';
-  container.style.alignItems = 'flex-start';
-  container.style.justifyContent = 'center';
-  container.style.background = '#ffffff';
-  container.style.boxSizing = 'border-box';
-
-  // Ticket centré exactement de 7cm de large
-  const ticket = document.createElement('div');
-  ticket.style.width = '7cm';
-  ticket.style.background = '#fffdf8';
-  ticket.style.color = '#241610';
-  ticket.style.borderRadius = '6px';
-  ticket.style.padding = '16px';
-  ticket.style.fontFamily = "'Inter', monospace";
-  ticket.style.border = '1px solid #EFE4D2';
-  ticket.style.boxShadow = 'none';
-
-  ticket.innerHTML = `
-    <div style="text-align:center;font-weight:800;font-size:11px;letter-spacing:1px;margin-bottom:2px;">McBORNE</div>
-    <div style="text-align:center;font-size:9.5px;color:#847C72;margin-bottom:8px;">${formatHistoryDate(o.date)}</div>
-    <div style="text-align:center;font-size:24px;font-weight:900;border-top:1px dashed #EFE4D2;border-bottom:1px dashed #EFE4D2;padding:6px 0;margin-bottom:6px;letter-spacing:1px;color:#0A4F2A;">${o.numero || '#'}</div>
-    ${o.chevalet ? `<div style="text-align:center;font-size:12px;font-weight:800;color:#0E6B3A;margin-bottom:8px;">🚩 Chevalet n° ${o.chevalet}</div>` : ''}
-    ${o.articles && o.articles.length ? `
-      <div style="margin-bottom:8px;">
-        ${o.articles.map(a => `
-          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">
-            <span><span style="color:#847C72;margin-right:6px;">${a.quantite}×</span>${a.nom}</span>
-            <span>${fmt((a.prix_unitaire || 0) * a.quantite)}</span>
-          </div>
-          ${a.options && a.options.length ? `
-            <div style="font-size:9.5px;color:#847C72;margin:-1px 0 4px 18px;">${a.options.join(', ')}</div>
-          ` : ''}
-        `).join('')}
-      </div>
-    ` : ''}
-    <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800;border-top:1px dashed #EFE4D2;margin-top:8px;padding-top:8px;">
-      <span>Total</span>
-      <span>${fmt(o.total || 0)}</span>
-    </div>
-    <div style="text-align:center;font-size:10px;color:#847C72;margin-top:8px;">${o.type === 'Sur place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
-  `;
-
-  container.appendChild(ticket);
-  document.body.appendChild(container);
-
-  // Configuration html2pdf optimisée pour Tenir sur 1 seule page A4
-  const opt = {
-    margin: 0,
-    filename: `ticket-${o.numero || 'export'}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: 'avoid-all' }
-  };
-
-  html2pdf().set(opt).from(container).save().then(()=>{
-    document.body.removeChild(container);
-  });
-}
-
-/* ===================== VALIDATION / CHEVALET OBLIGATOIRE / TICKET ===================== */
+/* ===================== CONFIRMATION & CHEVALET ===================== */
 const chevaletOverlay = document.getElementById('chevalet-overlay');
 const chevaletInput = document.getElementById('chevalet-input');
 const chevaletError = document.getElementById('chevalet-error');
 
 document.getElementById('drawer-checkout').onclick = ()=>{
-  if(cart.length===0) return;
+  if(!cart.length) return;
   closeDrawer();
   chevaletInput.value = '';
   chevaletError.style.display = 'none';
@@ -1296,12 +1216,9 @@ document.getElementById('drawer-checkout').onclick = ()=>{
 
 document.getElementById('chevalet-submit-btn').onclick = async ()=>{
   const chevaletVal = chevaletInput.value.trim();
-  if(!chevaletVal){
-    chevaletError.style.display = 'block';
-    return;
-  }
-  
+  if(!chevaletVal){ chevaletError.style.display = 'block'; return; }
   chevaletOverlay.classList.remove('show');
+  
   const num = 'A' + (10+Math.floor(Math.random()*89));
   const sub = cart.reduce((s,i)=> s + i.unitPrice*i.qty, 0);
 
@@ -1329,25 +1246,19 @@ document.getElementById('chevalet-submit-btn').onclick = async ()=>{
   };
 
   saveLocalHistory(orderJson);
-  if(githubToken) {
-    saveOrderToGithub(orderJson, num);
-  }
+  if(githubToken) saveOrderToGithub(orderJson, num);
 };
 
 document.getElementById('confirm-new-btn').onclick = ()=>{
-  cart = [];
-  chevaletInput.value = '';
-  renderCartUI();
+  cart = []; chevaletInput.value = ''; renderCartUI();
   document.getElementById('screen-confirm').classList.remove('show');
-  currentCat = 'menus';
-  renderCats(); renderCatalog();
+  currentCat = 'menus'; renderCats(); renderCatalog();
   screenWelcome.style.display='flex';
 };
 
-/* ===================== UTILS ===================== */
 function fmt(n){ return n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €'; }
 
-/* ===================== INIT ===================== */
+/* INIT */
 renderCatalog();
 renderCartUI();
 </script>
