@@ -83,7 +83,7 @@
   .pill-ordertype{margin-left:2px;background:rgba(255,255,255,.16);border:none;color:#fff;font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;display:flex;align-items:center;gap:5px;cursor:pointer;}
   .header-spacer{flex:1 1 auto;}
   .cart-btn{position:relative;background:var(--mcdo-yellow);border:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;}
-  .cart-btn .badge{position:absolute;top:-4px;right:-4px;background:var(--ink);color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--mcdo-red);}
+  .cart-btn .badge{position:absolute;top:-4px;right:-4px;background:var(--ink);color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--mcdo-red);}
   .gear-btn{background:rgba(255,255,255,.16);border:none;color:#fff;width:34px;height:34px;border-radius:50%;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
   /* ---- Réglages GitHub ---- */
@@ -101,20 +101,34 @@
   #settings-status{font-size:11px;font-weight:700;margin-bottom:12px;padding:8px 10px;border-radius:10px;display:none;}
   #settings-status.ok{display:block;background:#E9F7EC;color:var(--ok);}
   #settings-status.err{display:block;background:#FCEBE9;color:var(--mcdo-red-dark);}
-  .sync-line{text-align:center;font-size:10.5px;color:rgba(255,255,255,.85);margin-top:10px;min-height:14px;}
 
-  /* ---- Historique des tickets ---- */
-  .settings-section{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);}
-  .settings-section h3{font-size:15px;margin-bottom:4px;}
-  .history-list{display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:260px;overflow-y:auto;}
-  .history-empty{text-align:center;color:var(--gray);font-size:12px;padding:20px 10px;}
-  .history-item{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;}
-  .history-item .h-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;}
-  .history-item .h-num{font-weight:800;font-size:13px;color:var(--mcdo-red-dark);}
-  .history-item .h-total{font-weight:800;font-size:13px;}
-  .history-item .h-date{font-size:10.5px;color:var(--gray);}
-  .history-item .h-type{font-size:10.5px;color:var(--gray);margin-top:2px;}
-  #history-clear{margin-top:10px;width:100%;background:none;border:none;color:var(--gray);font-size:11.5px;text-decoration:underline;cursor:pointer;}
+  .subtle-history-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:20px;padding:10px;background:var(--paper-2);border:1px solid var(--line);border-radius:12px;color:var(--ink);font-size:12px;font-weight:600;cursor:pointer;transition:.15s ease;}
+  .subtle-history-btn:hover{background:#F7E3C3;}
+
+  /* ---- Page dédiée pour l'historique des tickets ---- */
+  #history-page{position:absolute;inset:0;background:var(--paper);z-index:65;display:none;flex-direction:column;animation:modalUp .22s ease;}
+  #history-page.show{display:flex;}
+  .history-header{flex:0 0 auto;background:#fff;border-bottom:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
+  .history-header h2{font-size:16px;}
+  .history-close-btn{background:var(--paper-2);border:none;width:32px;height:32px;border-radius:50%;font-size:14px;cursor:pointer;}
+  .history-body{flex:1 1 auto;overflow-y:auto;padding:16px;display:flex;flex-direction:column;align-items:center;}
+  .history-list{display:flex;flex-direction:column;gap:16px;width:100%;max-width:320px;}
+  .history-empty{text-align:center;color:var(--gray);font-size:12px;padding:40px 10px;font-family:'Inter',sans-serif;}
+  
+  .history-item{
+    background:#fffdf8;color:var(--ink);width:100%;border-radius:6px;padding:16px 16px 12px;
+    font-family:'Inter',monospace;box-shadow:0 4px 12px rgba(0,0,0,.08);border:1px solid var(--line);
+    position:relative;
+  }
+  .history-item .h-title{text-align:center;font-weight:800;font-size:11px;letter-spacing:1px;margin-bottom:2px;}
+  .history-item .h-date{text-align:center;font-size:9.5px;color:var(--gray);margin-bottom:8px;}
+  .history-item .h-num{text-align:center;font-size:24px;font-weight:900;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:6px 0;margin-bottom:10px;letter-spacing:1px;color:var(--mcdo-red-dark);}
+  .history-item .h-articles{margin-bottom:8px;}
+  .history-item .h-article-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;}
+  .history-item .h-article-row .qty{color:var(--gray);margin-right:6px;}
+  .history-item .h-article-opts{font-size:9.5px;color:var(--gray);margin:-1px 0 4px 18px;}
+  .history-item .h-total{display:flex;justify-content:space-between;font-size:13px;font-weight:800;border-top:1px dashed var(--line);margin-top:8px;padding-top:8px;}
+  .history-item .h-type{text-align:center;font-size:10px;color:var(--gray);margin-top:8px;}
 
   nav#cats{flex:0 0 auto;background:#fff;border-bottom:1px solid var(--line);display:flex;gap:8px;padding:10px 12px;overflow-x:auto;z-index:5;}
   nav#cats::-webkit-scrollbar{display:none;}
@@ -137,7 +151,7 @@
 
   .prod-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4;background:#fff;border-radius:inherit;}
 
-  /* ============ FOOD ART (fallback si pas d'image) ============ */
+  /* ============ FOOD ART ============ */
   .art-burger{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;width:100%;height:100%;padding:8% 0 6%;}
   .art-burger>*{flex:0 0 auto;}
   .art-burger .bun-top{position:relative;height:32%;width:80%;background:radial-gradient(120% 100% at 50% 18%,#FCD08A,#E29A3B 85%);border-radius:50% 50% 8px 8px/65% 65% 8px 8px;box-shadow:inset 0 -5px 7px rgba(0,0,0,.10);}
@@ -188,7 +202,16 @@
 
   /* ============ WELCOME ============ */
   #screen-welcome{position:absolute;inset:0;z-index:50;background:linear-gradient(165deg,var(--mcdo-red) 0%,#0F5C32 60%,#0A4525 100%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;padding:26px 22px 30px;}
-  #screen-welcome .lang-row{align-self:flex-end;display:flex;gap:6px;}
+  #screen-welcome .top-row{width:100%;display:flex;align-items:center;justify-content:space-between;}
+  
+  /* Bouton secret haut-gauche */
+  .secret-history-btn{
+    width:18px;height:18px;background:rgba(255,255,255,.15);border:none;border-radius:50%;
+    cursor:pointer;opacity:.15;transition:opacity .2s;
+  }
+  .secret-history-btn:active{opacity:.6;}
+
+  #screen-welcome .lang-row{display:flex;gap:6px;}
   .lang-btn{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.35);color:#fff;font-weight:700;font-size:11px;padding:5px 10px;border-radius:8px;cursor:pointer;}
   .lang-btn.active{background:#fff;color:var(--mcdo-red);border-color:#fff;}
   #screen-welcome .mid{display:flex;flex-direction:column;align-items:center;gap:14px;}
@@ -203,7 +226,7 @@
   .choice-btn .ico{width:36px;height:36px;border-radius:50%;background:var(--paper-2);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;}
   .choice-btn small{display:block;font-weight:500;font-size:11px;color:var(--gray);margin-top:1px;}
 
-  /* ============ WIZARD (composition menu) ============ */
+  /* ============ WIZARD ============ */
   #wizard-overlay{position:absolute;inset:0;background:#fff;display:none;z-index:45;flex-direction:column;}
   #wizard-overlay.show{display:flex;}
   .wizard-head{flex:0 0 auto;padding:14px 12px 6px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);}
@@ -229,7 +252,7 @@
   #wizard-confirm-btn{width:100%;background:var(--mcdo-yellow);border:none;padding:14px;border-radius:14px;font-weight:800;font-size:14.5px;cursor:pointer;}
   .wiz-skip-note{text-align:center;font-size:11px;color:var(--gray);margin-top:8px;}
 
-  /* ============ DRAWER (panier) ============ */
+  /* ============ DRAWER ============ */
   #drawer-scrim{position:absolute;inset:0;background:rgba(20,12,6,.45);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:29;}
   #drawer-scrim.show{opacity:1;pointer-events:auto;}
   #drawer{position:absolute;left:0;right:0;bottom:0;height:90%;background:#fff;border-radius:22px 22px 0 0;transform:translateY(102%);transition:transform .32s cubic-bezier(.22,.85,.32,1);z-index:30;display:flex;flex-direction:column;box-shadow:0 -10px 30px rgba(0,0,0,.2);}
@@ -262,7 +285,7 @@
   #drawer-checkout:disabled{background:#ddd6c8;color:#9a9385;cursor:not-allowed;}
   #drawer-continue{width:100%;background:none;border:none;color:var(--gray);font-size:11.5px;margin-top:8px;cursor:pointer;text-decoration:underline;}
 
-  /* ============ VARIANT MODAL (produits simples) ============ */
+  /* ============ VARIANT MODAL ============ */
   #overlay{position:absolute;inset:0;background:rgba(20,12,6,.5);display:none;align-items:flex-end;justify-content:center;z-index:40;}
   #overlay.show{display:flex;}
   #modal{background:#fff;border-radius:22px 22px 0 0;width:100%;max-height:88%;overflow-y:auto;padding:20px;position:relative;animation:modalUp .22s ease;}
@@ -279,7 +302,7 @@
   .opt .extra{color:var(--gray);font-size:11.5px;}
   #modal-add-btn{width:100%;background:var(--mcdo-yellow);border:none;padding:14px;border-radius:14px;font-weight:800;font-size:14.5px;cursor:pointer;margin-top:4px;}
 
-  /* ============ CONFIRM (ticket) ============ */
+  /* ============ CONFIRM ============ */
   #screen-confirm{position:absolute;inset:0;z-index:70;background:var(--mcdo-red);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
   #screen-confirm.show{display:flex;}
   #screen-confirm .check{width:64px;height:64px;border-radius:50%;background:var(--mcdo-yellow);display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--mcdo-red);margin-bottom:12px;animation:modalUp .3s ease;}
@@ -328,7 +351,10 @@
         </div>
 
         <section id="screen-welcome">
-          <div class="lang-row"><button class="lang-btn active" id="lang-fr">FR</button><button class="lang-btn" id="lang-en">EN</button></div>
+          <div class="top-row">
+            <button class="secret-history-btn" id="secret-history-btn" title=""></button>
+            <div class="lang-row"><button class="lang-btn active" id="lang-fr">FR</button><button class="lang-btn" id="lang-en">EN</button></div>
+          </div>
           <div class="mid">
             <div class="arches-big"><svg viewBox="0 0 100 100"><path d="M20 90 L20 45 C20 20 32 8 40 8 C48 8 50 22 50 35 C50 22 52 8 60 8 C68 8 80 20 80 45 L80 90 L66 90 L66 46 C66 30 62 24 60 24 C57 24 54 32 54 46 L54 90 L46 90 L46 46 C46 32 43 24 40 24 C38 24 34 30 34 46 L34 90 Z" fill="#FFC72C"/></svg></div>
             <h1>Bienvenue chez McBORNE</h1>
@@ -341,7 +367,7 @@
           </div>
         </section>
 
-        <!-- WIZARD (composition d'un menu, étape par étape) -->
+        <!-- WIZARD -->
         <div id="wizard-overlay">
           <div class="wizard-head">
             <button class="wizard-back" id="wizard-back">‹</button>
@@ -356,7 +382,7 @@
           <div class="wizard-footer" id="wizard-footer"></div>
         </div>
 
-        <!-- MODAL SIMPLE (nuggets / frites / boissons seules) -->
+        <!-- MODAL SIMPLE -->
         <div id="overlay">
           <div id="modal"><button id="modal-close">✕</button><div id="modal-body"></div></div>
         </div>
@@ -384,11 +410,10 @@
           <h1>Commande envoyée !</h1>
           <p class="lead">Merci, votre commande a été transmise en cuisine.</p>
           <div class="receipt" id="receipt"></div>
-          <div class="sync-line" id="sync-line"></div>
           <button id="confirm-new-btn">Nouvelle commande</button>
         </section>
 
-        <!-- RÉGLAGES : jeton GitHub pour enregistrer le .json dans le repo -->
+        <!-- RÉGLAGES -->
         <div id="settings-overlay">
           <div id="settings-modal">
             <button id="settings-close" style="position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:50%;border:none;background:var(--paper-2);font-size:13px;cursor:pointer;">✕</button>
@@ -401,11 +426,19 @@
             <button id="settings-save">Enregistrer le jeton</button>
             <button id="settings-clear">Supprimer le jeton enregistré</button>
 
-            <div class="settings-section">
-              <h3>🧾 Tickets enregistrés</h3>
-              <p class="s-desc">Historique des commandes validées sur cette borne, avec la date et l'heure d'enregistrement.</p>
-              <div class="history-list" id="history-list"></div>
-              <button id="history-clear">Vider l'historique des tickets</button>
+            <button class="subtle-history-btn" id="open-history-btn">📜 Voir les tickets</button>
+          </div>
+        </div>
+
+        <!-- PAGE DÉDIÉE : Historique des tickets -->
+        <div id="history-page">
+          <div class="history-header">
+            <h2>📜 Historique des tickets</h2>
+            <button class="history-close-btn" id="history-close-btn">✕</button>
+          </div>
+          <div class="history-body">
+            <div class="history-list" id="history-list">
+              <div class="history-empty">Chargement des tickets...</div>
             </div>
           </div>
         </div>
@@ -423,36 +456,18 @@
 </div>
 
 <script>
-/* =====================================================================
-   IMAGES : dépose tes fichiers PNG dans un dossier "images/" à côté de
-   ce fichier HTML, avec exactement ces noms. Si un fichier est absent,
-   une illustration CSS de secours s'affiche automatiquement à la place.
-
-   images/hamburger.png
-   images/cheeseburger.png
-   images/double-cheeseburger.png
-   images/bigmac.png
-   images/nuggets.png
-   images/frites.png
-   images/boisson-jus-pomme.png
-   images/boisson-coca.png
-   images/boisson-ice-tea.png
-   images/boisson-eau-gazeuse.png
-   images/boisson-eau.png
-   images/menu-best-of.png
-   images/menu-maxi-best-of.png
-   images/menu-happy-meal.png
-   images/sauce-mayo.png
-   images/sauce-ketchup.png
-===================================================================== */
-
-/* ===================== IMAGES (hébergées sur GitHub) ===================== */
-/* ===================== IMAGES =====================
-   Le fichier va chercher les images dans un dossier "images/" situé au
-   même niveau que ce .html (chemin relatif) — ça fonctionne aussi bien
-   en local qu'une fois hébergé dans le même repo GitHub (ex. GitHub Pages),
-   sans dépendre d'un nom de repo ou d'utilisateur en dur. */
+/* ===================== CONFIGURATION & ÉTAT ===================== */
+const GITHUB_REPO = 'jupiko0/mcdo';
 const IMG_BASE = 'images/';
+const HISTORY_KEY = 'mcdo_orders_history';
+
+let githubToken = '';
+try { githubToken = localStorage.getItem('mcdo_gh_token') || ''; } catch(e) {}
+
+let currentCat = 'menus';
+let cart = [];
+let orderType = 'sur_place';
+let historyPollInterval = null;
 
 /* ===================== DONNÉES ===================== */
 const DRINK_CHOICES = [
@@ -516,7 +531,7 @@ const PRODUCTS = {
   ]
 };
 
-/* ===================== ART BUILDERS (secours sans image) ===================== */
+/* ===================== ART BUILDERS ===================== */
 function arrowsSvg(){
   return '<svg viewBox="0 0 100 60"><path d="M8 58 L8 26 C8 10 16 2 22 2 C28 2 30 12 30 20 C30 12 32 2 38 2 C44 2 52 10 52 26 L52 58 L42 58 L42 27 C42 16 39 12 37 12 C35 12 33 17 33 27 L33 58 L27 58 L27 27 C27 17 25 12 23 12 C21 12 18 16 18 27 L18 58 Z" fill="#FFC72C"/></svg>';
 }
@@ -580,12 +595,7 @@ function thumbHTML(p){
   return img + foodArt(p);
 }
 
-/* ===================== ÉTAT ===================== */
-let currentCat = 'menus';
-let cart = [];
-let orderType = 'sur_place';
-
-/* ===================== WELCOME ===================== */
+/* ===================== WELCOME & TRIPLE-CLIC SECRET ===================== */
 const screenWelcome = document.getElementById('screen-welcome');
 document.querySelectorAll('.choice-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
@@ -613,6 +623,21 @@ document.querySelectorAll('.ot-chip').forEach(chip=>{
   chip.addEventListener('click', ()=>{ orderType = chip.dataset.type; updateOrderTypeUI(); });
 });
 updateOrderTypeUI();
+
+/* Détection du triple-clic rapide (3 appuis en < 800ms) */
+let secretClicks = 0;
+let secretTimer = null;
+document.getElementById('secret-history-btn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  secretClicks++;
+  clearTimeout(secretTimer);
+  if(secretClicks >= 3){
+    secretClicks = 0;
+    openHistoryPage();
+  } else {
+    secretTimer = setTimeout(()=>{ secretClicks = 0; }, 800);
+  }
+});
 
 /* ===================== CATEGORIES ===================== */
 const catsNav = document.getElementById('cats');
@@ -667,7 +692,7 @@ function openProduct(p){
   openSimpleModal(p);
 }
 
-/* ===================== MODAL SIMPLE (nuggets / frites / boissons) ===================== */
+/* ===================== MODAL SIMPLE ===================== */
 const overlay = document.getElementById('overlay');
 const modalBody = document.getElementById('modal-body');
 let modalProduct = null;
@@ -719,7 +744,7 @@ function renderModal(){
   };
 }
 
-/* ===================== WIZARD (composition d'un menu étape par étape) ===================== */
+/* ===================== WIZARD ===================== */
 function burgerOptionsFor(menuId){
   if(menuId==='happy_meal') return [
     {id:'hamburger', name:'Hamburger', delta:0, img:'hamburger.png', art:'burger'},
@@ -844,9 +869,9 @@ function renderWizard(){
   }
 }
 function commitWizard(){
-  const opts = wizardSteps.filter(s=>!s.extras).map(s=>({group:s.label, name:wizardSel[s.key].name}));
+  const menuOpts = wizardSteps.filter(s=>!s.extras).map(s=>({group:s.label, name:wizardSel[s.key].name}));
   const unitPrice = wizardSteps.filter(s=>!s.extras).reduce((sum,s)=> sum + (wizardSel[s.key].delta||0), wizardMenu.price);
-  addToCart(wizardMenu, opts, unitPrice);
+  addToCart(wizardMenu, menuOpts, unitPrice);
   wizardSteps.forEach(s=>{
     if(s.extras) s.options.forEach(o=>{
       if(wizardExtraSel.has(o.id)) addToCart({id:o.id, name:o.name, art:o.art, color:o.color, img:o.img}, [], o.price);
@@ -857,8 +882,21 @@ function commitWizard(){
 }
 
 /* ===================== PANIER ===================== */
-function addToCart(p, opts, unitPrice){
-  cart.push({uid:Date.now()+Math.random(), id:p.id, name:p.name, art:p.art, color:p.color, cheese:p.cheese, double:p.double, img:p.img, opts, unitPrice, qty:1});
+function addToCart(p, itemOptions, unitPrice){
+  const optionsList = itemOptions || [];
+  cart.push({
+    uid: Date.now() + Math.random(),
+    id: p.id,
+    name: p.name,
+    art: p.art,
+    color: p.color,
+    cheese: p.cheese,
+    double: p.double,
+    img: p.img,
+    opts: optionsList,
+    unitPrice: unitPrice,
+    qty: 1
+  });
   renderCartUI();
 }
 function pulseCartBar(){
@@ -899,7 +937,7 @@ function renderCartUI(){
         <div class="ci-thumb">${thumbHTML(item)}</div>
         <div class="info">
           <div class="name">${item.name}</div>
-          ${item.opts.length ? `<div class="opts">${item.opts.map(o=>o.name).join(' • ')}</div>` : ''}
+          ${item.opts && item.opts.length ? `<div class="opts">${item.opts.map(o=>o.name).join(' • ')}</div>` : ''}
           <div class="line-bottom">
             <div class="qty-ctrl"><button class="dec">−</button><span>${item.qty}</span><button class="inc">+</button></div>
             <span class="item-price">${fmt(item.unitPrice*item.qty)}</span>
@@ -937,21 +975,18 @@ document.getElementById('fullscreen-btn').onclick = ()=>{
   }
 };
 
-/* ===================== RÉGLAGES GITHUB (jeton + enregistrement du .json) ===================== */
-const GITHUB_REPO = 'jupiko0/mcdo'; // owner/repo
-let githubToken = '';
-try { githubToken = localStorage.getItem('mcdo_gh_token') || ''; } catch(e) { /* stockage indisponible (aperçu sandboxé) */ }
-
+/* ===================== RÉGLAGES GITHUB ===================== */
 const settingsOverlay = document.getElementById('settings-overlay');
 const settingsStatus = document.getElementById('settings-status');
+
 document.getElementById('settings-btn').onclick = ()=>{
   document.getElementById('gh-token-input').value = githubToken;
   settingsStatus.className=''; settingsStatus.textContent='';
-  renderOrderHistory();
   settingsOverlay.classList.add('show');
 };
 document.getElementById('settings-close').onclick = ()=> settingsOverlay.classList.remove('show');
 settingsOverlay.onclick = (e)=>{ if(e.target===settingsOverlay) settingsOverlay.classList.remove('show'); };
+
 document.getElementById('settings-save').onclick = ()=>{
   const val = document.getElementById('gh-token-input').value.trim();
   if(!val){ settingsStatus.className='err'; settingsStatus.textContent='Colle un jeton avant d\'enregistrer.'; return; }
@@ -959,6 +994,7 @@ document.getElementById('settings-save').onclick = ()=>{
   try { localStorage.setItem('mcdo_gh_token', val); } catch(e) {}
   settingsStatus.className='ok'; settingsStatus.textContent='Jeton enregistré dans ce navigateur ✅';
 };
+
 document.getElementById('settings-clear').onclick = ()=>{
   githubToken = '';
   try { localStorage.removeItem('mcdo_gh_token'); } catch(e) {}
@@ -970,11 +1006,8 @@ function utf8ToBase64(str){
   return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_,p1)=> String.fromCharCode('0x'+p1)));
 }
 
-/* Crée le fichier orders/commande-<num>.json dans le repo GitHub via l'API Contents */
 async function saveOrderToGithub(orderJson, num){
-  if(!githubToken){
-    return {ok:false, reason:'no_token'};
-  }
+  if(!githubToken) return {ok:false, reason:'no_token'};
   const path = `orders/commande-${num}-${Date.now()}.json`;
   const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`;
   try{
@@ -1001,46 +1034,123 @@ async function saveOrderToGithub(orderJson, num){
   }
 }
 
-/* ===================== HISTORIQUE DES TICKETS (réglages) ===================== */
-const HISTORY_KEY = 'mcdo_orders_history';
-function loadOrderHistory(){
-  try {
-    const raw = localStorage.getItem(HISTORY_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch(e){ return []; }
+/* ===================== PAGE HISTORIQUE (AVEC POLLING RECHARGE) ===================== */
+const historyPage = document.getElementById('history-page');
+const historyListEl = document.getElementById('history-list');
+
+function openHistoryPage(){
+  settingsOverlay.classList.remove('show');
+  historyPage.classList.add('show');
+  
+  // Premier chargement
+  fetchOrdersFromFolder(true);
+  
+  // Polling automatique toutes les 4 secondes pour voir s'il y a de nouveaux tickets dans orders
+  clearInterval(historyPollInterval);
+  historyPollInterval = setInterval(()=>{
+    fetchOrdersFromFolder(false);
+  }, 4000);
 }
-function saveOrderHistory(list){
-  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(list)); } catch(e){}
+
+function closeHistoryPage(){
+  historyPage.classList.remove('show');
+  clearInterval(historyPollInterval);
+  historyPollInterval = null;
 }
-function addOrderToHistory(entry){
-  const list = loadOrderHistory();
-  list.unshift(entry); // le plus récent en premier
-  saveOrderHistory(list.slice(0, 200)); // on garde un historique raisonnable
-}
+
+document.getElementById('open-history-btn').onclick = openHistoryPage;
+document.getElementById('history-close-btn').onclick = closeHistoryPage;
+
 function formatHistoryDate(iso){
   try {
     const d = new Date(iso);
     return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric'}) + ' à ' + d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
   } catch(e){ return iso; }
 }
-function renderOrderHistory(){
-  const listEl = document.getElementById('history-list');
-  const list = loadOrderHistory();
-  if(list.length===0){
-    listEl.innerHTML = `<div class="history-empty">Aucun ticket enregistré pour le moment.</div>`;
+
+function loadLocalHistory(){
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e){ return []; }
+}
+
+function saveLocalHistory(entry){
+  const list = loadLocalHistory();
+  list.unshift(entry);
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(0, 200))); } catch(e){}
+}
+
+async function fetchOrdersFromFolder(showLoading = false){
+  if(showLoading && historyListEl.children.length === 0){
+    historyListEl.innerHTML = `<div class="history-empty">Chargement des tickets...</div>`;
+  }
+  
+  const headers = {'Accept':'application/vnd.github+json'};
+  if(githubToken) headers['Authorization'] = `Bearer ${githubToken}`;
+
+  try {
+    // timestamp param pour éviter le cache navigateur lors des recharges
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/orders?t=${Date.now()}`, { headers });
+    if(!res.ok) throw new Error('Dossier introuvable');
+
+    const files = await res.json();
+    const jsonFiles = files.filter(f => f.name.endsWith('.json'));
+
+    if(jsonFiles.length === 0){
+      historyListEl.innerHTML = `<div class="history-empty">Aucun ticket archivé.</div>`;
+      return;
+    }
+
+    const ordersPromises = jsonFiles.map(async file => {
+      try {
+        const fileRes = await fetch(file.download_url);
+        return await fileRes.json();
+      } catch(e) { return null; }
+    });
+
+    let orders = (await Promise.all(ordersPromises)).filter(o => o !== null);
+    orders.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+    renderTicketsList(orders);
+  } catch(e) {
+    const localOrders = loadLocalHistory();
+    if(localOrders.length > 0){
+      renderTicketsList(localOrders);
+    } else {
+      historyListEl.innerHTML = `<div class="history-empty">Aucun ticket trouvé.</div>`;
+    }
+  }
+}
+
+function renderTicketsList(orders){
+  if(orders.length === 0){
+    historyListEl.innerHTML = `<div class="history-empty">Aucun ticket à afficher.</div>`;
     return;
   }
-  listEl.innerHTML = list.map(o=>`
+  historyListEl.innerHTML = orders.map(o=>`
     <div class="history-item">
-      <div class="h-top"><span class="h-num">Ticket ${o.numero}</span><span class="h-total">${fmt(o.total)}</span></div>
-      <div class="h-date">🗓️ ${formatHistoryDate(o.date)}</div>
-      <div class="h-type">${o.type}</div>
-    </div>`).join('');
+      <div class="h-title">McBORNE</div>
+      <div class="h-date">${formatHistoryDate(o.date)}</div>
+      <div class="h-num">${o.numero || '#'}</div>
+      ${o.articles && o.articles.length ? `
+        <div class="h-articles">
+          ${o.articles.map(a => `
+            <div class="h-article-row">
+              <span><span class="qty">${a.quantite}×</span>${a.nom}</span>
+              <span>${fmt((a.prix_unitaire || 0) * a.quantite)}</span>
+            </div>
+            ${a.options && a.options.length ? `
+              <div class="h-article-opts">${a.options.join(', ')}</div>
+            ` : ''}
+          `).join('')}
+        </div>
+      ` : ''}
+      <div class="h-total"><span>Total</span><span>${fmt(o.total || 0)}</span></div>
+      <div class="h-type">${o.type === 'Sur place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
+    </div>
+  `).join('');
 }
-document.getElementById('history-clear').onclick = ()=>{
-  saveOrderHistory([]);
-  renderOrderHistory();
-};
 
 /* ===================== VALIDATION / TICKET ===================== */
 document.getElementById('drawer-checkout').onclick = async ()=>{
@@ -1053,7 +1163,7 @@ document.getElementById('drawer-checkout').onclick = async ()=>{
     <div class="r-num">${num}</div>
     ${cart.map(i=>`
       <div class="r-line"><span><span class="qty">${i.qty}×</span>${i.name}</span><span>${fmt(i.unitPrice*i.qty)}</span></div>
-      ${i.opts.length ? `<div class="r-opts">${i.opts.map(o=>o.name).join(', ')}</div>` : ''}
+      ${i.opts && i.opts.length ? `<div class="r-opts">${i.opts.map(o=>o.name).join(', ')}</div>` : ''}
     `).join('')}
     <div class="r-total"><span>Total</span><span>${fmt(sub)}</span></div>
     <div class="r-type">${orderType==='sur_place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
@@ -1061,7 +1171,6 @@ document.getElementById('drawer-checkout').onclick = async ()=>{
   closeDrawer();
   document.getElementById('screen-confirm').classList.add('show');
 
-  const syncLine = document.getElementById('sync-line');
   const orderJson = {
     numero: num,
     date: new Date().toISOString(),
@@ -1070,22 +1179,12 @@ document.getElementById('drawer-checkout').onclick = async ()=>{
     articles: cart.map(i=>({ nom:i.name, quantite:i.qty, prix_unitaire:i.unitPrice, options:i.opts.map(o=>o.name) }))
   };
 
-  addOrderToHistory(orderJson);
-
-  if(!githubToken){
-    syncLine.textContent = "⚙️ Ajoute un jeton GitHub (icône réglages) pour enregistrer les commandes dans le repo.";
-    return;
-  }
-  syncLine.textContent = '⏳ Enregistrement dans le repo GitHub…';
-  const result = await saveOrderToGithub(orderJson, num);
-  if(result.ok){
-    syncLine.innerHTML = `✅ Commande enregistrée : <b>orders/${result.path.split('/').pop()}</b>`;
-  } else if(result.reason==='api_error') {
-    syncLine.textContent = `⚠️ Échec GitHub (${result.status}) — vérifie les droits du jeton.`;
-  } else {
-    syncLine.textContent = '⚠️ Impossible de contacter GitHub depuis cet aperçu.';
+  saveLocalHistory(orderJson);
+  if(githubToken) {
+    saveOrderToGithub(orderJson, num);
   }
 };
+
 document.getElementById('confirm-new-btn').onclick = ()=>{
   cart = [];
   renderCartUI();
