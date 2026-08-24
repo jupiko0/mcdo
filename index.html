@@ -507,7 +507,7 @@
             <p class="s-desc">Chaque commande validée peut être enregistrée automatiquement dans le dossier <b>orders/</b> de <b>jupiko0/mcdo</b>, sous forme d'un fichier .json, via l'API GitHub.</p>
             <div id="settings-status"></div>
             <label>Jeton d'accès GitHub (Personal Access Token)</label>
-            <input type="password" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+            <input type="text" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
             <p class="s-note">Crée un jeton <b>fine-grained</b> sur <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a>, limité au repo <b>mcdo</b>, avec la permission <b>Contents: Read and write</b> uniquement. Ce jeton reste dans ton navigateur (jamais envoyé ailleurs qu'à l'API GitHub) — ne le partage pas et ne le mets jamais dans le code du repo.</p>
             <button id="settings-save">Enregistrer le jeton</button>
             <button id="settings-clear">Supprimer le jeton enregistré</button>
@@ -965,7 +965,7 @@ function burgerOptionsFor(menuId){
   ];
 }
 function friesOptionsFor(menuId){
-  if(menuId==='happy_meal') return [{id:'p', name:'Petite frite (incluse)', delta:0, art:'fries', img:'frites.png'}];
+  if(menuId==='happy_meal') return [{id:'p', name:'Petite frite', delta:0, art:'fries', img:'frites.png'}];
   if(menuId==='maxi_best_of') return [
     {id:'g', name:'Grande frite', delta:0, art:'fries', img:'frites.png'}
   ];
@@ -1486,91 +1486,26 @@ function exportTicketPDF(index){
   container.appendChild(ticket);
   document.body.appendChild(container);
 
-  // Configuration html2pdf optimisée pour Tenir sur 1 seule page A4
   const opt = {
     margin: 0,
-    filename: `ticket-${o.numero || 'export'}.pdf`,
+    filename: `Ticket-${o.numero || 'commande'}.pdf`,
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: 'avoid-all' }
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
-  html2pdf().set(opt).from(container).save().then(()=>{
+  html2pdf().set(opt).from(container).save().then(() => {
     document.body.removeChild(container);
   });
 }
 
-/* ===================== VALIDATION / CHEVALET OBLIGATOIRE / TICKET ===================== */
-const chevaletOverlay = document.getElementById('chevalet-overlay');
-const chevaletInput = document.getElementById('chevalet-input');
-const chevaletError = document.getElementById('chevalet-error');
+/* ===================== FORMATTAGE ===================== */
+function fmt(price){
+  return (price||0).toFixed(2).replace('.',',') + ' €';
+}
 
-document.getElementById('drawer-checkout').onclick = ()=>{
-  if(cart.length===0) return;
-  closeDrawer();
-  chevaletInput.value = '';
-  chevaletError.style.display = 'none';
-  chevaletOverlay.classList.add('show');
-  chevaletInput.focus();
-};
-
-document.getElementById('chevalet-submit-btn').onclick = async ()=>{
-  const chevaletVal = chevaletInput.value.trim();
-  if(!chevaletVal){
-    chevaletError.style.display = 'block';
-    return;
-  }
-  
-  chevaletOverlay.classList.remove('show');
-  const num = 'A' + (10+Math.floor(Math.random()*89));
-  const sub = cart.reduce((s,i)=> s + i.unitPrice*i.qty, 0);
-
-  document.getElementById('receipt').innerHTML = `
-    <div class="r-title">McBORNE</div>
-    <div class="r-sub">Ticket de commande</div>
-    <div class="r-num">${num}</div>
-    <div class="r-chevalet">🚩 Chevalet n° ${chevaletVal}</div>
-    ${cart.map(i=>`
-      <div class="r-line"><span><span class="qty">${i.qty}×</span>${i.name}</span><span>${fmt(i.unitPrice*i.qty)}</span></div>
-      ${i.opts && i.opts.length ? `<div class="r-opts">${i.opts.map(o=>o.name).join(', ')}</div>` : ''}
-    `).join('')}
-    <div class="r-total"><span>Total</span><span>${fmt(sub)}</span></div>
-    <div class="r-type">${orderType==='sur_place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
-  `;
-  document.getElementById('screen-confirm').classList.add('show');
-
-  const orderJson = {
-    numero: num,
-    chevalet: chevaletVal,
-    date: new Date().toISOString(),
-    type: orderType==='sur_place' ? 'Sur place' : 'À emporter',
-    total: sub,
-    articles: cart.map(i=>({ nom:i.name, quantite:i.qty, prix_unitaire:i.unitPrice, options:i.opts.map(o=>o.name) }))
-  };
-
-  saveLocalHistory(orderJson);
-  if(githubToken) {
-    saveOrderToGithub(orderJson, num);
-  }
-};
-
-document.getElementById('confirm-new-btn').onclick = ()=>{
-  cart = [];
-  chevaletInput.value = '';
-  renderCartUI();
-  document.getElementById('screen-confirm').classList.remove('show');
-  currentCat = 'menus';
-  renderCats(); renderCatalog();
-  screenWelcome.style.display='flex';
-};
-
-/* ===================== UTILS ===================== */
-function fmt(n){ return n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €'; }
-
-/* ===================== INIT ===================== */
+/* INITIALISATION DU CATALOGUE PAR DÉFAUT */
 renderCatalog();
-renderCartUI();
 </script>
 </body>
 </html>
