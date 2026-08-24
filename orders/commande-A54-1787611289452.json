@@ -1,0 +1,20 @@
+{
+  "numero": "A54",
+  "chevalet": "547",
+  "date": "2026-08-24T22:41:29.452Z",
+  "type": "Sur place",
+  "total": 5.5,
+  "articles": [
+    {
+      "nom": "Happy Meal",
+      "quantite": 1,
+      "prix_unitaire": 5.5,
+      "options": [
+        "Hamburger",
+        "Petite frite (incluse)",
+        "Mayonnaise",
+        "Jus de pomme"
+      ]
+    }
+  ]
+}
