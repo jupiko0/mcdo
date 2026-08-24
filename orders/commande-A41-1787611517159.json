@@ -1,0 +1,20 @@
+{
+  "numero": "A41",
+  "chevalet": "254",
+  "date": "2026-08-24T22:45:17.159Z",
+  "type": "Sur place",
+  "total": 6.800000000000001,
+  "articles": [
+    {
+      "nom": "Menu Best Of",
+      "quantite": 1,
+      "prix_unitaire": 6.800000000000001,
+      "options": [
+        "Hamburger",
+        "Petite frite",
+        "Mayonnaise",
+        "Jus de pomme"
+      ]
+    }
+  ]
+}
