@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Inclusion de html2pdf pour l'export PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   :root{
     --mcdo-red:#0E6B3A;
@@ -129,6 +131,13 @@
   .history-item .h-article-opts{font-size:9.5px;color:var(--gray);margin:-1px 0 4px 18px;}
   .history-item .h-total{display:flex;justify-content:space-between;font-size:13px;font-weight:800;border-top:1px dashed var(--line);margin-top:8px;padding-top:8px;}
   .history-item .h-type{text-align:center;font-size:10px;color:var(--gray);margin-top:8px;}
+
+  .export-pdf-btn{
+    margin-top:10px;width:100%;background:var(--mcdo-yellow);border:none;padding:8px;
+    border-radius:6px;font-weight:700;font-size:11px;color:var(--ink);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 2px 4px rgba(0,0,0,.05);
+  }
+  .export-pdf-btn:active{transform:scale(.98);}
 
   nav#cats{flex:0 0 auto;background:#fff;border-bottom:1px solid var(--line);display:flex;gap:8px;padding:10px 12px;overflow-x:auto;z-index:5;}
   nav#cats::-webkit-scrollbar{display:none;}
@@ -468,6 +477,7 @@ let currentCat = 'menus';
 let cart = [];
 let orderType = 'sur_place';
 let historyPollInterval = null;
+let currentOrdersData = [];
 
 /* ===================== DONNÉES ===================== */
 const DRINK_CHOICES = [
@@ -1034,7 +1044,7 @@ async function saveOrderToGithub(orderJson, num){
   }
 }
 
-/* ===================== PAGE HISTORIQUE (AVEC POLLING RECHARGE) ===================== */
+/* ===================== PAGE HISTORIQUE (AVEC POLLING RECHARGE ET EXPORT PDF) ===================== */
 const historyPage = document.getElementById('history-page');
 const historyListEl = document.getElementById('history-list');
 
@@ -1090,7 +1100,6 @@ async function fetchOrdersFromFolder(showLoading = false){
   if(githubToken) headers['Authorization'] = `Bearer ${githubToken}`;
 
   try {
-    // timestamp param pour éviter le cache navigateur lors des recharges
     const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/orders?t=${Date.now()}`, { headers });
     if(!res.ok) throw new Error('Dossier introuvable');
 
@@ -1112,9 +1121,11 @@ async function fetchOrdersFromFolder(showLoading = false){
     let orders = (await Promise.all(ordersPromises)).filter(o => o !== null);
     orders.sort((a,b) => new Date(b.date) - new Date(a.date));
 
+    currentOrdersData = orders;
     renderTicketsList(orders);
   } catch(e) {
     const localOrders = loadLocalHistory();
+    currentOrdersData = localOrders;
     if(localOrders.length > 0){
       renderTicketsList(localOrders);
     } else {
@@ -1128,7 +1139,7 @@ function renderTicketsList(orders){
     historyListEl.innerHTML = `<div class="history-empty">Aucun ticket à afficher.</div>`;
     return;
   }
-  historyListEl.innerHTML = orders.map(o=>`
+  historyListEl.innerHTML = orders.map((o, index)=>`
     <div class="history-item">
       <div class="h-title">McBORNE</div>
       <div class="h-date">${formatHistoryDate(o.date)}</div>
@@ -1148,8 +1159,74 @@ function renderTicketsList(orders){
       ` : ''}
       <div class="h-total"><span>Total</span><span>${fmt(o.total || 0)}</span></div>
       <div class="h-type">${o.type === 'Sur place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
+      <button class="export-pdf-btn" onclick="exportTicketPDF(${index})">📄 Exporter en PDF</button>
     </div>
   `).join('');
+}
+
+function exportTicketPDF(index){
+  const o = currentOrdersData[index];
+  if(!o) return;
+
+  // Création du conteneur A4 temporaire
+  const container = document.createElement('div');
+  container.style.width = '210mm';
+  container.style.height = '297mm';
+  container.style.display = 'flex';
+  container.style.alignItems = 'center';
+  container.style.justifyContent = 'center';
+  container.style.background = '#ffffff';
+  container.style.boxSizing = 'border-box';
+
+  // Ticket centré exactement de 7cm de large
+  const ticket = document.createElement('div');
+  ticket.style.width = '7cm';
+  ticket.style.background = '#fffdf8';
+  ticket.style.color = '#241610';
+  ticket.style.borderRadius = '6px';
+  ticket.style.padding = '16px';
+  ticket.style.fontFamily = "'Inter', monospace";
+  ticket.style.border = '1px solid #EFE4D2';
+  ticket.style.boxShadow = 'none';
+
+  ticket.innerHTML = `
+    <div style="text-align:center;font-weight:800;font-size:11px;letter-spacing:1px;margin-bottom:2px;">McBORNE</div>
+    <div style="text-align:center;font-size:9.5px;color:#847C72;margin-bottom:8px;">${formatHistoryDate(o.date)}</div>
+    <div style="text-align:center;font-size:24px;font-weight:900;border-top:1px dashed #EFE4D2;border-bottom:1px dashed #EFE4D2;padding:6px 0;margin-bottom:10px;letter-spacing:1px;color:#0A4F2A;">${o.numero || '#'}</div>
+    ${o.articles && o.articles.length ? `
+      <div style="margin-bottom:8px;">
+        ${o.articles.map(a => `
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">
+            <span><span style="color:#847C72;margin-right:6px;">${a.quantite}×</span>${a.nom}</span>
+            <span>${fmt((a.prix_unitaire || 0) * a.quantite)}</span>
+          </div>
+          ${a.options && a.options.length ? `
+            <div style="font-size:9.5px;color:#847C72;margin:-1px 0 4px 18px;">${a.options.join(', ')}</div>
+          ` : ''}
+        `).join('')}
+      </div>
+    ` : ''}
+    <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800;border-top:1px dashed #EFE4D2;margin-top:8px;padding-top:8px;">
+      <span>Total</span>
+      <span>${fmt(o.total || 0)}</span>
+    </div>
+    <div style="text-align:center;font-size:10px;color:#847C72;margin-top:8px;">${o.type === 'Sur place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
+  `;
+
+  container.appendChild(ticket);
+  document.body.appendChild(container);
+
+  const opt = {
+    margin: 0,
+    filename: `ticket-${o.numero || 'export'}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  html2pdf().set(opt).from(container).save().then(()=>{
+    document.body.removeChild(container);
+  });
 }
 
 /* ===================== VALIDATION / TICKET ===================== */
