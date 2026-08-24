@@ -86,7 +86,7 @@
   .header-spacer{flex:1 1 auto;}
   .cart-btn{position:relative;background:var(--mcdo-yellow);border:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;}
   .cart-btn .badge{position:absolute;top:-4px;right:-4px;background:var(--ink);color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--mcdo-red);}
-  .gear-btn{background:rgba(255,255,255,.16);border:none;color:#fff;width:34px;height:34px;border-radius:50%;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .gear-btn{display:none;}
 
   /* ---- Réglages GitHub ---- */
   #settings-overlay{position:absolute;inset:0;background:rgba(20,12,6,.5);display:none;align-items:flex-end;justify-content:center;z-index:60;}
@@ -391,12 +391,11 @@
       <div id="app">
 
         <header class="app-header">
-          <div class="arches"><svg viewBox="0 0 100 100"><path d="M20 90 L20 45 C20 20 32 8 40 8 C48 8 50 22 50 35 C50 22 52 8 60 8 C68 8 80 20 80 45 L80 90 L66 90 L66 46 C66 30 62 24 60 24 C57 24 54 32 54 46 L54 90 L46 90 L46 46 C46 32 43 24 40 24 C38 24 34 30 34 46 L34 90 Z" fill="#FFC72C"/></svg></div>
+          <div class="arches" id="header-logo"><svg viewBox="0 0 100 100"><path d="M20 90 L20 45 C20 20 32 8 40 8 C48 8 50 22 50 35 C50 22 52 8 60 8 C68 8 80 20 80 45 L80 90 L66 90 L66 46 C66 30 62 24 60 24 C57 24 54 32 54 46 L54 90 L46 90 L46 46 C46 32 43 24 40 24 C38 24 34 30 34 46 L34 90 Z" fill="#FFC72C"/></svg></div>
           <div class="title">McBORNE</div>
           <button class="pill-ordertype" id="pill-ordertype">🍽️ Sur place</button>
           <div class="header-spacer"></div>
           <button class="fullscreen-btn" id="fullscreen-btn" title="Plein écran">⛶</button>
-          <button class="gear-btn" id="settings-btn" title="Réglages GitHub">⚙️</button>
           <button class="cart-btn" id="cart-btn">🛒<span class="badge" id="cart-badge">0</span></button>
         </header>
 
@@ -958,22 +957,19 @@ function burgerOptionsFor(menuId){
     {id:'nuggets4', name:'4 Nuggets', delta:0, img:'nuggets.png', art:'nugget'}
   ];
   return [
-    {id:'hamburger', name:'Hamburger', delta:-0.50, img:'hamburger.png', art:'burger', ingredients:['cornichon','oignon','ketchup','moutarde']},
+    {id:'hamburger', name:'Hamburger', delta:0, img:'hamburger.png', art:'burger', ingredients:['cornichon','oignon','ketchup','moutarde']},
     {id:'cheeseburger', name:'Cheeseburger', delta:0, img:'cheeseburger.png', art:'burger', cheese:true, ingredients:['cornichon','oignon','cheddar','ketchup','moutarde']},
-    {id:'double_cheese', name:'Double Cheeseburger', delta:1.00, img:'double-cheeseburger.png', art:'burger', cheese:true, double:true, ingredients:['cornichon','oignon','cheddar','ketchup','moutarde']},
-    {id:'bigmac', name:'Big Mac', delta:1.70, img:'bigmac.png', art:'burger', cheese:true, double:true, ingredients:['cornichon','oignon','cheddar','salade','sauce_bigmac']},
-    {id:'nuggets6', name:'6 Nuggets', delta:0.50, img:'nuggets.png', art:'nugget'}
+    {id:'double_cheese', name:'Double Cheeseburger', delta:0, img:'double-cheeseburger.png', art:'burger', cheese:true, double:true, ingredients:['cornichon','oignon','cheddar','ketchup','moutarde']},
+    {id:'bigmac', name:'Big Mac', delta:0, img:'bigmac.png', art:'burger', cheese:true, double:true, ingredients:['cornichon','oignon','cheddar','salade','sauce_bigmac']},
+    {id:'nuggets6', name:'6 Nuggets', delta:0, img:'nuggets.png', art:'nugget'}
   ];
 }
 function friesOptionsFor(menuId){
   if(menuId==='happy_meal') return [{id:'p', name:'Petite frite (incluse)', delta:0, art:'fries', img:'frites.png'}];
   if(menuId==='maxi_best_of') return [
-    {id:'p', name:'Petite frite', delta:-1.20, art:'fries', img:'frites.png'},
-    {id:'m', name:'Moyenne frite', delta:-0.60, art:'fries', img:'frites.png'},
     {id:'g', name:'Grande frite', delta:0, art:'fries', img:'frites.png'}
   ];
   return [
-    {id:'p', name:'Petite frite', delta:-0.60, art:'fries', img:'frites.png'},
     {id:'m', name:'Moyenne frite', delta:0, art:'fries', img:'frites.png'},
     {id:'g', name:'Grande frite', delta:0.60, art:'fries', img:'frites.png'}
   ];
@@ -1245,15 +1241,27 @@ document.getElementById('fullscreen-btn').onclick = ()=>{
   }
 };
 
-/* ===================== RÉGLAGES GITHUB ===================== */
+/* ===================== RÉGLAGES GITHUB (accès caché : triple-clic sur le logo) ===================== */
 const settingsOverlay = document.getElementById('settings-overlay');
 const settingsStatus = document.getElementById('settings-status');
 
-document.getElementById('settings-btn').onclick = ()=>{
+function openSettings(){
   document.getElementById('gh-token-input').value = githubToken;
   settingsStatus.className=''; settingsStatus.textContent='';
   settingsOverlay.classList.add('show');
-};
+}
+let logoClicks = 0;
+let logoClickTimer = null;
+document.getElementById('header-logo').addEventListener('click', ()=>{
+  logoClicks++;
+  clearTimeout(logoClickTimer);
+  if(logoClicks >= 3){
+    logoClicks = 0;
+    openSettings();
+  } else {
+    logoClickTimer = setTimeout(()=>{ logoClicks = 0; }, 800);
+  }
+});
 document.getElementById('settings-close').onclick = ()=> settingsOverlay.classList.remove('show');
 settingsOverlay.onclick = (e)=>{ if(e.target===settingsOverlay) settingsOverlay.classList.remove('show'); };
 
