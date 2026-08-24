@@ -1,0 +1,19 @@
+{
+  "numero": "A90",
+  "date": "2026-08-24T22:08:28.818Z",
+  "type": "Sur place",
+  "total": 9.5,
+  "articles": [
+    {
+      "nom": "Menu Best Of",
+      "quantite": 1,
+      "prix_unitaire": 9.5,
+      "options": [
+        "Double Cheeseburger",
+        "Grande frite",
+        "Ketchup",
+        "Coca-Cola"
+      ]
+    }
+  ]
+}
