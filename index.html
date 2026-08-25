@@ -1205,11 +1205,16 @@ function renderWizard(){
   const footer = document.getElementById('wizard-footer');
   const runningTotal = computeWizardTotal();
   if(step.extras){
-    footer.innerHTML = `<button id="wizard-confirm-btn">Ajouter au panier — ${fmt(runningTotal)}</button><button id="wizard-skip-extras-btn" class="wiz-skip-note-btn">Non merci, valider sans supplément</button>`;
-    document.getElementById('wizard-confirm-btn').onclick = commitWizard;
+    const isLastStep = wizardIndex === wizardSteps.length - 1;
+    const confirmLabel = isLastStep ? 'Ajouter au panier' : 'Suivant';
+    const skipLabel = isLastStep ? 'Non merci, valider sans supplément' : 'Non merci, étape suivante';
+    footer.innerHTML = `<button id="wizard-confirm-btn">${confirmLabel} — ${fmt(runningTotal)}</button><button id="wizard-skip-extras-btn" class="wiz-skip-note-btn">${skipLabel}</button>`;
+    document.getElementById('wizard-confirm-btn').onclick = isLastStep ? commitWizard : goNextStep;
     document.getElementById('wizard-skip-extras-btn').onclick = ()=>{
-      wizardExtraSel = new Set();
-      commitWizard();
+      // Ne retire que les sélections de CETTE étape, pas celles des étapes précédentes (ex: dessert déjà choisi)
+      step.options.forEach(o=> wizardExtraSel.delete(o.id));
+      if(step.dessert) wizardIceCreamTiming = null;
+      if(isLastStep) commitWizard(); else goNextStep();
     };
   } else {
     const selectedOpt = wizardSel[step.key];
