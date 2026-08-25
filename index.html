@@ -319,12 +319,19 @@
   /* ============ CHEVALET MODAL (OBLIGATOIRE) ============ */
   #chevalet-overlay{position:absolute;inset:0;background:rgba(20,12,6,.6);display:none;align-items:center;justify-content:center;z-index:55;padding:20px;}
   #chevalet-overlay.show{display:flex;}
-  #chevalet-modal{background:#fff;border-radius:22px;width:100%;max-width:340px;padding:24px 20px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.25);animation:modalUp .22s ease;}
+  #chevalet-modal{background:#fff;border-radius:22px;width:100%;max-width:340px;padding:24px 20px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.25);animation:modalUp .22s ease;position:relative;}
+  #chevalet-back-btn{position:absolute;top:14px;left:14px;width:34px;height:34px;border-radius:50%;border:none;background:var(--paper-2);color:var(--ink);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  #chevalet-back-btn:active{transform:scale(.94);}
   #chevalet-modal h3{font-size:18px;margin-bottom:6px;color:var(--mcdo-red-dark);}
   #chevalet-modal p{font-size:12px;color:var(--gray);margin-bottom:16px;line-height:1.4;}
   #chevalet-modal input{width:100%;border:2px solid var(--line);border-radius:12px;padding:12px;font-size:18px;text-align:center;font-weight:800;margin-bottom:12px;font-family:inherit;}
   #chevalet-modal input:focus{border-color:var(--mcdo-red);outline:none;}
   #chevalet-error{color:var(--mcdo-red-dark);font-size:11px;font-weight:700;margin-bottom:10px;display:none;}
+  #chevalet-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+  .pad-key{background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:14px 0;font-size:17px;font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit;}
+  .pad-key:active{background:#F7E3C3;transform:scale(.97);}
+  .pad-key.pad-clear{color:var(--mcdo-red-dark);font-size:13px;font-weight:800;}
+  .pad-key.pad-empty{background:none;border:none;cursor:default;}
   #chevalet-submit-btn{width:100%;background:var(--mcdo-yellow);border:none;padding:14px;border-radius:14px;font-weight:800;font-size:15px;cursor:pointer;color:var(--ink);}
 
   /* ============ VARIANT MODAL ============ */
@@ -476,10 +483,25 @@
         <!-- MODAL CHEVALET OBLIGATOIRE -->
         <div id="chevalet-overlay">
           <div id="chevalet-modal">
+            <button id="chevalet-back-btn" aria-label="Retour à la commande">←</button>
             <h3>🚩 Numéro de chevalet</h3>
             <p>Veuillez entrer le numéro indiqué sur votre chevalet.</p>
-            <input type="text" id="chevalet-input" placeholder="" maxlength="10">
+            <input type="text" id="chevalet-input" placeholder="" maxlength="10" readonly>
             <div id="chevalet-error">Veuillez renseigner un numéro de chevalet valide.</div>
+            <div id="chevalet-pad">
+              <button type="button" class="pad-key" data-key="1">1</button>
+              <button type="button" class="pad-key" data-key="2">2</button>
+              <button type="button" class="pad-key" data-key="3">3</button>
+              <button type="button" class="pad-key" data-key="4">4</button>
+              <button type="button" class="pad-key" data-key="5">5</button>
+              <button type="button" class="pad-key" data-key="6">6</button>
+              <button type="button" class="pad-key" data-key="7">7</button>
+              <button type="button" class="pad-key" data-key="8">8</button>
+              <button type="button" class="pad-key" data-key="9">9</button>
+              <button type="button" class="pad-key pad-clear" data-key="clear">Effacer</button>
+              <button type="button" class="pad-key" data-key="0">0</button>
+              <button type="button" class="pad-key pad-clear" data-key="back">⌫</button>
+            </div>
             <button id="chevalet-submit-btn">Confirmer la commande</button>
           </div>
         </div>
@@ -1505,6 +1527,29 @@ function exportTicketPDF(index){
 const chevaletOverlay = document.getElementById('chevalet-overlay');
 const chevaletInput = document.getElementById('chevalet-input');
 const chevaletError = document.getElementById('chevalet-error');
+
+/* ---- Pad numérique du chevalet ---- */
+document.querySelectorAll('#chevalet-pad .pad-key').forEach(btn=>{
+  btn.onclick = ()=>{
+    const key = btn.dataset.key;
+    chevaletError.style.display = 'none';
+    if(key === 'clear'){
+      chevaletInput.value = '';
+    } else if(key === 'back'){
+      chevaletInput.value = chevaletInput.value.slice(0, -1);
+    } else {
+      if(chevaletInput.value.length < 10) chevaletInput.value += key;
+    }
+  };
+});
+
+/* ---- Retour à la commande depuis l'écran chevalet ---- */
+document.getElementById('chevalet-back-btn').onclick = ()=>{
+  chevaletOverlay.classList.remove('show');
+  chevaletInput.value = '';
+  chevaletError.style.display = 'none';
+  openDrawer();
+};
 
 document.getElementById('drawer-checkout').onclick = ()=>{
   if(cart.length===0) return;
