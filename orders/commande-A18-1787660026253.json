@@ -1,0 +1,61 @@
+{
+  "numero": "A18",
+  "chevalet": "111",
+  "date": "2026-08-25T12:13:46.253Z",
+  "type": "Sur place",
+  "total": 31.1,
+  "articles": [
+    {
+      "nom": "Menu Best Of",
+      "quantite": 1,
+      "prix_unitaire": 7.9,
+      "options": [
+        "Double Cheeseburger (sans Cornichon)",
+        "Moyenne frite",
+        "Ketchup",
+        "Ice Tea"
+      ],
+      "laterPickup": false
+    },
+    {
+      "nom": "Ben & Jerry's",
+      "quantite": 1,
+      "prix_unitaire": 3.5,
+      "options": [],
+      "laterPickup": true
+    },
+    {
+      "nom": "4 Nuggets en plus",
+      "quantite": 1,
+      "prix_unitaire": 2.9,
+      "options": [],
+      "laterPickup": false
+    },
+    {
+      "nom": "Menu Maxi Best Of",
+      "quantite": 1,
+      "prix_unitaire": 10.4,
+      "options": [
+        "Double Cheeseburger (sans Moutarde, Ketchup, avec Sauce Big Mac, Salade)",
+        "Grande frite",
+        "Ketchup",
+        "Eau"
+      ],
+      "laterPickup": false
+    },
+    {
+      "nom": "Ben & Jerry's",
+      "quantite": 1,
+      "prix_unitaire": 3.5,
+      "options": [],
+      "laterPickup": true
+    },
+    {
+      "nom": "4 Nuggets en plus",
+      "quantite": 1,
+      "prix_unitaire": 2.9,
+      "options": [],
+      "laterPickup": false
+    }
+  ]
+}
