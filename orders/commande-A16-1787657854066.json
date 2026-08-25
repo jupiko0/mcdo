@@ -1,0 +1,28 @@
+{
+  "numero": "A16",
+  "chevalet": "524",
+  "date": "2026-08-25T11:37:34.064Z",
+  "type": "Sur place",
+  "total": 11.4,
+  "articles": [
+    {
+      "nom": "Menu Best Of",
+      "quantite": 1,
+      "prix_unitaire": 7.9,
+      "options": [
+        "Hamburger",
+        "Moyenne frite",
+        "Mayonnaise",
+        "Jus de pomme"
+      ],
+      "laterPickup": false
+    },
+    {
+      "nom": "Ben & Jerry's",
+      "quantite": 1,
+      "prix_unitaire": 3.5,
+      "options": [],
+      "laterPickup": true
+    }
+  ]
+}
