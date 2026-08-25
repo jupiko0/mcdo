@@ -201,6 +201,10 @@
 
   .art-sauce{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
   .art-sauce .blob{width:56%;height:56%;border-radius:50%;box-shadow:inset -3px -3px 6px rgba(0,0,0,.15),inset 3px 3px 6px rgba(255,255,255,.4);}
+  .art-dessert{position:relative;width:100%;height:100%;}
+  .art-dessert .scoop{position:absolute;left:30%;right:30%;top:24%;bottom:40%;border-radius:50% 50% 46% 46%;box-shadow:inset -3px -3px 6px rgba(0,0,0,.15),inset 3px 3px 6px rgba(255,255,255,.35);}
+  .art-dessert .cone{position:absolute;left:36%;right:36%;bottom:16%;height:26%;background:#D9A25C;clip-path:polygon(50% 100%,15% 0,85% 0);}
+  .art-dessert .bowl{position:absolute;left:22%;right:22%;bottom:20%;height:22%;background:#fff;border-radius:0 0 50% 50%;box-shadow:inset 0 -3px 5px rgba(0,0,0,.1);}
 
   /* ============ CART BAR ============ */
   #cartbar{position:absolute;left:12px;right:12px;bottom:14px;background:var(--mcdo-red);color:#fff;border-radius:16px;padding:13px 16px;display:none;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:0 10px 24px rgba(14,107,58,.4);z-index:20;animation:barIn .25s ease;}
@@ -333,6 +337,22 @@
   .pad-key.pad-clear{color:var(--mcdo-red-dark);font-size:13px;font-weight:800;}
   .pad-key.pad-empty{background:none;border:none;cursor:default;}
   #chevalet-submit-btn{width:100%;background:var(--mcdo-yellow);border:none;padding:14px;border-radius:14px;font-weight:800;font-size:15px;cursor:pointer;color:var(--ink);}
+
+  /* ---- Modale "Maintenant / Après" pour la glace ---- */
+  #icecream-timing-overlay{position:absolute;inset:0;background:rgba(20,12,6,.6);display:none;align-items:center;justify-content:center;z-index:50;padding:20px;}
+  #icecream-timing-overlay.show{display:flex;}
+  #icecream-timing-modal{background:#fff;border-radius:22px;width:100%;max-width:340px;padding:24px 20px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.25);animation:modalUp .22s ease;}
+  #icecream-timing-modal h3{font-size:18px;margin-bottom:6px;color:var(--mcdo-red-dark);}
+  #icecream-timing-modal p{font-size:12px;color:var(--gray);margin-bottom:16px;line-height:1.4;}
+  .icecream-choice-btn{width:100%;background:var(--paper-2);border:1.5px solid var(--line);border-radius:14px;padding:14px;font-weight:800;font-size:13.5px;color:var(--ink);cursor:pointer;margin-bottom:10px;font-family:inherit;}
+  .icecream-choice-btn:active{background:#F7E3C3;}
+  .icecream-choice-btn .sub{display:block;font-weight:500;font-size:10.5px;color:var(--gray);margin-top:2px;}
+  #icecream-cancel-btn{width:100%;background:none;border:none;color:var(--gray);font-size:11.5px;text-decoration:underline;cursor:pointer;margin-top:2px;}
+
+  /* ---- Coupon glace détachable en bas de ticket ---- */
+  .r-cut-line{text-align:center;font-size:11px;color:var(--gray);letter-spacing:1px;margin:10px 0 6px;}
+  .r-coupon{border-top:2px dashed var(--line);padding-top:8px;}
+  .r-coupon-note{text-align:center;font-size:10.5px;font-weight:700;color:var(--mcdo-red-dark);margin-top:6px;line-height:1.4;}
 
   /* ============ VARIANT MODAL ============ */
   #overlay{position:absolute;inset:0;background:rgba(20,12,6,.5);display:none;align-items:flex-end;justify-content:center;z-index:40;}
@@ -506,6 +526,17 @@
           </div>
         </div>
 
+        <!-- MODAL MAINTENANT / APRÈS POUR LA GLACE -->
+        <div id="icecream-timing-overlay">
+          <div id="icecream-timing-modal">
+            <h3>🍦 Ben & Jerry's</h3>
+            <p>Vous souhaitez votre glace...</p>
+            <button type="button" id="icecream-now-btn" class="icecream-choice-btn">Maintenant<span class="sub">servie avec le repas</span></button>
+            <button type="button" id="icecream-later-btn" class="icecream-choice-btn">Après le repas<span class="sub">coupon à donner en caisse</span></button>
+            <button type="button" id="icecream-cancel-btn">Annuler</button>
+          </div>
+        </div>
+
         <section id="screen-confirm">
           <div class="check">✓</div>
           <h1>Commande envoyée !</h1>
@@ -591,6 +622,11 @@ function drinkImg(id){ return 'boisson-' + id.replace(/_/g,'-') + '.png'; }
 const SAUCE_OPTIONS = [
   {id:'mayo', name:'Mayonnaise', delta:0, img:'sauce-mayo.png', art:'sauce', color:'#FFF7E8'},
   {id:'ketchup', name:'Ketchup', delta:0, img:'sauce-ketchup.png', art:'sauce', color:'#C21F1F'}
+];
+
+const DESSERT_OPTIONS = [
+  {id:'compote', name:'Compote de pomme', price:1.50, img:'dessert-compote.png', art:'dessert'},
+  {id:'ben_jerrys', name:"Ben & Jerry's", price:3.50, img:'dessert-ben-jerrys.png', art:'dessert', iceCream:true}
 ];
 
 const CATEGORIES = [
@@ -686,6 +722,12 @@ function happyArt(){
 function sauceArt(color){
   return `<div class="art-sauce"><div class="blob" style="background:${color||'#fff'}"></div></div>`;
 }
+function dessertArt(p){
+  if(p.iceCream){
+    return `<div class="art-dessert"><div class="cone"></div><div class="scoop" style="background:#7A4A24"></div></div>`;
+  }
+  return `<div class="art-dessert"><div class="bowl"></div><div class="scoop" style="background:#E8C77A;top:22%;bottom:44%;"></div></div>`;
+}
 function foodArt(p){
   switch(p.art){
     case 'burger': return burgerArt(!!p.cheese, !!p.double);
@@ -695,6 +737,7 @@ function foodArt(p){
     case 'menu': return menuArt(!!p.double);
     case 'happy': return happyArt();
     case 'sauce': return sauceArt(p.color);
+    case 'dessert': return dessertArt(p);
     default: return '';
   }
 }
@@ -1014,12 +1057,14 @@ function buildWizardSteps(menu){
     {key:'frites', label:'Frites', title:'Choisissez vos frites', options: friesOptionsFor(menu.id)},
     {key:'sauce', label:'Sauce', title:'Choisissez votre sauce', options: SAUCE_OPTIONS},
     {key:'boisson', label:'Boisson', title:'Choisissez votre boisson', options: boissonOptionsFor()},
+    {key:'dessert', label:'Dessert', title:'Un dessert avec votre repas ?', extras:true, dessert:true, options: DESSERT_OPTIONS},
     {key:'extra', label:'Extra', title:'Un petit plus ?', extras:true, options: extrasFor(menu.id)}
   ];
 }
 
 let wizardMenu=null, wizardSteps=[], wizardIndex=0, wizardSel={}, wizardExtraSel=new Set();
 let wizardBurgerCustom = {}; // { [burgerId]: {removed:[...], added:[...]} }
+let wizardIceCreamTiming = null; // 'now' | 'later'
 
 function openWizard(menu){
   wizardMenu = menu;
@@ -1029,6 +1074,7 @@ function openWizard(menu){
   wizardSteps.forEach(s=>{ if(!s.extras) wizardSel[s.key] = s.options[0]; });
   wizardExtraSel = new Set();
   wizardBurgerCustom = {};
+  wizardIceCreamTiming = null;
   document.getElementById('wizard-menu-name').textContent = menu.name;
   renderWizard();
   document.getElementById('wizard-overlay').classList.add('show');
@@ -1056,6 +1102,31 @@ function goBackStep(){ if(wizardIndex>0){ wizardIndex--; renderWizard(); } }
 document.getElementById('wizard-back').onclick = goBackStep;
 document.getElementById('wizard-close').onclick = closeWizard;
 
+/* ---- Modale "Maintenant / Après" pour la glace ---- */
+const icecreamOverlay = document.getElementById('icecream-timing-overlay');
+let icecreamResolveCb = null;
+function openIceCreamTimingModal(cb){
+  icecreamResolveCb = cb;
+  icecreamOverlay.classList.add('show');
+}
+function closeIceCreamTimingModal(){
+  icecreamOverlay.classList.remove('show');
+  icecreamResolveCb = null;
+}
+document.getElementById('icecream-now-btn').onclick = ()=>{
+  const cb = icecreamResolveCb;
+  closeIceCreamTimingModal();
+  if(cb) cb('now');
+};
+document.getElementById('icecream-later-btn').onclick = ()=>{
+  const cb = icecreamResolveCb;
+  closeIceCreamTimingModal();
+  if(cb) cb('later');
+};
+document.getElementById('icecream-cancel-btn').onclick = ()=>{
+  closeIceCreamTimingModal();
+};
+
 function renderWizard(){
   const step = wizardSteps[wizardIndex];
   document.getElementById('wizard-title').textContent = step.title;
@@ -1068,12 +1139,27 @@ function renderWizard(){
     bodyEl.innerHTML = step.options.map(o=>`
       <div class="wiz-opt is-extra ${wizardExtraSel.has(o.id)?'selected':''}" data-id="${o.id}">
         <div class="wiz-thumb">${thumbHTML(o)}</div>
-        <div class="wiz-info"><div class="wiz-name">${o.name}</div><div class="wiz-price">+ ${fmt(o.price)}</div></div>
+        <div class="wiz-info"><div class="wiz-name">${o.name}${(o.iceCream && wizardExtraSel.has(o.id) && wizardIceCreamTiming) ? (wizardIceCreamTiming==='later' ? ' — après (en caisse)' : ' — maintenant') : ''}</div><div class="wiz-price">+ ${fmt(o.price)}</div></div>
         <div class="wiz-check">✓</div>
       </div>`).join('');
     bodyEl.querySelectorAll('.wiz-opt').forEach(row=>{
       row.onclick = ()=>{
         const id = row.dataset.id;
+        const opt = step.options.find(o=>o.id===id);
+        if(step.dessert && opt && opt.iceCream){
+          if(wizardExtraSel.has(id)){
+            wizardExtraSel.delete(id);
+            wizardIceCreamTiming = null;
+            renderWizard();
+          } else {
+            openIceCreamTimingModal((timing)=>{
+              wizardIceCreamTiming = timing;
+              wizardExtraSel.add(id);
+              renderWizard();
+            });
+          }
+          return;
+        }
         if(wizardExtraSel.has(id)) wizardExtraSel.delete(id); else wizardExtraSel.add(id);
         renderWizard();
       };
@@ -1162,7 +1248,10 @@ function commitWizard(){
   addToCart(wizardMenu, menuOpts, unitPrice);
   wizardSteps.forEach(s=>{
     if(s.extras) s.options.forEach(o=>{
-      if(wizardExtraSel.has(o.id)) addToCart({id:o.id, name:o.name, art:o.art, color:o.color, img:o.img}, [], o.price);
+      if(wizardExtraSel.has(o.id)){
+        const laterPickup = !!(o.iceCream && wizardIceCreamTiming==='later');
+        addToCart({id:o.id, name:o.name, art:o.art, color:o.color, img:o.img, laterPickup}, [], o.price);
+      }
     });
   });
   closeWizard();
@@ -1183,7 +1272,8 @@ function addToCart(p, itemOptions, unitPrice){
     img: p.img,
     opts: optionsList,
     unitPrice: unitPrice,
-    qty: 1
+    qty: 1,
+    laterPickup: !!p.laterPickup
   });
   renderCartUI();
 }
@@ -1226,6 +1316,7 @@ function renderCartUI(){
         <div class="info">
           <div class="name">${item.name}</div>
           ${item.opts && item.opts.length ? `<div class="opts">${item.opts.map(o=>o.name).join(' • ')}</div>` : ''}
+          ${item.laterPickup ? `<div class="opts" style="color:var(--mcdo-red-dark);font-weight:700;">🍦 À récupérer en caisse après le repas</div>` : ''}
           <div class="line-bottom">
             <div class="qty-ctrl"><button class="dec">−</button><span>${item.qty}</span><button class="inc">+</button></div>
             <span class="item-price">${fmt(item.unitPrice*item.qty)}</span>
@@ -1429,15 +1520,19 @@ function renderTicketsList(orders){
     historyListEl.innerHTML = `<div class="history-empty">Aucun ticket à afficher.</div>`;
     return;
   }
-  historyListEl.innerHTML = orders.map((o, index)=>`
+  historyListEl.innerHTML = orders.map((o, index)=>{
+    const allArticles = o.articles || [];
+    const normalArticles = allArticles.filter(a=>!a.laterPickup);
+    const laterArticles = allArticles.filter(a=>a.laterPickup);
+    return `
     <div class="history-item">
       <div class="h-title">McBORNE</div>
       <div class="h-date">${formatHistoryDate(o.date)}</div>
       <div class="h-num">${o.numero || '#'}</div>
       ${o.chevalet ? `<div class="h-chevalet">🚩 Chevalet n° ${o.chevalet}</div>` : ''}
-      ${o.articles && o.articles.length ? `
+      ${normalArticles.length ? `
         <div class="h-articles">
-          ${o.articles.map(a => `
+          ${normalArticles.map(a => `
             <div class="h-article-row">
               <span><span class="qty">${a.quantite}×</span>${a.nom}</span>
               <span>${fmt((a.prix_unitaire || 0) * a.quantite)}</span>
@@ -1450,14 +1545,30 @@ function renderTicketsList(orders){
       ` : ''}
       <div class="h-total"><span>Total</span><span>${fmt(o.total || 0)}</span></div>
       <div class="h-type">${o.type === 'Sur place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
+      ${laterArticles.length ? `
+        <div class="r-cut-line">✂️ - - - - - - - - - - - - - - - - -</div>
+        <div class="r-coupon">
+          ${laterArticles.map(a => `
+            <div class="h-article-row">
+              <span><span class="qty">${a.quantite}×</span>${a.nom}</span>
+              <span>${fmt((a.prix_unitaire || 0) * a.quantite)}</span>
+            </div>
+          `).join('')}
+          <div class="r-coupon-note">🍦 Coupon à présenter en caisse pour récupérer la glace</div>
+        </div>
+      ` : ''}
       <button class="export-pdf-btn" onclick="exportTicketPDF(${index})">📄 Exporter en PDF</button>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function exportTicketPDF(index){
   const o = currentOrdersData[index];
   if(!o) return;
+  const allArticles = o.articles || [];
+  const normalArticles = allArticles.filter(a=>!a.laterPickup);
+  const laterArticles = allArticles.filter(a=>a.laterPickup);
 
   // Création du conteneur A4 temporaire sans marges superflues
   const container = document.createElement('div');
@@ -1485,9 +1596,9 @@ function exportTicketPDF(index){
     <div style="text-align:center;font-size:9.5px;color:#847C72;margin-bottom:8px;">${formatHistoryDate(o.date)}</div>
     <div style="text-align:center;font-size:24px;font-weight:900;border-top:1px dashed #EFE4D2;border-bottom:1px dashed #EFE4D2;padding:6px 0;margin-bottom:6px;letter-spacing:1px;color:#0A4F2A;">${o.numero || '#'}</div>
     ${o.chevalet ? `<div style="text-align:center;font-size:12px;font-weight:800;color:#0E6B3A;margin-bottom:8px;">🚩 Chevalet n° ${o.chevalet}</div>` : ''}
-    ${o.articles && o.articles.length ? `
+    ${normalArticles.length ? `
       <div style="margin-bottom:8px;">
-        ${o.articles.map(a => `
+        ${normalArticles.map(a => `
           <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">
             <span><span style="color:#847C72;margin-right:6px;">${a.quantite}×</span>${a.nom}</span>
             <span>${fmt((a.prix_unitaire || 0) * a.quantite)}</span>
@@ -1503,6 +1614,18 @@ function exportTicketPDF(index){
       <span>${fmt(o.total || 0)}</span>
     </div>
     <div style="text-align:center;font-size:10px;color:#847C72;margin-top:8px;">${o.type === 'Sur place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
+    ${laterArticles.length ? `
+      <div style="text-align:center;font-size:11px;color:#847C72;letter-spacing:1px;margin:10px 0 6px;">✂️ - - - - - - - - - - - - - - - - -</div>
+      <div style="border-top:2px dashed #EFE4D2;padding-top:8px;">
+        ${laterArticles.map(a => `
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">
+            <span><span style="color:#847C72;margin-right:6px;">${a.quantite}×</span>${a.nom}</span>
+            <span>${fmt((a.prix_unitaire || 0) * a.quantite)}</span>
+          </div>
+        `).join('')}
+        <div style="text-align:center;font-size:10.5px;font-weight:700;color:#0A4F2A;margin-top:6px;line-height:1.4;">🍦 Coupon à présenter en caisse pour récupérer votre glace</div>
+      </div>
+    ` : ''}
   `;
 
   container.appendChild(ticket);
@@ -1570,18 +1693,29 @@ document.getElementById('chevalet-submit-btn').onclick = async ()=>{
   chevaletOverlay.classList.remove('show');
   const num = 'A' + (10+Math.floor(Math.random()*89));
   const sub = cart.reduce((s,i)=> s + i.unitPrice*i.qty, 0);
+  const normalCartItems = cart.filter(i=>!i.laterPickup);
+  const laterCartItems = cart.filter(i=>i.laterPickup);
 
   document.getElementById('receipt').innerHTML = `
     <div class="r-title">McBORNE</div>
     <div class="r-sub">Ticket de commande</div>
     <div class="r-num">${num}</div>
     <div class="r-chevalet">🚩 Chevalet n° ${chevaletVal}</div>
-    ${cart.map(i=>`
+    ${normalCartItems.map(i=>`
       <div class="r-line"><span><span class="qty">${i.qty}×</span>${i.name}</span><span>${fmt(i.unitPrice*i.qty)}</span></div>
       ${i.opts && i.opts.length ? `<div class="r-opts">${i.opts.map(o=>o.name).join(', ')}</div>` : ''}
     `).join('')}
     <div class="r-total"><span>Total</span><span>${fmt(sub)}</span></div>
     <div class="r-type">${orderType==='sur_place' ? '🍽️ Sur place' : '🥡 À emporter'}</div>
+    ${laterCartItems.length ? `
+      <div class="r-cut-line">✂️ - - - - - - - - - - - - - - - - -</div>
+      <div class="r-coupon">
+        ${laterCartItems.map(i=>`
+          <div class="r-line"><span><span class="qty">${i.qty}×</span>${i.name}</span><span>${fmt(i.unitPrice*i.qty)}</span></div>
+        `).join('')}
+        <div class="r-coupon-note">🍦 Coupon à présenter en caisse pour récupérer votre glace</div>
+      </div>
+    ` : ''}
   `;
   document.getElementById('screen-confirm').classList.add('show');
 
@@ -1591,7 +1725,7 @@ document.getElementById('chevalet-submit-btn').onclick = async ()=>{
     date: new Date().toISOString(),
     type: orderType==='sur_place' ? 'Sur place' : 'À emporter',
     total: sub,
-    articles: cart.map(i=>({ nom:i.name, quantite:i.qty, prix_unitaire:i.unitPrice, options:i.opts.map(o=>o.name) }))
+    articles: cart.map(i=>({ nom:i.name, quantite:i.qty, prix_unitaire:i.unitPrice, options:i.opts.map(o=>o.name), laterPickup: !!i.laterPickup }))
   };
 
   saveLocalHistory(orderJson);
