@@ -1,0 +1,37 @@
+{
+  "numero": "A17",
+  "chevalet": "254",
+  "date": "2026-08-25T09:47:48.063Z",
+  "type": "Sur place",
+  "total": 20.7,
+  "articles": [
+    {
+      "nom": "Menu Maxi Best Of",
+      "quantite": 1,
+      "prix_unitaire": 9.9,
+      "options": [
+        "Big Mac",
+        "Grande frite",
+        "Ketchup",
+        "Eau"
+      ]
+    },
+    {
+      "nom": "Menu Best Of",
+      "quantite": 1,
+      "prix_unitaire": 7.9,
+      "options": [
+        "Double Cheeseburger (sans Cornichon)",
+        "Moyenne frite",
+        "Ketchup",
+        "Ice Tea"
+      ]
+    },
+    {
+      "nom": "4 Nuggets en plus",
+      "quantite": 1,
+      "prix_unitaire": 2.9,
+      "options": []
+    }
+  ]
+}
