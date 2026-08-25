@@ -1,0 +1,20 @@
+{
+  "numero": "A13",
+  "chevalet": "521",
+  "date": "2026-08-25T09:54:29.941Z",
+  "type": "Sur place",
+  "total": 9.9,
+  "articles": [
+    {
+      "nom": "Menu Maxi Best Of",
+      "quantite": 1,
+      "prix_unitaire": 9.9,
+      "options": [
+        "Big Mac",
+        "Grande frite",
+        "Ketchup",
+        "Eau"
+      ]
+    }
+  ]
+}
