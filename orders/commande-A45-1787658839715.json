@@ -1,0 +1,80 @@
+{
+  "numero": "A45",
+  "chevalet": "286",
+  "date": "2026-08-25T11:53:59.714Z",
+  "type": "Sur place",
+  "total": 37.199999999999996,
+  "articles": [
+    {
+      "nom": "Happy Meal",
+      "quantite": 1,
+      "prix_unitaire": 5.5,
+      "options": [
+        "Hamburger",
+        "Petite frite",
+        "Mayonnaise",
+        "Ice Tea"
+      ],
+      "laterPickup": false
+    },
+    {
+      "nom": "Ben & Jerry's",
+      "quantite": 1,
+      "prix_unitaire": 3.5,
+      "options": [],
+      "laterPickup": true
+    },
+    {
+      "nom": "4 Nuggets en plus",
+      "quantite": 1,
+      "prix_unitaire": 2.9,
+      "options": [],
+      "laterPickup": false
+    },
+    {
+      "nom": "Menu Best Of",
+      "quantite": 1,
+      "prix_unitaire": 9,
+      "options": [
+        "Cheeseburger (sans Ketchup, Moutarde, avec Salade, Sauce Big Mac)",
+        "Grande frite",
+        "Mayonnaise",
+        "Eau gazeuse"
+      ],
+      "laterPickup": false
+    },
+    {
+      "nom": "Compote de pomme",
+      "quantite": 1,
+      "prix_unitaire": 1.5,
+      "options": [],
+      "laterPickup": false
+    },
+    {
+      "nom": "Menu Maxi Best Of",
+      "quantite": 1,
+      "prix_unitaire": 10.4,
+      "options": [
+        "Double Cheeseburger (sans Ketchup, Moutarde, avec Salade, Sauce Big Mac)",
+        "Grande frite",
+        "Mayonnaise",
+        "Eau gazeuse"
+      ],
+      "laterPickup": false
+    },
+    {
+      "nom": "Compote de pomme",
+      "quantite": 1,
+      "prix_unitaire": 1.5,
+      "options": [],
+      "laterPickup": false
+    },
+    {
+      "nom": "4 Nuggets en plus",
+      "quantite": 1,
+      "prix_unitaire": 2.9,
+      "options": [],
+      "laterPickup": false
+    }
+  ]
+}
